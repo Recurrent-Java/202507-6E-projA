@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- Thymeleafを使用するための記述 -->
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <div th:replace="~{comlayout/base :: meta}"></div>
+  <div th:replace="~{comlayout/base :: styles}"></div>
+
+  <title>ログインページ</title>
+</head>
+
+<body>
+  <div th:replace="~{comlayout/base :: header}"></div>
+  <div th:replace="~{comlayout/base :: nav}"></div>
+
+  <main>
+    <h2>ログイン画面</h2>
+    <!-- 失敗時のメッセージ表示 -->
+    <p th:if="${param.error}" class="fontRed">
+      ログイン名またはパスワードが間違っています。
+    </p>
+    <form th:action="@{/login}" method="post" id="login">
+      <p><label>ログイン名</label><input type="text" name="login"></p>
+      <p><label>パスワード</label><input type="password" name="password"></p>
+      <p><button type="submit">ログイン</button></p>
+    </form>
+  </main>
+  <div th:replace="~{comlayout/base :: footer}"></div>
+</body>
+
+</html>

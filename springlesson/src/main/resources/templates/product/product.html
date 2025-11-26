@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!-- Thymeleafを使用するための記述 -->
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <div th:replace="~{comlayout/base :: meta}"></div>
+  <div th:replace="~{comlayout/base :: styles}"></div>
+
+  <title>商品ページ</title>
+</head>
+
+<body>
+  <div th:replace="~{comlayout/base :: header}"></div>
+  <div th:replace="~{comlayout/base :: nav}"></div>
+  <main id="product">
+    <p>検索キーワードを入力して下さい。</p>
+    <form th:action="@{/product/find}" method="post">
+      <p>
+        <label>商品名：</label>
+        <input type="text" name="keyword" th:value="${ keyword }" placeholder="商品名">
+        <button type="submit">検索</button>
+      </p>
+    </form>
+    <hr>
+    <h2>商品一覧</h2>
+    <!-- エラーメッセージ表示 -->
+    <p th:if="${ errMsg }" th:text="${ errMsg }"></p>
+    <table>
+      <tr>
+        <th colspan="2">商品</th>
+        <th>商品名</th>
+        <th>価格</th>
+        <th>個数</th>
+        <th>購入</th>
+      </tr>
+      <tr th:each="product : ${ list }">
+        <td th:text="${product.id }"></td>
+        <td><img th:src="@{/images/{id}.jpg(id=${product.id})}" 
+                 th:alt="${ product.name }"></td>
+        <td th:text="${ product.name }"></td>
+        <td th:text="${ product.getFormattedPrice() }"></td>
+        <td>
+          <!-- パイプ記号で囲まれた内容はThymeleafでは文字列としてそのまま扱う(ただし、${}だけは置換してくれる) -->
+          <form th:action="@{/cart/add}" method="get" th:id="|product-form-${product.id}|">
+          <input type="tel" name="count" value="1">
+          <input type="hidden" name="id" th:value="${product.id}">個
+          </form>
+        </td>
+        <td>
+          <a th:href="@{/cart/add}" th:onclick="|event.preventDefault(); document.getElementById('product-form-${product.id}').submit();|">
+          カートに追加
+          </a>
+        </td>
+      </tr>
+    </table>
+  </main>
+  <div th:replace="~{comlayout/base :: footer}"></div>
+</body>
+
+</html>

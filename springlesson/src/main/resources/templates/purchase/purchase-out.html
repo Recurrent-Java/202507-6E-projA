@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<!-- Thymeleafを使用するための記述 -->
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <div th:replace="~{comlayout/base :: meta}"></div>
+  <div th:replace="~{comlayout/base :: styles}"></div>
+
+  <title>購入ページ</title>
+</head>
+
+<body>
+  <div th:replace="~{comlayout/base :: header}"></div>
+  <div th:replace="~{comlayout/base :: nav}"></div>
+  <main>
+    <h2>購入手続き完了</h2>
+    <p>購入手続きが完了しました。</p>
+  </main>
+  <div th:replace="~{comlayout/base :: footer}"></div>
+</body>
+
+</html>

@@ -1,0 +1,200 @@
+@charset "UTF-8";
+html{
+  font-size: 62.5%;
+}
+body{
+  font-size: 1.6rem;
+  font-family: "Source Sans Pro", "Hiragino Kaku Gothic ProN", "メイリオ", "Meiryo", "Arial", sans-serif;
+}
+p{
+  margin-bottom: 10px;
+}
+a {
+  text-decoration: none;
+}
+label {
+  margin-right: 5px;
+}
+header {
+  width: 1000px;
+  height: 70px;
+  margin-inline: auto;
+}
+header h1 {
+	height: 70px;
+	font-size: 3.2rem;
+	line-height: 70px;
+	text-align: center;
+}
+nav {
+	width: 1000px;
+  height: 30px;
+	margin-inline: auto;
+  margin-bottom: 20px;
+  padding-right: 20px;
+  padding-left: 20px;
+  border-bottom: 1px solid #666;
+}
+nav ul {
+	display: flex;
+	justify-content: space-between;
+  width: 500px;
+  margin-inline: auto;
+	list-style: none;
+}
+main {
+  width: 1000px;
+  min-height: 500px;
+  margin-inline: auto;
+  margin-bottom: 20px;
+  
+}
+main h2 {
+  margin-bottom: 20px;
+  font-size: 2.4rem;
+}
+
+main img {
+  display: block;
+  width: 110px;
+}
+footer {
+  width: 1000px;
+  margin-inline: auto;
+  text-align: center;
+}
+footer small {
+  font-size: 1rem;
+}
+/* ログイン画面
+-----------------------------------------------*/
+
+/* 商品検索画面
+-----------------------------------------------*/
+main#product table,
+main#product th,
+main#product td
+ {
+  border: 1px solid #666;
+}
+main#product table {
+  width: 740px;
+}
+main#product table th {
+  height: 30px;
+  vertical-align: middle;
+}
+main#product table td{
+  width: 150px;
+  vertical-align: middle;
+}
+main#product table td:nth-of-type(1) {
+  width: 40px;
+  text-align: center;
+}
+main#product table td:nth-of-type(2) {
+  width: 110px;
+}
+main#product table td:nth-of-type(3) {
+ padding-left: 10px;
+ box-sizing: border-box;
+}
+main#product table td:nth-of-type(4) {
+ padding-right: 10px;
+ box-sizing: border-box;
+ text-align: right;
+}
+main#product table td:nth-of-type(5) {
+  padding-left: 10px;
+  box-sizing: border-box;
+  text-align: center;
+}
+main#product table td:nth-of-type(5) input[name="count"]{
+  padding-left: 10px;
+  box-sizing: border-box;
+  width: 100px;
+}
+main#product table td:nth-of-type(6) {
+ text-align: center;
+}
+/* カート画面
+-----------------------------------------------*/
+main#cart table,
+main#cart th,
+main#cart td
+ {
+  border: 1px solid #666;
+}
+main#cart table {
+  width: 740px;
+}
+main#cart table th {
+  height: 30px;
+  vertical-align: middle;
+}
+main#cart table td{
+  width: 150px;
+  vertical-align: middle;
+}
+main#cart table td:nth-of-type(1) {
+  width: 40px;
+  text-align: center;
+}
+main#cart table td:nth-of-type(2) {
+  width: 110px;
+}
+main#cart table td:nth-of-type(3) {
+ padding-left: 10px;
+ box-sizing: border-box;
+}
+main#cart table td:nth-of-type(4),
+main#cart table td:nth-of-type(5) {
+ padding-right: 10px;
+ box-sizing: border-box;
+ text-align: right;
+}
+main#cart table td:nth-of-type(6) {
+ text-align: center;
+}
+/* 購入画面
+-----------------------------------------------*/
+main#purchase table,
+main#purchase th,
+main#purchase td
+ {
+  border: 1px solid #666;
+}
+main#purchase table {
+  width: 600px;
+}
+main#purchase table th {
+  height: 30px;
+  vertical-align: middle;
+}
+main#purchase table td{
+  width: 150px;
+  vertical-align: middle;
+}
+main#purchase table td:nth-of-type(1) {
+  width: 40px;
+  text-align: center;
+}
+main#purchase table td:nth-of-type(2) {
+  width: 110px;
+}
+main#purchase table td:nth-of-type(3) {
+ padding-left: 10px;
+ box-sizing: border-box;
+}
+main#purchase table td:nth-of-type(4),
+main#purchase table td:nth-of-type(5) {
+ padding-right: 10px;
+ box-sizing: border-box;
+ text-align: right;
+}
+main#purchase input[name="address"] {
+  width: 30em;
+}
+.fontRed {
+  color: #f00;
+}

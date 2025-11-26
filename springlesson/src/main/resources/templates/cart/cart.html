@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!-- Thymeleafを使用するための記述 -->
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <div th:replace="~{comlayout/base :: meta}"></div>
+  <div th:replace="~{comlayout/base :: styles}"></div>
+
+  <title>カートページ</title>
+</head>
+
+<body>
+  <div th:replace="~{comlayout/base :: header}"></div>
+  <div th:replace="~{comlayout/base :: nav}"></div>
+  <main id="cart">
+    <!-- cartが空でない場合 -->
+    <p th:if="${cart}">
+      [[${#lists.size(cart)}]]種類の商品があります。
+    </p>
+    <!-- cartが空の場合 -->
+    <p th:unless="${cart}">
+      カートに商品がありません
+    </p>
+    <hr>
+    <table>
+      <tr>
+        <th colspan="2">商品</th>
+        <th>商品名</th>
+        <th>価格</th>
+        <th>個数</th>
+        <th>購入</th>
+      </tr>
+      <tr th:each="item : ${cart}">
+        <td th:text="${item.product.id }"></td>
+        <td><img th:src="@{/images/{id}.jpg(id=${item.product.id})}" 
+                 th:alt="${item.product.name}"></td>
+        <td th:text="${item.product.name}"></td>
+        <td th:text="${item.product.price}"></td>
+        <td th:text="${item.count + '個'}"></td>
+        <td>
+          <a th:href="@{/cart/remove(id=${item.product.id})}">
+          カートから削除
+          </a>
+        </td>
+      </tr>
+    </table>
+  </main>
+  <div th:replace="~{comlayout/base :: footer}"></div>
+</body>
+
+</html>
