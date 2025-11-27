@@ -1,0 +1,116 @@
+##############################
+# Java / Eclipse / IntelliJ 共通
+##############################
+
+# ビルド結果
+/bin/
+/build/
+/target/
+/out/
+
+# キャッシュ・一時ファイル
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# パッケージマネージャ
+*.iml
+
+##############################
+# IDE 設定ファイル
+##############################
+
+# Eclipse
+.settings/
+.project
+.classpath
+
+# IntelliJ IDEA
+.idea/
+*.ipr
+*.iws
+
+##############################
+# OS依存ファイル
+##############################
+
+# mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Linux
+*~
+
+##############################
+# Maven / Gradle
+##############################
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.mvn/jvm.config
+# ビルド結果（targetは上で除外済）
+**/target/
+
+# Gradle（使用していなくても念のため）
+.gradle/
+build/
+**/build/
+
+##############################
+# Spring Boot 専用
+##############################
+
+# Spring Boot 起動時に生成されるファイル
+.spring-boot-devtools.properties
+.spring-boot-devtools.json
+
+# H2 DB
+*.db
+*.h2.db
+*.mv.db
+
+##############################
+# プロジェクト固有（推奨）
+##############################
+
+# 環境依存の設定
+application-local.properties
+application-dev.properties
+application-test.properties
+
+# 個人の設定ファイル
+.env
+*.env
+
+##############################
+# Node / Frontend（もし使っている場合）
+##############################
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+##############################
+# その他
+##############################
+
+# 資格情報・鍵
+*.key
+*.pem
+*.p12
+*.crt
+
