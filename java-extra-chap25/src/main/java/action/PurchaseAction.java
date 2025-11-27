@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import bean.Customer;
 import bean.Item;
 import dao.PurchaseDAO;
 
@@ -16,12 +15,6 @@ public class PurchaseAction extends Action {
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
     // セッションスコープを取得
     HttpSession session = request.getSession();
-    // ログイン情報取得
-    Customer customer = (Customer) session.getAttribute("customer");
-    // 未ログインの場合は商品購入不可
-    if (customer == null) {
-      throw new Exception("商品を購入する場合は、ログインしてください。");
-    }
     // リクエストパラメーターの取得
     // 名前
     String name = request.getParameter("name");

@@ -8,9 +8,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import action.Action;
 import action.PurchaseAction;
+import bean.Customer;
 
 /**
  * Servlet implementation class PurchaseServlet
@@ -23,7 +25,7 @@ public class PurchaseServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request, response);
+	  doPost(request, response);
 	}
 
 	/**
@@ -35,6 +37,14 @@ public class PurchaseServlet extends HttpServlet {
     // 画面遷移先(初期値をエラー画面に設定)
     String url = "/WEB-INF/error/error.jsp";
     try {
+      // セッションスコープの取得
+      HttpSession session = request.getSession();
+      // セッションスコープよりユーザ情報取得
+      Customer customer = (Customer)session.getAttribute("customer");
+      // 未ログインの場合は商品購入不可
+      if (customer == null) {
+        throw new Exception("商品を購入する場合は、ログインしてください。");
+      }         
       // PurchaseActionのインスタンス化
       Action action = new PurchaseAction();
       url = action.execute(request, response);

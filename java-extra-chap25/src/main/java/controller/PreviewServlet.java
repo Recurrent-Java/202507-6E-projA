@@ -8,6 +8,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import bean.Customer;
 
 /**
  * Servlet implementation class PreviewServlet
@@ -22,9 +25,20 @@ public class PreviewServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // 送信されたデータのエンコーディングを指定（文字化け対策）
     request.setCharacterEncoding("UTF-8");
+    // セッションスコープを取得
+    HttpSession session = request.getSession();
+    // 画面遷移先
+    String url = "/WEB-INF/purchase/purchase-in.jsp";
+    // セッションスコープよりユーザ情報取得
+    Customer customer = (Customer) session.getAttribute("customer");
+    // 未ログインの場合は商品購入不可
+    if (customer == null) {
+      request.setAttribute("errMsg", "商品を購入する場合は、ログインしてください。");
+      url = "/WEB-INF/error/error.jsp";
+    }
 
     // カート画面へ
-    RequestDispatcher dis = request.getRequestDispatcher("/WEB-INF/purchase/purchase-in.jsp");
+    RequestDispatcher dis = request.getRequestDispatcher(url);
     dis.forward(request, response);
   }
 
