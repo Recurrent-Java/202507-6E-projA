@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>【管理者用】HealSweetsEC管理サイト</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+	<header>
+		<h1>HealSweetsEC管理サイト</h1>
+		<a href="#" class="header-logout-link">ログアウト</a>
+	</header>
+
+	<nav class="global-nav">
+		<ul>
+			<li><a href="#product-manage">商品追加・削除</a></li>
+			<li><a href="#product-list">商品一覧表示</a></li>
+			<li><a href="#member-delete">会員削除</a></li>
+			<li><a href="#member-list">会員一覧表示</a></li>
+		</ul>
+	</nav>
+
+	<div class="container">
+		<main class="content">
+
+			<section id="product-manage" class="content-section">
+				<h2>商品追加・削除</h2>
+				<p>新商品の登録、または既存商品の情報更新・削除を行います。</p>
+				<div class="placeholder-form">
+					<h3>【商品情報フォーム】</h3>
+					<label for="product-name">商品名:</label>
+					<input type="text" id="product-name" name="product-name"><br><br>
+					<label for="product-price">価格:</label>
+					<input type="number" id="product-price" name="product-price"><br><br>
+					<button class="action-button primary-button">商品を登録・更新</button>
+					<button class="action-button delete-button">商品を削除</button>
+				</div>
+			</section>
+
+			<div class="section-separator"></div>
+			<section id="product-list" class="content-section">
+				<h2>商品一覧表示</h2>
+				<p>登録されている全商品の情報がここに表示されます。（商品名、画像、価格、アレルゲン情報、在庫数など）</p>
+				<div class="placeholder-table">
+					<table>
+						<thead>
+							<tr>
+								<th>商品ID</th>
+								<th>商品名</th>
+								<th>価格</th>
+								<th>在庫数</th>
+								<th>アレルゲン</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>P001</td>
+								<td>グルテンフリーパウンドケーキ</td>
+								<td>2,800円</td>
+								<td>50</td>
+								<td>卵, 乳, アーモンド</td>
+							</tr>
+							<tr>
+								<td>P002</td>
+								<td>低糖質チーズタルト</td>
+								<td>3,500円</td>
+								<td>20</td>
+								<td>乳, 大豆</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<div class="section-separator"></div>
+			<section id="member-delete" class="content-section">
+				<h2>会員削除</h2>
+				<p>削除したい会員を検索し、削除処理を実行します。対象会員のIDを入力してください。</p>
+				<div class="placeholder-form">
+					<label for="delete-id">会員ID:</label>
+					<input type="text" id="delete-id" name="delete-id" placeholder="M0001">
+					<button class="action-button delete-button">会員を検索・削除</button>
+				</div>
+			</section>
+
+			<div class="section-separator"></div>
+			<section id="member-list" class="content-section">
+				<h2>会員一覧表示</h2>
+				<p>現在の登録会員の一覧がここに表示されます。（氏名、メールアドレス、登録日など）</p>
+				<div class="placeholder-table">
+					<table>
+						<thead>
+							<tr>
+								<th>会員ID</th>
+								<th>氏名</th>
+								<th>登録日</th>
+								<th>最終ログイン</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>M0001</td>
+								<td>山田 太郎</td>
+								<td>2024/01/15</td>
+								<td>2025/09/20</td>
+							</tr>
+							<tr>
+								<td>M0002</td>
+								<td>佐藤 花子</td>
+								<td>2024/02/01</td>
+								<td>2025/11/30</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+		</main>
+	</div>
+
+	<footer>
+		<p>&copy; 2025 HealSweets EC. All rights reserved.</p>
+	</footer>
+</body>
+
+</html>
