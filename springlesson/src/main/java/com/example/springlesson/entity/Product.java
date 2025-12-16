@@ -9,19 +9,53 @@ import jakarta.persistence.Table;
 
 import lombok.Data;
 
-@Entity  // DBからのデータ格納用クラスであることを表す
-@Table(name="product")
-@Data  // getter/setterを自動で作成してくれる
+@Data
+@Entity
+@Table(name = "PRODUCT")
 public class Product {
-  // 商品ID
-  @Id  // 主キーを表す
-  @GeneratedValue(strategy = GenerationType.IDENTITY)  // AUTO_INCREMENTの場合付与が必要
-  @Column(name="id")  // DB上のカラム名と変数名を別にしたい場合は必須
-  private Integer id;
-  // 商品名
-  @Column(name="name")  // DB上のカラム名と変数名を別にしたい場合は必須
-  private String name;
-  // 価格
-  @Column(name="price")  // DB上のカラム名と変数名を別にしたい場合は必須
-  private Integer price;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
+    private Long productId;
+
+    @Column(name = "product_name", nullable = false)
+    private String productName;
+    
+    // DB定義に存在するが、管理画面フォームにはない項目（NOT NULL対応が必要）
+    @Column(name = "CAT_ID", nullable = false)
+    private Integer catId;
+    
+    @Column(name = "LIMITED_FLG", nullable = false)
+    private Integer limitedFlg;
+
+    @Column(name = "USAGE", nullable = false)
+    private String usage;
+    
+    @Column(name = "SEASON", nullable = false)
+    private Integer season;
+
+    @Column(name = "sale_status", nullable = false)
+    private String saleStatus;
+
+    @Column(name = "is_limited", nullable = false)
+    private Integer isLimited; // TINYINT(1)をIntegerでマッピング
+
+    // フォームで入力される項目
+    @Column(name = "price", nullable = false)
+    private Integer price;
+
+    @Column(name = "stock_quantity", nullable = false)
+    private Integer stockQuantity;
+    
+    // エラーの原因となったフィールド群
+    @Column(name = "is_gift_available", nullable = false)
+    private Integer isGiftAvailable; 
+
+    @Column(name = "is_low_stock", nullable = false)
+    private Integer isLowStock;
+    
+    // その他のフィールドは省略...
+    // @Column(name = "PROD_DESC")
+    // private String prodDesc;
 }
