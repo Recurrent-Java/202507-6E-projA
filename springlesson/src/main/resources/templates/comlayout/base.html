@@ -19,9 +19,27 @@
 </head>
 <body>
 <!-- header要素の部品化 -->
-<div　th:fragment="header" th:remove="tag">
-  <header>
-    <h1>寿司処リカレントオンラインショッピング</h1>
+<div th:fragment="header" th:remove="tag">
+  <header class="header">
+    <div class="header-inner">
+        <a th:href="@{/}">
+            <img th:src="@{/images/logo.png}" alt="HealSweets ロゴ" class="logo">
+        </a>        
+    </div>
+    
+    <div class="header-right">
+        <a th:href="@{/login}" class="header-icon">
+            <img th:src="@{/images/login.png}" alt="ログイン">
+            <span>ログイン</span>
+        </a>
+        
+        <a th:href="@{/cart}" class="header-icon">
+            <img th:src="@{/images/cart.png}" alt="カート">
+            <span class="cart-badge">  
+            </span>
+        </a> 
+        
+    </div>
   </header>
 </div>
 <!-- nav要素の部品化 -->

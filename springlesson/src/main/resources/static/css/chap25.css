@@ -198,3 +198,51 @@ main#purchase input[name="address"] {
 .fontRed {
   color: #f00;
 }
+.header {
+  background-color: #efddc8; /* ベージュ */
+  height: 100px;
+  display: flex;
+  align-items: center;
+  position: relative;   /* ← 重要 */
+  width: 100%;
+}
+
+/* ロゴ中央寄せ用 */
+.header-inner {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ロゴサイズ */
+.logo {
+  height: 130px;   /* ← ここで大きさ調整 */
+}
+.header-right .header-icon span {
+  color: #5a3a1b; /* こげ茶 */
+}
+/* 右側アイコン */
+.header-right {
+  margin-left: auto;    /* ← 右に寄せる */
+  margin-right: 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* アイコン共通 */
+.header-icon img {
+  height: 30px;
+}
+
+/* カート件数バッジ */
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background: #c96;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  padding: 2px 6px;
+}
