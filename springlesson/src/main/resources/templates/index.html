@@ -5,14 +5,58 @@
   <div th:replace="~{comlayout/base :: meta}"></div>
   <div th:replace="~{comlayout/base :: styles}"></div>
 
+  <link rel="stylesheet" th:href="@{/css/top.css}">
   <title>トップページ</title>
 </head>
 
 <body>
   <div th:replace="~{comlayout/base :: header}"></div>
-  <div th:replace="~{comlayout/base :: nav}"></div>
+  
   <main>
-    <h2>寿司処リカレント　オンラインショッピングにようこそ！</h2>
+    <!-- メインビジュアル -->
+      <section class="hero">
+        <img th:src="@{/images/top1.png}" alt="スイーツメイン画像">
+      </section>
+
+      <!-- 検索 -->
+      <section class="search">
+        <form th:action="@{/products}" method="get">
+          <input type="text" name="keyword" placeholder="商品を検索">
+        </form>
+      </section>
+
+      <!-- カテゴリー -->
+      <section class="category">
+        <ul>
+          <li class="active">
+            <a th:href="@{/}">すべて</a>
+          </li>
+          <li>
+            <a th:href="@{/products?category=allergen-free}">アレルゲンフリー</a>
+          </li>
+          <li>
+            <a th:href="@{/products?category=low-sugar}">低糖質</a>
+          </li>
+          <li>
+            <a th:href="@{/products?category=cacao70}">カカオ70%</a>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 商品一覧 -->
+      <section class="products">
+        <h2>商品一覧</h2>
+
+        <div class="product-list">
+            <div class="product-card" th:each="product : ${products}">
+                    <a th:href="@{/products/{id}(id=${product.id})}">
+                      <img th:src="@{${product.imagePath}}" alt="">
+                      <p class="name" th:text="${product.name}"></p>
+                      <p class="price">¥<span th:text="${product.price}"></span></p>
+                    </a>
+          </div>
+        </div>
+      </section>
   </main>
   <div th:replace="~{comlayout/base :: footer}"></div>
 </body>
