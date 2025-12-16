@@ -1,6 +1,7 @@
 package com.example.springlesson.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,4 +17,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
    *  findByNameContaining -> 部分一致
    */
   List<Product> findByNameContaining(String keyword);
+
+  boolean existsById(Long productId);
+
+  Optional<Product> findById(Long productId);
+
+  void deleteById(Long productId);
 }

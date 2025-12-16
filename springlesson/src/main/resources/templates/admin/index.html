@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【管理者用】HealSweetsEC管理サイト</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>HealSweetsEC管理サイト</h1>
+        <a href="#" class="header-logout-link">ログアウト</a>
+    </header>
+
+    <nav class="global-nav">
+        <ul>
+            <li><a href="#product-manage">商品追加・削除</a></li>
+            <li><a href="#product-list">商品一覧表示</a></li>
+            <li><a href="#member-delete">会員削除</a></li>
+            <li><a href="#member-list">会員一覧表示</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <main class="content">
+
+            <section id="product-manage" class="content-section">
+                <h2>商品追加・削除</h2>
+                <p>新商品の登録、または既存商品の情報更新・削除を行います。</p>
+                
+                <form method="post" th:action="@{/admin/product/save}" th:object="${adminProductForm}" class="placeholder-form">
+                    <h3>【商品情報フォーム】</h3>
+                    
+                    <input type="hidden" th:field="*{productId}">
+
+                    <div th:if="${#fields.hasErrors('*')}" style="color: red; margin-bottom: 1rem;">
+                        <ul style="list-style: none; padding: 0;">
+                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                        </ul>
+                    </div>
+
+                    <label for="productName">商品名:</label>
+                    <input type="text" id="productName" th:field="*{productName}" placeholder="商品名を入力"><br><br>
+
+                    <label for="price">価格:</label>
+                    <input type="number" id="price" th:field="*{price}" placeholder="0"><br><br>
+
+                    <label for="stockQuantity">在庫数:</label>
+                    <input type="number" id="stockQuantity" th:field="*{stockQuantity}" placeholder="0"><br><br>
+
+                    <button type="submit" class="action-button primary-button">商品を登録・更新</button>
+                    
+                    <button type="submit" class="action-button delete-button"
+                            th:formaction="@{/admin/product/delete}"
+                            onclick="return confirm('入力されたIDの商品を削除しますか？');">商品を削除</button>
+                </form>
+            </section>
+
+            <div class="section-separator"></div>
+
+            <section id="product-list" class="content-section">
+                <h2>商品一覧表示</h2>
+                <p>登録されている全商品の情報がここに表示されます。</p>
+                <div class="placeholder-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>商品ID</th>
+                                <th>商品名</th>
+                                <th>価格</th>
+                                <th>在庫数</th>
+                                <th>ステータス</th> </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${productList}">
+                                <td th:text="${product.productId}">P001</td>
+                                <td th:text="${product.productName}">サンプルケーキ</td>
+                                <td th:text="${product.price} + '円'">1000円</td>
+                                <td th:text="${product.stockQuantity}">10</td>
+                                <td th:text="${product.saleStatus}">SALE</td>
+                            </tr>
+                            <tr th:if="${productList.isEmpty()}">
+                                <td colspan="5" style="text-align: center;">登録されている商品はありません</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="section-separator"></div>
+
+            <section id="member-delete" class="content-section">
+                <h2>会員削除</h2>
+                <p>削除したい会員を検索し、削除処理を実行します。対象会員のIDを入力してください。</p>
+                
+                <form method="post" th:action="@{/admin/member/delete}" class="placeholder-form">
+                    <label for="delete-id">会員ID:</label>
+                    <input type="text" id="delete-id" name="delete-id" placeholder="数値を入力 (例: 1)">
+                    
+                    <button type="submit" class="action-button delete-button"
+                            onclick="return confirm('本当にこの会員を削除しますか？');">会員を検索・削除</button>
+                </form>
+            </section>
+
+            <div class="section-separator"></div>
+
+            <section id="member-list" class="content-section">
+                <h2>会員一覧表示</h2>
+                <p>現在の登録会員の一覧がここに表示されます。</p>
+                <div class="placeholder-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>会員ID</th>
+                                <th>氏名</th>
+                                <th>登録日</th>
+                                <th>メールアドレス</th> </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="member : ${memberList}">
+                                <td th:text="${member.customerId}">M001</td> <td th:text="${member.name}">山田 太郎</td>
+                                <td th:text="${member.registerDate}">2024/01/01</td>
+                                <td th:text="${member.email}">test@example.com</td>
+                            </tr>
+                             <tr th:if="${memberList.isEmpty()}">
+                                <td colspan="4" style="text-align: center;">会員は登録されていません</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 HealSweets EC. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
