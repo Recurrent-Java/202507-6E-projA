@@ -48,4 +48,10 @@ public class ProductController {
     // 商品ページへ
     return "product/product";
   }
+  
+//商品詳細ページ（確認用）
+  @GetMapping("/detail")
+  public String productDetail() {
+      return "product/product-melonpan";
+  }
 }
