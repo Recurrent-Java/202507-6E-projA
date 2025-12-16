@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品詳細 - HealSweets</title>
+	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <div class="container">
+            <div class="header-spacer"></div>
+            <div class="logo">
+                <a href="index.html">
+                    <img src="logo.png" alt="HealSweets" class="logo-image">
+                </a>
+            </div>
+            <div class="header-icons">
+                <a href="index.html" class="top-btn">🏠 トップ</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- パンくずリスト -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">ホーム</a>
+            <span class="separator">›</span>
+            <a href="index.html#categories">低糖質</a>
+            <span class="separator">›</span>
+            <span class="current">低糖質 グルメクッキー</span>
+        </div>
+    </div>
+
+    <!-- 商品詳細セクション -->
+    <section class="product-detail-section">
+        <div class="container">
+            <div class="product-detail-container">
+                <!-- 左側：商品画像 -->
+                <div class="product-images">
+                    <div class="main-image">
+                        <img src="images/item04.jpg" alt="低糖質 グルメクッキー">
+                    </div>
+                </div>
+
+                <!-- 右側：商品情報 -->
+                <div class="product-info">
+                    <div class="product-category-tag">低糖質</div>
+                    <h1 class="product-title">低糖質 グルメクッキー</h1>
+                    
+                    <div class="product-price-section">
+                        <div class="price-row">
+                            <span class="current-price">¥620</span>
+                        </div>
+                        <p class="tax-note">※税込価格</p>
+                    </div>
+
+                    <div class="product-description">
+                        <h3>商品説明</h3>
+                        <p>糖質を抑えながらも、深いコクと香ばしさを実現した本格派クッキーです。厳選されたアーモンドプードルとバターを使用し、一枚一枚丁寧に焼き上げました。</p>
+                    </div>
+
+                    <div class="product-features">
+                        <h3>商品の特徴</h3>
+                        <ul>
+                            <li>✓ 糖質70%カット（当社比）</li>
+                            <li>✓ 添加物不使用</li>
+                            <li>✓ 国産素材使用</li>
+                            <li>✓ 個包装で保存しやすい</li>
+                        </ul>
+                    </div>
+
+                    <div class="product-specs">
+                        <h3>商品詳細</h3>
+                        <table class="specs-table">
+                            <tr><th>内容量</th><td>12枚入り（約200g）</td></tr>
+                            <tr><th>賞味期限</th><td>製造日より60日</td></tr>
+                            <tr><th>保存方法</th><td>直射日光・高温多湿を避けて保存</td></tr>
+                            <tr><th>アレルギー</th><td>小麦、卵、乳製品、アーモンド</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="product-quantity">
+                        <label>数量</label>
+                        <div class="quantity-selector">
+                            <button class="qty-btn" onclick="decreaseQty()">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="99">
+                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                        </div>
+                    </div>
+
+                    <div class="product-actions">
+                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+	<!-- フッター -->
+	<footer class="site-footer">
+	    <div class="footer-container">
+
+	        <div class="footer-top">
+	            <!-- 会社情報 -->
+	            <div class="footer-company">
+	                <div class="footer-logo">
+	                    <span class="footer-heart">❤</span>
+	                    <h2>HealSweets</h2>
+	                </div>
+	                <p class="footer-description">
+	                    Our company is guided by the philosophy of bringing smiles
+	                    to people around the world through the power of sweets.
+	                </p>
+	            </div>
+
+	            <!-- カテゴリ -->
+	            <div class="footer-column">
+	                <h3>Category</h3>
+	                <ul>
+	                    <li>低糖質</li>
+	                    <li>グルテンフリー</li>
+	                    <li>アレルギー対応</li>
+	                </ul>
+	            </div>
+
+	            <!-- 会社情報 -->
+	            <div class="footer-column">
+	                <h3>Company</h3>
+	                <ul>
+	                    <li>会社概要</li>
+	                    <li>利用規約</li>
+	                    <li>プライバシー</li>
+	                </ul>
+	            </div>
+
+	            <!-- アカウント -->
+	            <div class="footer-column">
+	                <h3>Account</h3>
+	                <ul>
+	                    <li>マイページ</li>
+	                    <li>カート</li>
+	                </ul>
+	            </div>
+	        </div>
+
+	        <div class="footer-bottom">
+	            <p>〒810-0072 福岡県福岡市中央区長浜1丁目4番13号</p>
+	            <p>© HealSweets</p>
+	        </div>
+
+	    </div>
+	</footer>
+    <script>
+        function increaseQty() {
+            const qtyInput = document.getElementById('quantity');
+            if (parseInt(qtyInput.value) < 99) qtyInput.value = parseInt(qtyInput.value) + 1;
+        }
+        function decreaseQty() {
+            const qtyInput = document.getElementById('quantity');
+            if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
+        }
+        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
+            const quantity = document.getElementById('quantity').value;
+            alert(quantity + '個をカートに追加しました！');
+        });
+    </script>
+</body>
+</html>
