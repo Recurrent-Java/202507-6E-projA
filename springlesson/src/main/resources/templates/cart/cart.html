@@ -1,49 +1,159 @@
 <!DOCTYPE html>
-<!-- Thymeleafを使用するための記述 -->
 <html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <div th:replace="~{comlayout/base :: meta}"></div>
   <div th:replace="~{comlayout/base :: styles}"></div>
 
-  <title>カートページ</title>
+  <title>カート</title>
 </head>
 
 <body>
   <div th:replace="~{comlayout/base :: header}"></div>
-  <div th:replace="~{comlayout/base :: nav}"></div>
+  
   <main id="cart">
-    <!-- cartが空でない場合 -->
-    <p th:if="${cart}">
-      [[${#lists.size(cart)}]]種類の商品があります。
+    <h2>ショッピングカート</h2>
+    
+    <p th:if="${#lists.isEmpty(cart)}" class="cart-empty-message">
+      カートに商品がありません。
     </p>
-    <!-- cartが空の場合 -->
-    <p th:unless="${cart}">
-      カートに商品がありません
-    </p>
-    <hr>
-    <table>
-      <tr>
-        <th colspan="2">商品</th>
-        <th>商品名</th>
-        <th>価格</th>
-        <th>個数</th>
-        <th>購入</th>
-      </tr>
-      <tr th:each="item : ${cart}">
-        <td th:text="${item.product.id }"></td>
-        <td><img th:src="@{/images/{id}.jpg(id=${item.product.id})}" 
-                 th:alt="${item.product.name}"></td>
-        <td th:text="${item.product.name}"></td>
-        <td th:text="${item.product.price}"></td>
-        <td th:text="${item.count + '個'}"></td>
-        <td>
-          <a th:href="@{/cart/remove(id=${item.product.id})}">
-          カートから削除
-          </a>
-        </td>
-      </tr>
-    </table>
+
+    <div th:unless="${#lists.isEmpty(cart)}">
+      <p class="cart-info">
+        現在、[[${#lists.size(cart)}]]種類の商品がカートに入っています。
+      </p>
+      
+      <form action="#" th:action="@{/cart/update}" method="post">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th colspan="2">商品</th>
+              <th>値段 (税込)</th>
+              <th>個数</th>
+              <th>合計 (税込)</th>
+              <th>Gift</th>
+              <th>削除</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            <tr th:each="item : ${cart}">
+              <td class="product-image-cell">
+                <img th:src="@{|/images/${item.product.id}.jpg|}" 
+                     th:alt="${item.product.name}" class="product-thumbnail">
+              </td>
+              <td class="product-name-cell" th:text="${item.product.name}">リンゴタルト</td>
+              
+              <td class="product-price-cell">
+                <span th:id="|price-${item.product.id}|" 
+                      th:text="${#numbers.formatInteger(item.product.price, 1, 'COMMA')} + '円'"
+                      th:data-price="${item.product.price}">770円</span>
+              </td>
+              
+              <td class="product-quantity-cell">
+                <div class="quantity-control">
+                    <button type="button" class="quantity-minus" 
+                            th:onclick="updateQuantity([[${item.product.id}]], -1)">
+                        -
+                    </button>
+                    
+                    <input type="number" name="quantity" 
+                           th:id="|quantity-${item.product.id}|" 
+                           th:value="${item.count}" min="1" class="quantity-input"
+                           th:onchange="|updateSubtotal(${item.product.id})|" >
+                    <input type="hidden" name="productId" th:value="${item.product.id}">
+                    
+                    <button type="button" class="quantity-plus" 
+                            th:onclick="updateQuantity([[${item.product.id}]], 1)">
+                        +
+                    </button>
+                </div>
+              </td>
+              
+              <td class="product-subtotal-cell">
+                <span th:with="subtotalTaxIncluded=${item.product.price * item.count}"
+                      th:id="|subtotal-${item.product.id}|" 
+                      th:text="${#numbers.formatInteger(subtotalTaxIncluded, 1, 'COMMA')} + '円'">770円</span>
+              </td>
+              
+              <td class="product-gift-cell">
+                  <input type="checkbox" name="isGift" th:id="|gift-${item.product.id}|"
+                         th:checked="${item.isGift}">
+              </td>
+              
+              <td class="product-action-cell">
+                <a href="#" class="remove-link"
+                   th:onclick="|deleteConfirm('${item.product.id}')|">
+                   <img th:src="@{/images/trash.png}" alt="削除" class="trash-icon">
+                </a>
+              </td>
+            </tr>
+          </tbody>
+          
+          <tfoot>
+            <tr>
+              <td colspan="4" class="text-right total-label">商品合計金額 (税込):</td>
+              
+              <td colspan="3" class="total-amount" id="cart-total-amount">
+                <span th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')} + '円'">3,410円</span>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+        
+        <div class="update-cart-area">
+          <button type="submit" class="update-button">数量を更新する</button>
+        </div>
+      </form>
+
+      <div class="button-group">
+        <a th:href="@{/}" class="continue-shopping-button">
+          買い物を続ける
+        </a>
+        
+        <a th:href="@{/purchase/input}" class="checkout-button">
+          購入画面へ
+        </a>
+      </div>
+      </div>
   </main>
+  
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+  
+  function updateQuantity(productId, delta) {
+      const quantityInput = document.getElementById(`quantity-${productId}`);
+      let newQuantity = parseInt(quantityInput.value) + delta;
+  
+      if (newQuantity < 1 || isNaN(newQuantity)) {
+          newQuantity = 1;
+      }
+      
+      quantityInput.value = newQuantity;
+      updateSubtotal(productId);
+  }
+  
+  function updateSubtotal(productId) {
+      const quantity = parseInt(document.getElementById(`quantity-${productId}`).value);
+      const priceElement = document.getElementById(`price-${productId}`);
+      const price = parseInt(priceElement.getAttribute('data-price'));
+      
+      const subtotalElement = document.getElementById(`subtotal-${productId}`);
+      const newSubtotal = price * quantity;
+      
+      subtotalElement.innerHTML = newSubtotal.toLocaleString() + '円'; 
+  }
+
+  function deleteConfirm(productId) {
+      if (confirm("この商品をカートから削除しますか？")) {
+          window.location.href = /*[[@{/cart/remove}]]*/ + `?id=${productId}`;
+      } else {
+          return false;
+      }
+  }
+  
+  /*]]>*/
+  </script>
+
   <div th:replace="~{comlayout/base :: footer}"></div>
 </body>
 
