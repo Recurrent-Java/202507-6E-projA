@@ -58,13 +58,73 @@ main img {
   display: block;
   width: 110px;
 }
-footer {
-  width: 1000px;
-  margin-inline: auto;
+/* ===== footer ===== */
+.footer {
+  background-color: #2f5d3d;
+  color: #fff;
+  padding: 60px 40px 0;
+  font-size: 14px;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
+  gap: 40px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.footer-logo img {
+  width: 120px;
+}
+
+.footer-logo .brand {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.footer-col h4 {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-col li {
+  margin-bottom: 10px;
+}
+/* footer ロゴ位置調整 */
+.footer-col:first-child {
   text-align: center;
 }
-footer small {
-  font-size: 1rem;
+
+.footer a {
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.footer a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  margin-top: 40px;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 13px;
 }
 /* ログイン画面
 -----------------------------------------------*/
