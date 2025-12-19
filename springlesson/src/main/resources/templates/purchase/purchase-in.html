@@ -1,55 +1,130 @@
 <!DOCTYPE html>
-<!-- Thymeleafを使用するための記述 -->
 <html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <div th:replace="~{comlayout/base :: meta}"></div>
   <div th:replace="~{comlayout/base :: styles}"></div>
-
-  <title>購入ページ</title>
+  <title>購入確認</title>
 </head>
 
 <body>
   <div th:replace="~{comlayout/base :: header}"></div>
-  <div th:replace="~{comlayout/base :: nav}"></div>
-  <main id="purchase">
-    <!-- cartが空でない場合 -->
-    <p th:if="${cart}">
-      [[${#lists.size(cart)}]]種類の商品があります。
-    </p>
-    <!-- cartが空の場合 -->
-    <p th:unless="${cart}">
-      カートに商品がありません
-    </p>
-    <hr>
-    <table>
-      <tr>
-        <th colspan="2">商品</th>
-        <th>商品名</th>
-        <th>価格</th>
-        <th>個数</th>
-      </tr>
-      <tr th:each="item : ${cart}">
-        <td th:text="${item.product.id }"></td>
-        <td><img th:src="@{/images/{id}.jpg(id=${item.product.id})}" 
-                 th:alt="${item.product.name}"></td>
-        <td th:text="${item.product.name}"></td>
-        <td th:text="${item.product.price}"></td>
-        <td th:text="${item.count + '個'}"></td>
-      </tr>
-    </table>
-    <hr>
-    <form th:action="@{/purchase/regist}" method="post" th:object="${purchaseForm}">
-     <p>
-      <label>お名前</label><input type="text" th:field="*{name}">
-      <span class="fontRed" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
-     </p>
-     <p>
-      <label>ご住所</label><input type="text" th:field="*{address}">
-      <span class="fontRed" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>   
-     </p>
-     <p><button type="submit">購入を確定</button></p>
+  
+  <main id="purchase-input">
+    <h2>購入確認</h2>
+    
+    <form action="#" th:action="@{/purchase/confirm}" method="post">
+      
+      <table class="input-table">
+        
+        <tr>
+          <th>配送希望日</th>
+          <td>
+            <select name="deliveryDate" id="deliveryDate">
+              <option th:each="option : ${deliveryDateOptions}" th:value="${option.value}" th:text="${option.label}">未定</option>
+            </select>
+          </td>
+        </tr>
+        
+        <tr>
+          <th>時間指定</th>
+          <td>
+            <select name="deliveryTime" id="deliveryTime">
+              <option th:each="option : ${deliveryTimeOptions}" th:value="${option.value}" th:text="${option.label}">未定</option>
+            </select>
+          </td>
+        </tr>
+        
+        <tr>
+          <th>配送先指定</th>
+          <td>
+            <select name="shippingDestination" id="shippingDestination" 
+                    onchange="updateShippingFee()">
+              <option th:each="option : ${destinationOptions}" th:value="${option.value}" th:text="${option.label}">自宅</option>
+            </select>
+          </td>
+        </tr>
+        
+        <tr>
+          <th>ギフト指定</th>
+          <td>
+            <select name="giftOption" id="giftOption">
+              <option th:each="option : ${giftOptions}" th:value="${option.value}" th:text="${option.label}">ラッピング無し</option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <th>支払い方法</th>
+          <td>
+            <select name="paymentMethod" id="paymentMethod">
+              <option th:each="option : ${paymentOptions}" th:value="${option.value}" th:text="${option.label}">コンビニ支払い</option>
+            </select>
+          </td>
+        </tr>
+        
+        <tr>
+          <th>クーポン</th>
+          <td>
+            <input type="text" name="couponCode" id="couponCode" placeholder="未入力">
+          </td>
+        </tr>
+      </table>
+      
+      <table class="price-summary-table">
+        <tr>
+          <th>商品のみの金額 (税込)</th>
+          <td class="price-right" th:text="${#numbers.formatInteger(productTotal, 1, 'COMMA')} + '円'">10,000円</td>
+        </tr>
+        <tr>
+          <th>送料 (税込)</th>
+          <td class="price-right" th:text="${#numbers.formatInteger(shippingFee, 1, 'COMMA')} + '円'">1,520円</td>
+        </tr>
+        
+        <tr class="grand-total-row">
+          <th>合計金額 (税込)</th>
+          <td class="price-right grand-total" th:text="${#numbers.formatInteger(grandTotal, 1, 'COMMA')} + '円'">10,368円</td>
+        </tr>
+      </table>
+      
+      <div class="remarks-area">
+        <label for="remarks">補足</label>
+        <textarea name="remarks" id="remarks" rows="5" placeholder="何かご要望があればご記入ください。"></textarea>
+      </div>
+      
+      <div class="action-buttons">
+        <a th:href="@{/cart}" class="back-to-cart-button">カートへ</a>
+        
+        <button type="submit" class="confirm-order-button">注文確定</button>
+      </div>
     </form>
+    
   </main>
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+  // JavaScript関数（変更なし）
+  const SHIPPING_CONSTANTS = {
+      baseFee: 420,
+      surchargeHokkaidoOkinawa: 1100
+  };
+
+  function updateShippingFee() {
+      const destinationSelect = document.getElementById('shippingDestination');
+      const selectedValue = destinationSelect.value;
+      
+      const isSurchargeArea = selectedValue.includes("hokkaido") || selectedValue.includes("okinawa");
+      
+      let newShippingFee = SHIPPING_CONSTANTS.baseFee;
+      if (isSurchargeArea) {
+          newShippingFee += SHIPPING_CONSTANTS.surchargeHokkaidoOkinawa;
+      }
+      
+      alert(`仮の送料が ${newShippingFee.toLocaleString()}円 に再計算されました。`);
+  }
+  
+  /*]]>*/
+  </script>
+
   <div th:replace="~{comlayout/base :: footer}"></div>
 </body>
 
