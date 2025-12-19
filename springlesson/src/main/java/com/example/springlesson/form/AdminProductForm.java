@@ -10,7 +10,7 @@ import lombok.Data;
 public class AdminProductForm {
 
     // 更新時に使用（新規登録時はnull）
-    private Long productId;
+    private Integer productId;
 
     @NotBlank(message = "商品名を入力してください")
     private String productName;

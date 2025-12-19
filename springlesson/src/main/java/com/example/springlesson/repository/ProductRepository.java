@@ -1,26 +1,21 @@
 package com.example.springlesson.repository;
 
 import java.util.List;
-import java.util.Optional;
 
+// Optionalのインポートは不要になります（標準機能を使うため）
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.springlesson.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
-  // 全商品検索
-  // List<Product> findAll(); メソッドの実装をJPAが作成してくれている
-  
-  /*
-   *  商品名で検索
-   *  findByName -> 完全一致
-   *  findByNameContaining -> 部分一致
+
+  /**
+   * 商品名で部分一致検索
    */
-  List<Product> findByNameContaining(String keyword);
+  List<Product> findByProductNameContaining(String keyword);
 
-  boolean existsById(Long productId);
-
-  Optional<Product> findById(Long productId);
-
-  void deleteById(Long productId);
+  // ★修正ポイント：
+  // existsById, findById, deleteById は JpaRepository が 
+  // 自動的に「Integer型」で提供するため、ここに書くとエラーになります。
+  // すべて削除してください。
 }

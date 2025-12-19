@@ -1,30 +1,158 @@
 <!DOCTYPE html>
-<!-- Thymeleafを使用するための記述 -->
 <html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
   <div th:replace="~{comlayout/base :: meta}"></div>
   <div th:replace="~{comlayout/base :: styles}"></div>
 
-  <title>ログインページ</title>
+  <title>ログイン - HealSweets</title>
+
 </head>
 
 <body>
   <div th:replace="~{comlayout/base :: header}"></div>
-  <div th:replace="~{comlayout/base :: nav}"></div>
-
   <main>
-    <h2>ログイン画面</h2>
-    <!-- 失敗時のメッセージ表示 -->
-    <p th:if="${param.error}" class="fontRed">
-      ログイン名またはパスワードが間違っています。
-    </p>
-    <form th:action="@{/login}" method="post" id="login">
-      <p><label>ログイン名</label><input type="text" name="login"></p>
-      <p><label>パスワード</label><input type="password" name="password"></p>
-      <p><button type="submit">ログイン</button></p>
-    </form>
+    <section class="login-section">
+      <div class="container">
+        <div class="login-container">
+          <div class="login-card">
+            <div class="login-header">
+              <h1>ログイン</h1>
+              <p>HealSweetsへようこそ！</p>
+            </div>
+
+            <p th:if="${param.error}" class="fontRed error-message">
+              ログイン名またはパスワードが間違っています。
+            </p>
+
+            <p th:if="${param.logout}" class="success-message">
+              ログアウトしました。
+            </p>
+
+            <form th:action="@{/login}" method="post" class="login-form" id="loginForm">
+              <div class="form-group">
+                <label>メールアドレス（ログインID）</label>
+                <div class="input-wrapper">
+                  <span class="input-icon">📧</span>
+                  <input type="text" class="form-input" name="username" required placeholder="example@email.com"
+                    autocomplete="email" th:value="${param.error} ? ${loginId}" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>パスワード</label>
+                <div class="input-wrapper">
+                  <span class="input-icon">🔒</span>
+                  <input type="password" class="form-input" name="password" id="password" required
+                    placeholder="パスワードを入力" autocomplete="current-password">
+                  <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
+                </div>
+              </div>
+
+              <div class="form-options">
+                <label class="remember-me">
+                  <input type="checkbox" name="remember-me">
+                  <span>ログイン状態を保持する</span>
+                </label>
+                <a href="#forgot-password" class="forgot-link" onclick="openModal()">パスワードをお忘れの方</a>
+              </div>
+
+              <button type="submit" class="login-btn">ログイン</button>
+
+              <div class="divider">
+                <span>または</span>
+              </div>
+
+              <div class="social-login">
+                <button type="button" class="social-btn google">
+                  <span class="social-icon">G</span>
+                  Googleでログイン
+                </button>
+                <button type="button" class="social-btn apple">
+                  <span class="social-icon"></span>
+                  Appleでログイン
+                </button>
+              </div>
+            </form>
+
+            <div class="register-prompt">
+              <p>アカウントをお持ちでない方</p>
+              <a th:href="@{/register}" class="register-btn">新規会員登録</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="forgotPasswordModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2>パスワードをお忘れの方</h2>
+        <p>ご登録のメールアドレスを入力してください。</p>
+        <form id="forgotPasswordForm">
+          <div class="form-group">
+            <label>メールアドレス</label>
+            <input type="email" class="form-input" required placeholder="example@email.com">
+          </div>
+          <button type="submit" class="submit-btn">リセットリンクを送信</button>
+        </form>
+      </div>
+    </div>
   </main>
+
   <div th:replace="~{comlayout/base :: footer}"></div>
+
+  <script th:inline="javascript">
+    // パスワード表示切替 (参照HTMLからコピー)
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.querySelector('.toggle-password');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.textContent = '🙈';
+      } else {
+        passwordInput.type = 'password';
+        toggleBtn.textContent = '👁️';
+      }
+    }
+
+    // パスワード忘れモーダル (参照HTMLからコピー)
+    function openModal() {
+      document.getElementById('forgotPasswordModal').style.display = 'flex';
+    }
+    function closeModal() {
+      document.getElementById('forgotPasswordModal').style.display = 'none';
+    }
+    document.querySelector('.forgot-link').addEventListener('click', function (e) {
+      e.preventDefault();
+      openModal();
+    });
+
+    // モーダル外クリックで閉じる
+    window.addEventListener('click', function (e) {
+      const modal = document.getElementById('forgotPasswordModal');
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // パスワードリセットフォーム送信 (参照HTMLからコピー)
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = this.querySelector('input[type="email"]').value;
+      alert(`${email} にパスワードリセット用のリンクを送信しました。`);
+      closeModal();
+      this.reset();
+    });
+
+    // ソーシャルログイン（デモ）
+    document.querySelectorAll('.social-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const provider = this.classList.contains('google') ? 'Google' : 'Apple';
+        alert(`${provider}アカウントでログインします（デモ機能）`);
+      });
+    });
+  </script>
 </body>
 
 </html>

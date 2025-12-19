@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会員登録 - HealSweets</title>
+  <link rel="stylesheet" href="/css/register-style.css">
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="header-spacer"></div>
+      <div class="logo">
+        <a th:href="@{/}">
+          <img src="logo.png" alt="HealSweets" class="logo-image">
+        </a>
+      </div>
+      <div class="header-icons">
+        <a th:href="@{/}" class="top-btn">🏠 トップ</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="register-section">
+    <div class="container">
+      <div class="register-container">
+        <div class="register-header">
+          <h1>会員登録</h1>
+          <p>HealSweetsへようこそ！新規アカウントを作成してください。</p>
+        </div>
+
+        <form class="register-form" id="registerForm" th:action="@{/register}" method="post">
+          <div class="step-indicator">
+            <div class="step active">
+              <div class="step-number">1</div>
+              <div class="step-label">基本情報</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-label">住所情報</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-label">アレルギー情報</div>
+            </div>
+          </div>
+
+          <div class="form-step active" id="step1">
+            <h2>基本情報の入力</h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>姓 <span class="required">*</span></label>
+                <input type="text" class="form-input" name="lastName" required placeholder="山田">
+              </div>
+              <div class="form-group">
+                <label>名 <span class="required">*</span></label>
+                <input type="text" class="form-input" name="firstName" required placeholder="太郎">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>メールアドレス <span class="required">*</span></label>
+              <input type="email" class="form-input" name="email" required placeholder="example@email.com">
+              <small class="form-hint">ログインIDとして使用されます</small>
+            </div>
+
+            <div class="form-group">
+              <label>パスワード <span class="required">*</span></label>
+              <div class="password-input-group">
+                <input type="password" class="form-input password-field" id="registerPassword" name="password" required
+                  placeholder="8文字以上">
+                <button type="button" class="password-toggle-btn" data-target="registerPassword" aria-label="パスワードを表示"
+                  onclick="togglePasswordVisibility(this)">👁️</button>
+              </div>
+              <small class="form-hint">英数字を含む8文字以上で設定してください</small>
+            </div>
+            <div class="form-group">
+              <label>パスワード（確認） <span class="required">*</span></label>
+              <div class="password-input-group">
+                <input type="password" class="form-input password-field" id="registerPasswordConfirm"
+                  name="passwordConfirm" required placeholder="もう一度入力してください">
+                <button type="button" class="password-toggle-btn" data-target="registerPasswordConfirm"
+                  aria-label="パスワードを表示" onclick="togglePasswordVisibility(this)">👁️</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>電話番号 <span class="required">*</span></label>
+              <input type="tel" class="form-input" name="phone" id="phone" required placeholder="090-1234-5678"
+                maxlength="13">
+              <small class="form-hint">ハイフンなしで入力すると自動でハイフンが入ります。</small>
+            </div>
+
+            <div class="form-group">
+              <label>生年月日 <span class="required">*</span></label>
+              <div class="birthdate-select-group">
+                <select class="form-select" id="birthYear" name="birthYear" required>
+                  <option value="">年</option>
+                </select>
+                <label class="select-label">年</label>
+
+                <select class="form-select" id="birthMonth" name="birthMonth" required>
+                  <option value="">月</option>
+                </select>
+                <label class="select-label">月</label>
+
+                <select class="form-select" id="birthDay" name="birthDay" required>
+                  <option value="">日</option>
+                </select>
+                <label class="select-label">日</label>
+              </div>
+            </div>
+
+            <button type="button" class="next-btn" onclick="nextStep(2)">次へ進む</button>
+          </div>
+
+          <div class="form-step" id="step2">
+            <h2>住所情報の入力</h2>
+
+            <div class="form-group">
+              <label>郵便番号 <span class="required">*</span></label>
+              <div class="postal-input-group">
+                <input type="text" class="form-input" name="postalCode" id="postalCode" required placeholder="1234567"
+                  maxlength="7">
+                <button type="button" class="search-btn" onclick="searchAddress()">住所検索</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>都道府県 <span class="required">*</span></label>
+              <select class="form-select" name="prefecture" id="prefecture" required>
+                <option value="">選択してください</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>市区町村 <span class="required">*</span></label>
+              <input type="text" class="form-input" name="city" id="city" required placeholder="〇〇市〇〇区">
+            </div>
+            <div class="form-group">
+              <label>番地 <span class="required">*</span></label>
+              <input type="text" class="form-input" name="address1" required placeholder="1-2-3">
+            </div>
+            <div class="form-group">
+              <label>建物名・部屋番号</label>
+              <input type="text" class="form-input" name="address2" placeholder="〇〇マンション 101号室">
+            </div>
+
+            <div class="button-group">
+              <button type="button" class="back-btn" onclick="prevStep(1)">戻る</button>
+              <button type="button" class="next-btn" onclick="nextStep(3)">次へ進む</button>
+            </div>
+          </div>
+
+          <div class="form-step" id="step3">
+            <h2>アレルギー情報の登録</h2>
+            <p class="step-description">該当するアレルギーがあれば選択してください（任意）</p>
+
+            <div class="allergy-section">
+              <h3>アレルギー品目（特定原材料8品目など）</h3>
+              <div class="checkbox-grid">
+                <label class="checkbox-card"><input type="checkbox" name="allergy" value="卵">
+                  <div class="checkbox-content"><span class="allergy-icon">🥚</span><span class="allergy-name">卵</span>
+                  </div>
+                </label>
+                <label class="checkbox-card"><input type="checkbox" name="allergy" value="小麦">
+                  <div class="checkbox-content"><span class="allergy-icon">🌾</span><span class="allergy-name">小麦</span>
+                  </div>
+                </label>
+                <label class="checkbox-card"><input type="checkbox" name="allergy" value="乳製品">
+                  <div class="checkbox-content"><span class="allergy-icon">🥛</span><span
+                      class="allergy-name">乳製品</span></div>
+                </label>
+                <label class="checkbox-card"><input type="checkbox" name="allergy" value="そば">
+                  <div class="checkbox-content"><span class="allergy-icon">🍜</span><span class="allergy-name">そば</span>
+                  </div>
+                </label>
+                <label class="checkbox-card"><input type="checkbox" name="allergy" value="落花生">
+                  <div class="checkbox-content"><span class="allergy-icon">🥜</span><span
+                      class="allergy-name">落花生</span></div>
+                </label>
+                <label class="checkbox-card"><input type="checkbox" name="allergy" value="えび">
+                  <div class="checkbox-content"><span class="allergy-icon">🦐</span><span class="allergy-name">えび</span>
+                  </div>
+                </label>
+                <label class="checkbox-card"><input type="checkbox" name="allergy" value="かに">
+                  <div class="checkbox-content"><span class="allergy-icon">🦀</span><span class="allergy-name">かに</span>
+                  </div>
+                </label>
+                <label class="checkbox-card"><input type="checkbox" name="allergy" value="アーモンド">
+                  <div class="checkbox-content"><span class="allergy-icon">🌰</span><span
+                      class="allergy-name">アーモンド</span></div>
+                </label>
+              </div>
+            </div>
+
+            <div class="terms-section">
+              <label class="checkbox-item terms-checkbox">
+                <input type="checkbox" id="agreeTerms" required>
+                <span><a href="#terms" target="_blank">利用規約</a>と<a href="#privacy" target="_blank">プライバシーポリシー</a>に同意します
+                  <span class="required">*</span></span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="newsletter">
+                <span>メールマガジンを受け取る（新商品やお得な情報をお届けします）</span>
+              </label>
+            </div>
+
+            <div class="button-group">
+              <button type="button" class="back-btn" onclick="prevStep(2)">戻る</button>
+              <button type="submit" class="submit-btn">登録内容を確認する</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="login-prompt">
+          <p>すでにアカウントをお持ちの方は<a th:href="@{/login}">こちらからログイン</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // ----------------------------------------------------
+    // 共通ナビゲーション関数
+    // ----------------------------------------------------
+    function updateStepIndicator(stepNumber) {
+      document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+      document.getElementById('step' + stepNumber).classList.add('active');
+
+      document.querySelectorAll('.step').forEach((step, index) => {
+        if (index < stepNumber) step.classList.add('active');
+        else step.classList.remove('active');
+      });
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function nextStep(stepNumber) {
+      const currentStep = document.querySelector('.form-step.active');
+      // 'input[required]:not([type="checkbox"])' でチェックボックス以外の必須項目を取得
+      const inputs = currentStep.querySelectorAll('input[required]:not([type="checkbox"]), select[required]');
+      let isValid = true;
+
+      // 必須入力チェック
+      inputs.forEach(input => {
+        if (!input.value) {
+          isValid = false;
+          input.classList.add('error');
+        } else {
+          input.classList.remove('error');
+        }
+      });
+
+      if (stepNumber === 2) {
+        // パスワード一致チェック
+        // ★修正点3: IDを registerPassword に変更
+        const password = document.getElementById('registerPassword').value;
+        const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+        if (password !== passwordConfirm) {
+          alert('パスワードが一致しません。');
+          isValid = false;
+          document.getElementById('registerPasswordConfirm').classList.add('error');
+        }
+        // 生年月日チェック
+        if (document.getElementById('birthYear').value === '' ||
+          document.getElementById('birthMonth').value === '' ||
+          document.getElementById('birthDay').value === '') {
+          alert('生年月日をすべて選択してください。');
+          isValid = false;
+        }
+      }
+
+      if (!isValid) {
+        alert('必須項目をすべて入力または正しく入力してください。');
+        return;
+      }
+
+      updateStepIndicator(stepNumber);
+    }
+
+    function prevStep(stepNumber) {
+      updateStepIndicator(stepNumber);
+    }
+
+    // ----------------------------------------------------
+    // 要件1 & 4: 都道府県リストと生年月日ドロップダウンの動的生成
+    // ----------------------------------------------------
+    document.addEventListener('DOMContentLoaded', function () {
+      const prefectures = [
+        '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県', '茨城県', '栃木県', '群馬県',
+        '埼玉県', '千葉県', '東京都', '神奈川県', '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県',
+        '岐阜県', '静岡県', '愛知県', '三重県', '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県',
+        '鳥取県', '島根県', '岡山県', '広島県', '山口県', '徳島県', '香川県', '愛媛県', '高知県', '福岡県',
+        '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
+      ];
+      const prefectureSelect = document.getElementById('prefecture');
+
+      // 都道府県を北海道から順に挿入
+      prefectures.forEach(pref => {
+        const option = document.createElement('option');
+        option.value = pref;
+        option.textContent = pref;
+        prefectureSelect.appendChild(option);
+      });
+
+      // 生年月日ドロップダウンの生成
+      const currentYear = new Date().getFullYear();
+      const yearSelect = document.getElementById('birthYear');
+      const monthSelect = document.getElementById('birthMonth');
+      const daySelect = document.getElementById('birthDay');
+
+      // 年 (過去100年分)
+      for (let i = currentYear; i >= currentYear - 100; i--) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        yearSelect.appendChild(option);
+      }
+
+      // 月 (1～12)
+      for (let i = 1; i <= 12; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        monthSelect.appendChild(option);
+      }
+
+      // 日は年・月選択時に動的に更新 (初期は31日まで設定)
+      for (let i = 1; i <= 31; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        daySelect.appendChild(option);
+      }
+
+      // 日付の連動更新ロジック (閏年/月の違いを反映)
+      function updateDays() {
+        const year = parseInt(yearSelect.value);
+        const month = parseInt(monthSelect.value);
+
+        if (year && month) {
+          // その月の日数を計算 (0を指定すると前月の最終日になる)
+          const daysInMonth = new Date(year, month, 0).getDate();
+          const currentDay = daySelect.value;
+
+          daySelect.innerHTML = '<option value="">日</option>';
+          for (let i = 1; i <= daysInMonth; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            daySelect.appendChild(option);
+          }
+          // 以前選択されていた日が新しい月の範囲内なら再選択
+          if (currentDay && currentDay <= daysInMonth) {
+            daySelect.value = currentDay;
+          }
+        }
+      }
+
+      yearSelect.addEventListener('change', updateDays);
+      monthSelect.addEventListener('change', updateDays);
+    });
+
+    // ----------------------------------------------------
+    // 要件2: 郵便番号検索機能 (デモ)
+    // ----------------------------------------------------
+    function searchAddress() {
+      const postalCode = document.getElementById('postalCode').value.replace(/[^0-9]/g, ''); // 数字のみ抽出
+
+      if (postalCode.length !== 7) {
+        alert('郵便番号はハイフンなしの7桁で入力してください。');
+        return;
+      }
+
+      // 実際はここで外部API (例: 郵便番号検索API) を利用する
+
+      // デモとして、特定の郵便番号で住所を自動入力
+      if (postalCode === '1500043') {
+        document.getElementById('prefecture').value = '東京都';
+        document.getElementById('city').value = '渋谷区道玄坂';
+        alert('住所を自動入力しました。番地以降を入力してください。');
+      } else if (postalCode === '0600000') {
+        document.getElementById('prefecture').value = '北海道';
+        document.getElementById('city').value = '札幌市中央区';
+        alert('住所を自動入力しました。番地以降を入力してください。');
+      } else {
+        alert('該当する住所が見つかりませんでした。都道府県と市区町村を手動で入力してください。');
+      }
+    }
+
+    // ----------------------------------------------------
+    // 要件3: 電話番号への自動ハイフン挿入
+    // ----------------------------------------------------
+    document.getElementById('phone').addEventListener('input', function (e) {
+      let value = e.target.value.replace(/[^0-9]/g, ''); // 数字以外を削除
+
+      if (value.length > 6) {
+        // 7桁以上の場合: 090-1234-5678 の形
+        value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+      } else if (value.length > 3) {
+        // 4桁以上の場合: 090-1234 の形
+        value = value.slice(0, 3) + '-' + value.slice(3);
+      }
+
+      e.target.value = value;
+    });
+
+    // ----------------------------------------------------
+    // 要件4: パスワードの表示/非表示切り替え
+    // ----------------------------------------------------
+    function togglePasswordVisibility(button) {
+      const targetId = button.dataset.target;
+      const targetField = document.getElementById(targetId);
+
+      if (targetField.type === 'password') {
+        targetField.type = 'text';
+        button.textContent = '🔒'; // 非表示アイコン
+        button.setAttribute('aria-label', 'パスワードを非表示');
+      } else {
+        targetField.type = 'password';
+        button.textContent = '👁️'; // 表示アイコン
+        button.setAttribute('aria-label', 'パスワードを表示');
+      }
+    }
+
+  </script>
+</body>
+
+</html>

@@ -14,12 +14,12 @@ public interface ProductMapper {
   ProductDTO toDto(Product entity);
 
   // DTO -> Entity
-  Product toDto(ProductDTO dto);
+  Product toEntity(ProductDTO dto);
 
   /** List 変換 */
-  //Entity -> DTO
+  // Entity -> DTO
   List<ProductDTO> toDtoList(List<Product> entityList);
 
-  //DTO -> Entity
+  // DTO -> Entity
   List<Product> toEntityList(List<ProductDTO> dtoList);
 }

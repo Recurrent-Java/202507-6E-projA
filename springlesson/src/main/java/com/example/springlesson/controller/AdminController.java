@@ -60,7 +60,7 @@ public class AdminController {
      * HTML側で <button formaction="/admin/product/delete"> を指定することでここに飛ぶようにします
      */
     @PostMapping("/product/delete")
-    public String deleteProduct(@RequestParam(name = "productId", required = false) Long productId) {
+    public String deleteProduct(@RequestParam(name = "productId", required = false) Integer productId) {
         // 新規入力欄で削除ボタンが押された場合(IDがnull)は無視
         if (productId != null) {
             adminService.deleteProduct(productId);
@@ -73,7 +73,7 @@ public class AdminController {
      * HTMLの <input name="delete-id"> を受け取る
      */
     @PostMapping("/member/delete")
-    public String deleteMember(@RequestParam("delete-id") Long memberId) {
+    public String deleteMember(@RequestParam("delete-id") Integer memberId) {
         adminService.deleteMember(memberId);
         return "redirect:/admin#member-list";
     }

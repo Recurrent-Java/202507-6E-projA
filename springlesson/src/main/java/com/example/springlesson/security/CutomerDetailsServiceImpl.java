@@ -10,33 +10,32 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.springlesson.entity.Customer;
-import com.example.springlesson.repository.CustomerRepository;
+import com.example.springlesson.entity.Member;
+import com.example.springlesson.repository.MemberRepository;
 
 @Service
 public class CutomerDetailsServiceImpl implements UserDetailsService {
-  private final CustomerRepository customerRepository;
-  
+  private final MemberRepository memberRepository;
+
   // コンストラクターインジェクション
-  public CutomerDetailsServiceImpl(CustomerRepository customerRepository) {
-    this.customerRepository = customerRepository;
+  public CutomerDetailsServiceImpl(MemberRepository memberRepository) {
+    this.memberRepository = memberRepository;
   }
-
-
 
   @Override
   public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
     try {
-      Customer customer = customerRepository.findByLogin(login);
-      if(customer == null) {
+      Member member = memberRepository.findByLogin(login);
+      if (member == null) {
         throw new UsernameNotFoundException("ユーザーが見つかりません：" + login);
       }
       // 権限(とりあえずここに固定しておきます)
       Collection<GrantedAuthority> authorities = new ArrayList<>();
       authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-      
-      return new CustomerDetailsImpl(customer, authorities);
-    }catch(Exception e) {
+
+      // ★修正完了: CustomerDetailsImpl のコンストラクタの型と一致。
+      return new CustomerDetailsImpl(member, authorities);
+    } catch (Exception e) {
       throw new UsernameNotFoundException("ユーザーが見つかりませんでした。");
     }
   }

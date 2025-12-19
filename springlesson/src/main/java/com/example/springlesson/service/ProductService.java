@@ -14,18 +14,26 @@ public class ProductService {
   private final ProductMapper productMapper;
   private final ProductRepository productRepository;
 
-  public ProductService(ProductMapper productMapper,ProductRepository productRepository) {
+  // コンストラクタ注入
+  public ProductService(ProductMapper productMapper, ProductRepository productRepository) {
     this.productMapper = productMapper;
     this.productRepository = productRepository;
   }
-  // 全ての商品情報を取得する
-  public List<ProductDTO> findAllProduct(){
+
+  /**
+   * 全ての商品情報を取得する
+   */
+  public List<ProductDTO> findAllProduct() {
     List<Product> list = productRepository.findAll();
     return productMapper.toDtoList(list);
   }
-  // 商品名で商品情報を取得する
-  public List<ProductDTO> findByNameContaining(String keyword){
-    List<Product> list = productRepository.findByNameContaining(keyword);
+
+  /**
+   * 商品名で商品情報を検索する
+   */
+  public List<ProductDTO> findByNameContaining(String keyword) {
+    // Repository側のメソッド名が findByProductNameContaining であることを確認済み
+    List<Product> list = productRepository.findByProductNameContaining(keyword);
     return productMapper.toDtoList(list);
   }
 }

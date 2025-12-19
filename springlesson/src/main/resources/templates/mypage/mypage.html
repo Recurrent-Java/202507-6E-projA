@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <div th:replace="~{comlayout/base :: meta}"></div>
+  <div th:replace="~{comlayout/base :: styles}"></div>
+
+  <title>マイページ - HealSweets</title>
+</head>
+
+<body>
+  <div th:replace="~{comlayout/base :: header}"></div>
+  <div th:replace="~{comlayout/base :: nav}"></div>
+
+  <main>
+    <section class="member-section">
+      <div class="container">
+        <div class="page-header">
+          <h1>マイページ</h1>
+          <p class="welcome-text">ようこそ、<strong th:text="${member.fullName}">田中 太郎</strong>様</p>
+        </div>
+
+        <div class="member-content">
+          <aside class="sidebar-menu">
+            <div class="menu-item active" data-section="rank">
+              <span class="menu-icon">👑</span>
+              <span>ランク・ポイント情報</span>
+            </div>
+            <div class="menu-item" data-section="orders">
+              <span class="menu-icon">📦</span>
+              <span>注文・配送履歴</span>
+            </div>
+            <div class="menu-item" data-section="info">
+              <span class="menu-icon">👤</span>
+              <span>会員情報編集</span>
+            </div>
+            <div class="menu-item" data-section="allergy">
+              <span class="menu-icon">🥗</span>
+              <span>アレルギー登録</span>
+            </div>
+            <div class="menu-item" data-section="withdrawal">
+              <span class="menu-icon">⚠️</span>
+              <span>退会手続き</span>
+            </div>
+            <a th:href="@{/contact}" class="menu-item external-link">
+              <span class="menu-icon">📧</span>
+              <span>お問い合わせ (別窓)</span>
+            </a>
+          </aside>
+
+          <main class="main-content">
+
+            <div class="content-section active" id="rank">
+              <h2>会員ランク情報</h2>
+              <div class="rank-card">
+                <div class="current-rank">
+                  <span class="rank-icon" th:utext="${member.currentRank.iconHtml}">👑</span>
+                  <h3 th:text="${member.currentRank.rankName}">ホールケーキランク</h3>
+                  <p>現在の年間累積購入金額: <strong
+                      th:text="${#numbers.formatDecimal(member.annualSpending, 0, 'COMMA', 0, 'POINT')} + '円'">35,000円</strong>
+                  </p>
+                </div>
+
+                <div th:if="${member.nextRank}" class="progress-section">
+                  <h4>次のランクまであと少し！</h4>
+                  <p
+                    th:text="${member.nextRank.rankName} + ' 達成まで ' + ${#numbers.formatDecimal(member.spendingToNextRank, 0, 'COMMA', 0, 'POINT')} + '円'">
+                    次のランクまであと 15,000円</p>
+
+                  <div class="progress-bar-container">
+                    <div class="progress-bar" th:style="'width: ' + ${member.rankProgressPercent} + '%'"></div>
+                  </div>
+                  <div class="rank-labels">
+                    <span th:text="${member.currentRank.rankName}">現在のランク</span>
+                    <span th:text="${member.nextRank.rankName}">次のランク</span>
+                  </div>
+                </div>
+              </div>
+
+              <h3>保有ポイント</h3>
+              <div class="point-info-card">
+                <p>利用可能ポイント: <strong
+                    th:text="${#numbers.formatDecimal(member.availablePoints, 0, 'COMMA', 0, 'POINT')} + ' pt'">1,200
+                    pt</strong></p>
+                <p class="point-note">有効期限: 2026/03/31</p>
+                <a th:href="@{/mypage/point_detail}" class="link-btn">ポイント利用履歴へ</a>
+              </div>
+            </div>
+
+            <div class="content-section" id="orders">
+              <h2>注文履歴</h2>
+              <table class="order-table">
+                <thead>
+                  <tr>
+                    <th>注文ID</th>
+                    <th>注文日時</th>
+                    <th>合計金額</th>
+                    <th>ステータス</th>
+                    <th>詳細</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="order : ${orders}">
+                    <td th:text="${order.orderId}">20251105-001</td>
+                    <td th:text="${#temporals.format(order.orderDate, 'yyyy/MM/dd HH:mm')}">2025/11/05 10:30</td>
+                    <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + '円'">5,800円</td>
+                    <td th:text="${order.status}">発送準備中</td>
+                    <td><a th:href="@{/mypage/order_detail(id=${order.orderId})}" class="detail-link">詳細を見る</a></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p th:if="${#lists.isEmpty(orders)}">過去の注文履歴はありません。</p>
+            </div>
+
+
+            <div class="content-section" id="info">
+              <h2>会員情報編集</h2>
+              <div class="info-card">
+                <form th:action="@{/mypage/update_info}" method="post">
+                  <div class="form-group">
+                    <label>お名前</label>
+                    <input type="text" name="fullName" th:value="${member.fullName}" class="form-input">
+                  </div>
+                  <button type="submit" class="submit-btn">情報を更新する</button>
+                </form>
+
+                <div class="action-card mt-4">
+                  <h3>セキュリティ設定</h3>
+                  <a th:href="@{/mypage/change_password}" class="danger-link">パスワードを変更する</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-section" id="allergy">
+              <h2>アレルギー登録</h2>
+              <p class="section-description">アレルギー情報を登録すると、該当商品に警告マークが表示されます。</p>
+              <div class="allergy-card">
+                <h3>登録済みアレルギー</h3>
+                <div class="allergy-tags">
+                  <span class="allergy-tag" th:each="allergy : ${member.allergens}">
+                    <span th:text="${allergy.name}">小麦</span>
+                    <button class="remove-tag" th:data-allergen-code="${allergy.code}">×</button>
+                  </span>
+                </div>
+
+                <div class="allergy-form">
+                  <h3>新しいアレルギーを追加</h3>
+                  <form th:action="@{/mypage/add_allergy}" method="post">
+                    <div class="checkbox-group">
+                      <label class="checkbox-item" th:each="masterAllergen : ${allergenMasters}">
+                        <input type="checkbox" name="allergenCode" th:value="${masterAllergen.code}">
+                        <span th:text="${masterAllergen.name}">卵</span>
+                      </label>
+                    </div>
+                    <button type="submit" class="submit-btn">追加する</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-section" id="withdrawal">
+              <div id="withdrawalFormContainer">
+                <h2>退会手続き</h2>
+                <div class="warning-card">
+                  <div class="warning-icon">⚠️</div>
+                  <h3>退会される前にご確認ください</h3>
+                  <ul class="warning-list">
+                    <li
+                      th:text="|保有ポイント: ${#numbers.formatDecimal(member.availablePoints, 0, 'COMMA', 0, 'POINT')}pt が失効します|">
+                      保有ポイントは全て失効します</li>
+                    <li>退会するとアカウント情報が完全に削除されます</li>
+                    <li>過去の注文履歴も閲覧できなくなります</li>
+                    <li>再登録しても同じアカウントは復元できません</li>
+                  </ul>
+
+                  <div class="withdrawal-form">
+                    <label>退会理由をお聞かせください（任意）</label>
+                    <textarea class="withdrawal-reason" id="withdrawalReason" placeholder="退会理由をご記入ください"></textarea>
+
+                    <label class="checkbox-item confirm-checkbox">
+                      <input type="checkbox" id="confirm-withdrawal">
+                      <span>上記の内容を理解し、退会を希望します</span>
+                    </label>
+
+                    <button type="button" class="danger-btn" id="withdrawal-btn" disabled
+                      onclick="openConfirmModal()">退会する</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="completionMessage" class="completion-message" style="display: none;">
+                <h1>🎉 退会処理が完了しました 🎉</h1>
+                <p>今までのご利用ありがとうございました。</p>
+              </div>
+            </div>
+
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <div id="finalConfirmModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h2>最終確認</h2>
+        <p>本当に退会してもよろしいですか？</p>
+        <div class="modal-actions">
+          <button class="submit-btn" onclick="executeWithdrawal()">はい</button>
+          <button class="danger-btn" onclick="closeModal('finalConfirmModal')">いいえ</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div th:replace="~{comlayout/base :: footer}"></div>
+
+  <script th:inline="javascript">
+    // ----------------------------------------------------
+    // マイページ操作JS
+    // ----------------------------------------------------
+
+    // サイドバーメニュー切り替え
+    const menuItems = document.querySelectorAll('.menu-item');
+    const contentSections = document.querySelectorAll('.content-section');
+    menuItems.forEach(item => {
+      // 外部リンクは除外
+      if (!item.classList.contains('external-link')) {
+        item.addEventListener('click', function () {
+          const sectionId = this.dataset.section;
+          menuItems.forEach(menu => menu.classList.remove('active'));
+          this.classList.add('active');
+          contentSections.forEach(section => {
+            section.classList.remove('active');
+            if (section.id === sectionId) {
+              section.classList.add('active');
+            }
+          });
+        });
+      }
+    });
+
+    // ----------------------------------------------------
+    // 退会処理ロジック
+    // ----------------------------------------------------
+    const confirmCheckbox = document.getElementById('confirm-withdrawal');
+    const withdrawalBtn = document.getElementById('withdrawal-btn');
+    const withdrawalFormContainer = document.getElementById('withdrawalFormContainer');
+    const completionMessage = document.getElementById('completionMessage');
+
+    // チェックボックスの状態監視
+    confirmCheckbox.addEventListener('change', function () {
+      withdrawalBtn.disabled = !this.checked;
+    });
+
+    // モーダルを開く
+    function openConfirmModal() {
+      document.getElementById('finalConfirmModal').style.display = 'flex';
+    }
+
+    // モーダルを閉じる汎用関数
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // 退会処理実行（はいボタン）
+    function executeWithdrawal() {
+      closeModal('finalConfirmModal');
+
+      // 実際にはFetch APIなどでSpring Bootの退会エンドポイントをPOSTする
+      // 例: fetch('/mypage/withdraw', { method: 'POST', ... })
+
+      // 成功を仮定し、画面を切り替える
+      withdrawalFormContainer.style.display = 'none';
+      completionMessage.style.display = 'block';
+
+      // 5秒後にTOP画面へリダイレクト
+      setTimeout(() => {
+        // ★★★ ログアウト＆TOP画面へリダイレクト ★★★
+        // Spring Securityのログアウトエンドポイント（/logout）にリクエストを送信することで、
+        // SecurityConfigで設定した logoutSuccessUrl("/") に遷移します。
+        window.location.href = '/logout';
+      }, 5000);
+    }
+
+    // ----------------------------------------------------
+    // その他JS（アレルギー削除等）
+    // ----------------------------------------------------
+    // アレルギータグ削除（デモ）
+    document.querySelectorAll('.remove-tag').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const code = this.dataset.allergenCode; // 実際のコードを取得
+        if (confirm(code + ' のアレルギー情報を削除しますか？')) {
+          // 実際には/mypage/remove_allergyなどへDELETEリクエストを送信
+          this.closest('.allergy-tag').remove();
+        }
+      });
+    });
+
+  </script>
+</body>
+
+</html>
