@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.springlesson.entity.Customer;
+import com.example.springlesson.entity.MemberInfo;
 import com.example.springlesson.entity.Product;
 import com.example.springlesson.form.AdminProductForm;
 import com.example.springlesson.service.AdminService;
@@ -31,7 +31,7 @@ public class AdminController {
         List<Product> productList = adminService.findAllProducts();
         model.addAttribute("productList", productList);
 
-        List<Customer> memberList = adminService.findAllMembers();
+        List<MemberInfo> memberList = adminService.findAllMembers();
         model.addAttribute("memberList", memberList);
 
         // フォーム初期化（新規登録用）
@@ -57,13 +57,13 @@ public class AdminController {
 
     /**
      * 商品削除処理
-     * HTML側で <button formaction="/admin/product/delete"> を指定することでここに飛ぶようにします
      */
     @PostMapping("/product/delete")
-    public String deleteProduct(@RequestParam(name = "productId", required = false) Integer productId) {
-        // 新規入力欄で削除ボタンが押された場合(IDがnull)は無視
+    public String deleteProduct(@RequestParam("productId") Long productId) {
+        System.out.println("削除対象ID: " + productId);
+
         if (productId != null) {
-            adminService.deleteProduct(productId);
+            adminService.deleteProduct(productId.intValue());
         }
         return "redirect:/admin#product-list";
     }

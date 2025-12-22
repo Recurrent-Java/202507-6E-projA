@@ -5,10 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.springlesson.entity.Customer;
+import com.example.springlesson.entity.MemberInfo;
 import com.example.springlesson.entity.Product;
 import com.example.springlesson.form.AdminProductForm;
 import com.example.springlesson.repository.CustomerRepository;
+import com.example.springlesson.repository.MemberInfoRepository; // 追加
 import com.example.springlesson.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class AdminService {
 
   private final ProductRepository productRepository;
   private final CustomerRepository customerRepository;
+  private final MemberInfoRepository memberInfoRepository;
 
   public List<Product> findAllProducts() {
     return productRepository.findAll();
@@ -62,14 +64,14 @@ public class AdminService {
 
   // --- 会員関連 ---
 
-  public List<Customer> findAllMembers() {
-    return customerRepository.findAll();
-  }
+  public List<MemberInfo> findAllMembers() {
+	    return memberInfoRepository.findAll(); // 新しいリポジトリを使用
+	  }
 
-  // ★注意：CustomerエンティティのIDがIntegerならここもIntegerにします
-  public void deleteMember(Integer memberId) {
-    if (memberId != null && customerRepository.existsById(memberId)) {
-      customerRepository.deleteById(memberId);
-    }
-  }
-}
+	  public void deleteMember(Integer memberId) {
+	    // 削除も新しいリポジトリ経由で行う
+	    if (memberId != null && memberInfoRepository.existsById(memberId)) {
+	      memberInfoRepository.deleteById(memberId);
+	    }
+	  }
+	}

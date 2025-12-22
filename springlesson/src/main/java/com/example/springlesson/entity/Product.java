@@ -29,7 +29,7 @@ public class Product {
     @Column(name = "LIMITED_FLG", nullable = false)
     private Integer limitedFlg;
 
-    @Column(name = "USAGE", nullable = false)
+    @Column(name = "`USAGE`", nullable = false)
     private String usage;
     
     @Column(name = "SEASON", nullable = false)

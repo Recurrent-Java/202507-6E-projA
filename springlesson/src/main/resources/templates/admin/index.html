@@ -52,9 +52,11 @@
 
                     <button type="submit" class="action-button primary-button">商品を登録・更新</button>
                     
+					<!--
                     <button type="submit" class="action-button delete-button"
                             th:formaction="@{/admin/product/delete}"
                             onclick="return confirm('入力されたIDの商品を削除しますか？');">商品を削除</button>
+					-->
                 </form>
             </section>
 
@@ -71,19 +73,31 @@
                                 <th>商品名</th>
                                 <th>価格</th>
                                 <th>在庫数</th>
-                                <th>ステータス</th> </tr>
+                                <th>ステータス</th>
+							   <th>操作</th>
+						   </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="product : ${productList}">
-                                <td th:text="${product.productId}">P001</td>
-                                <td th:text="${product.productName}">サンプルケーキ</td>
-                                <td th:text="${product.price} + '円'">1000円</td>
-                                <td th:text="${product.stockQuantity}">10</td>
-                                <td th:text="${product.saleStatus}">SALE</td>
-                            </tr>
-                            <tr th:if="${productList.isEmpty()}">
-                                <td colspan="5" style="text-align: center;">登録されている商品はありません</td>
-                            </tr>
+							<tr th:each="product : ${productList}">
+							    <td th:text="${product.productId}">P001</td>
+							    <td th:text="${product.productName}">サンプルケーキ</td>
+							    <td th:text="${product.price} + '円'">1000円</td>
+							    <td th:text="${product.stockQuantity}">10</td>
+							    <td th:text="${product.saleStatus}">SALE</td>
+								<!--
+								 <tr th:if="${productList.isEmpty()}">
+								    <td colspan="4" style="text-align: center;">商品は登録されていません</td>
+								</tr>
+								-->
+							    <td>
+							        <form method="post" th:action="@{/admin/product/delete}">
+							            <input type="hidden" name="productId" th:value="${product.productId}">
+							            <button type="submit" class="action-button delete-button" 
+							                    onclick="return confirm('この商品を削除しますか？');">削除</button>
+							        </form>
+							    </td>
+							</tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -100,7 +114,7 @@
                     <input type="text" id="delete-id" name="delete-id" placeholder="数値を入力 (例: 1)">
                     
                     <button type="submit" class="action-button delete-button"
-                            onclick="return confirm('本当にこの会員を削除しますか？');">会員を検索・削除</button>
+                            onclick="return confirm('この会員を削除しますか？');">会員を検索・削除</button>
                 </form>
             </section>
 
@@ -118,15 +132,18 @@
                                 <th>登録日</th>
                                 <th>メールアドレス</th> </tr>
                         </thead>
-                        <tbody>
-                            <tr th:each="member : ${memberList}">
-                                <td th:text="${member.customerId}">M001</td> <td th:text="${member.name}">山田 太郎</td>
-                                <td th:text="${member.registerDate}">2024/01/01</td>
-                                <td th:text="${member.email}">test@example.com</td>
-                            </tr>
+                        <tbody>						
+							<tr th:each="member : ${memberList}">
+							    <td th:text="${member.id}">M001</td> 
+							    <td th:text="${member.name}">山田 太郎</td>
+							    <td th:text="${member.registerDate}">2024/01/01</td>
+							    <td th:text="${member.email}">test@example.com</td>
+							</tr>
+							<!--
                              <tr th:if="${memberList.isEmpty()}">
                                 <td colspan="4" style="text-align: center;">会員は登録されていません</td>
                             </tr>
+							-->
                         </tbody>
                     </table>
                 </div>
