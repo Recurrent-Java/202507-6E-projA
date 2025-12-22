@@ -187,6 +187,8 @@ header h1 {
 .delete-button { 
     background-color: darkred;
     color: white;
+	size: 2em;
+	margin-bottom: 1em;
 }
 
 .delete-button:hover {
