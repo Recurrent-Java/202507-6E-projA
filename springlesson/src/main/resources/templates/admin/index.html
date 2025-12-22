@@ -109,13 +109,18 @@
                 <h2>会員削除</h2>
                 <p>削除したい会員を検索し、削除処理を実行します。対象会員のIDを入力してください。</p>
                 
-                <form method="post" th:action="@{/admin/member/delete}" class="placeholder-form">
-                    <label for="delete-id">会員ID:</label>
-                    <input type="text" id="delete-id" name="delete-id" placeholder="数値を入力 (例: 1)">
-                    
-                    <button type="submit" class="action-button delete-button"
-                            onclick="return confirm('この会員を削除しますか？');">会員を検索・削除</button>
-                </form>
+				<form method="post" th:action="@{/admin/member/delete}" th:object="${adminMemberForm}" class="placeholder-form">
+				        
+				        <div th:if="${#fields.hasErrors('memberId')}" style="color: red; margin-bottom: 1rem;">
+				            <p th:errors="*{memberId}"></p>
+				        </div>
+
+				        <label for="delete-id">会員ID:</label>
+				        <input type="number" id="delete-id" th:field="*{memberId}" placeholder="数値を入力 (例: 1)">
+				        
+				        <button type="submit" class="action-button delete-button"
+				                onclick="return confirm('この会員を削除しますか？');">会員を削除</button>
+				    </form>
             </section>
 
             <div class="section-separator"></div>
