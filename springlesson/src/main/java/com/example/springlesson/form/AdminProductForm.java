@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 public class AdminProductForm {
 
-    // 更新時に使用（新規登録時はnull）
     private Integer productId;
 
     @NotBlank(message = "商品名を入力してください")
@@ -19,7 +18,6 @@ public class AdminProductForm {
     @Min(value = 0, message = "価格は0円以上で入力してください")
     private Integer price;
     
-    // SQL定義に合わせて在庫数もフォームで受け取れるようにする
     @NotNull(message = "在庫数を入力してください")
     @Min(value = 0, message = "在庫数は0以上で入力してください")
     private Integer stockQuantity;

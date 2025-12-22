@@ -74,8 +74,6 @@ public class AdminController {
 
     /**
      * 会員削除処理
-     * @Validated を付けて未入力チェックを行い、
-     * 内部では成功している削除ロジックを確実に実行します。
      */
     @PostMapping("/member/delete")
     public String deleteMember(
@@ -84,16 +82,12 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             Model model) {
 
-        // 1. バリデーションエラーがある場合（未入力時）
         if (result.hasErrors()) {
-            // エラー情報をリダイレクト先に保持させる
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.adminMemberForm", result);
             redirectAttributes.addFlashAttribute("adminMemberForm", adminMemberForm);
             return "redirect:/admin#member-delete";
         }
 
-        // 2. バリデーションを通過した場合：
-        // 確実に削除するために、フォームから取得したIDを使って削除を実行
         Integer memberId = adminMemberForm.getMemberId();
         adminService.deleteMember(memberId);
         

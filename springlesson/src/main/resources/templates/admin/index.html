@@ -22,8 +22,8 @@
 
     <nav class="global-nav">
         <ul>
-            <li><a href="#product-manage">商品追加・削除</a></li>
-            <li><a href="#product-list">商品一覧表示</a></li>
+            <li><a href="#product-manage">商品追加</a></li>
+            <li><a href="#product-list">商品一覧表示・個別削除</a></li>
             <li><a href="#member-delete">会員削除</a></li>
             <li><a href="#member-list">会員一覧表示</a></li>
         </ul>
@@ -33,8 +33,8 @@
         <main class="content">
 
             <section id="product-manage" class="content-section">
-                <h2>商品追加・削除</h2>
-                <p>新商品の登録、または既存商品の情報更新・削除を行います。</p>
+                <h2>商品追加</h2>
+                <p>新商品の登録を行います。</p>
                 
                 <form method="post" th:action="@{/admin/product/save}" th:object="${adminProductForm}" class="placeholder-form">
                     <h3>【商品情報フォーム】</h3>
@@ -69,7 +69,7 @@
             <div class="section-separator"></div>
 
             <section id="product-list" class="content-section">
-                <h2>商品一覧表示</h2>
+                <h2>商品一覧表示・個別削除</h2>
                 <p>登録されている全商品の情報がここに表示されます。</p>
                 <div class="placeholder-table">
                     <table>
