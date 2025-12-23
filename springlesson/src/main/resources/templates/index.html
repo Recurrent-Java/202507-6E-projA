@@ -51,7 +51,7 @@
         <div class="product-list" 
              th:fragment="product-list-fragment">
              <div class="product-card" th:each="product : ${products}">
-                <a th:href="@{/products/{id}(id=${product?.productId})}">
+                <a th:href="@{/product/products/{id}(id=${product?.productId})}">
                     <img th:src="@{${product.imagePath != null ? product.imagePath : '/images/noimage.png'}}" alt="">
                     <p class="name" th:text="${product.productName}"></p>
                     <p class="price">¥<span th:text="${product.price}"></span></p>

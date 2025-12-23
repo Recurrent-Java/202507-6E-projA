@@ -48,76 +48,76 @@ public class ProductController {
     // 商品ページへ 
     return "product/product";
   }
-  
-//商品詳細ページ（メロンパン）
-  @GetMapping("/detail")
+
+  //商品詳細ページ（メロンパン）
+  @GetMapping("/products/1")
   public String productDetail() {
-      return "product/product-melonpan";
+    return "product/product-melonpan";
   }
-  
-//商品詳細ページ（ピーチタルト）
-  @GetMapping("/peachtart")
+
+  //商品詳細ページ（ピーチタルト）
+  @GetMapping("/products/3")
   public String productPeach() {
-      return "product/product-peachtart";
+    return "product/product-peachtart";
   }
- 
-//商品詳細ページ（アニマルクッキー缶）
-  @GetMapping("/animalcookie")
+
+  //商品詳細ページ（アニマルクッキー缶）
+  @GetMapping("/products/9")
   public String productanimalcookie() {
-      return "product/product-animalcookie";
+    return "product/product-animalcookie";
   }
 
-//商品詳細ページ（アニバーサリーケーキ）
-  @GetMapping("/anniversarycake")
+  //商品詳細ページ（アニバーサリーケーキ）
+  @GetMapping("/products/11")
   public String productanniversarycake() {
-      return "product/product-anniversarycake";
+    return "product/product-anniversarycake";
   }
-  
-//商品詳細ページ（アップルパイ）
-  @GetMapping("/applepie")
+
+  //商品詳細ページ（アップルパイ）
+  @GetMapping("/products/2")
   public String productapplepie() {
-      return "product/product-applepie";
+    return "product/product-applepie";
   }
 
-//商品詳細ページ（焼きドーナツ）
-  @GetMapping("/bakeddonut")
+  //商品詳細ページ（焼きドーナツ）
+  @GetMapping("/products/6")
   public String productbakeddonut() {
-      return "product/product-bakeddonut";
+    return "product/product-bakeddonut";
   }
 
-//商品詳細ページ（ココアエクレア）
-  @GetMapping("/cocoaeclair")
+  //商品詳細ページ（ココアエクレア）
+  @GetMapping("/products/4")
   public String productcocoaeclair() {
-      return "product/product-cocoaeclair";
-  }
- 
-//商品詳細ページ（チョコケーキ）
-  @GetMapping("/chocolatecake")
-  public String productchocolatecake() {
-      return "product/product-chocolatecake";
-  }
- 
-//商品詳細ページ（ココナッツマカロン）
-  @GetMapping("/coconutmacaron")
-  public String productcoconutmacaron() {
-      return "product/product-coconutmacaron";
+    return "product/product-cocoaeclair";
   }
 
-//商品詳細ページ（クッキー缶）
-  @GetMapping("/cookie")
+  //商品詳細ページ（チョコケーキ）
+  @GetMapping("/products/10")
+  public String productchocolatecake() {
+    return "product/product-chocolatecake";
+  }
+
+  //商品詳細ページ（ココナッツマカロン）
+  @GetMapping("/products/8")
+  public String productcoconutmacaron() {
+    return "product/product-coconutmacaron";
+  }
+
+  //商品詳細ページ（クッキー缶）
+  @GetMapping("/products/")
   public String productcookie() {
-      return "product/product-cookie";
+    return "product/product-cookie";
   }
- 
-//商品詳細ページ（ムーランルージュ）
-  @GetMapping("/eggfreerouge")
+
+  //商品詳細ページ（ムーランルージュ）
+  @GetMapping("/products/5")
   public String producteggfreerouge() {
-      return "product/product-eggfreerouge";
+    return "product/product-eggfreerouge";
   }
- 
-//商品詳細ページ（レモンケーキ）
-  @GetMapping("/lemoncake")
+
+  //商品詳細ページ（レモンケーキ）
+  @GetMapping("/products/7")
   public String productlemoncake() {
-      return "product/product-lemoncake";
+    return "product/product-lemoncake";
   }
 }
