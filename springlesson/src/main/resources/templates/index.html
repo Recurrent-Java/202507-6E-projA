@@ -29,17 +29,16 @@
     <!-- カテゴリー -->
     <section class="category">
       <ul>
-        <li class="active">
-          <a th:href="@{/}">すべて</a>
-        </li>
         <li>
-          <a th:href="@{/products?category=allergen-free}">アレルゲンフリー</a>
+          <a th:href="@{/}" class="category-btn" 
+             th:classappend="${catId == null || catId == 0} ? 'active' : ''">すべて</a>
         </li>
-        <li>
-          <a th:href="@{/products?category=low-sugar}">低糖質</a>
-        </li>
-        <li>
-          <a th:href="@{/products?category=cacao70}">カカオ70%</a>
+
+        <li th:each="cat : ${categoryList}">
+          <a th:href="@{/(catId=${cat.catId})}" 
+             class="category-btn" 
+             th:classappend="${catId == cat.catId} ? 'active' : ''"
+             th:text="${cat.catName}">カテゴリー名</a>
         </li>
       </ul>
     </section>
@@ -48,15 +47,17 @@
     <section class="products">
       <h2>商品一覧</h2>
 
-      <div class="product-list">
-        <div class="product-card" th:each="product : ${products}">
-          <a th:href="@{/products/{id}(id=${product.id})}">
-            <img th:src="@{${product.imagePath}}" alt="">
-            <p class="name" th:text="${product.name}"></p>
-            <p class="price">¥<span th:text="${product.price}"></span></p>
-          </a>
+      <div id="productContainer">
+        <div class="product-list" 
+             th:fragment="product-list-fragment">
+             <div class="product-card" th:each="product : ${products}">
+                <a th:href="@{/products/{id}(id=${product?.productId})}">
+                    <img th:src="@{${product.imagePath != null ? product.imagePath : '/images/noimage.png'}}" alt="">
+                    <p class="name" th:text="${product.productName}"></p>
+                    <p class="price">¥<span th:text="${product.price}"></span></p>
+                </a>
+             </div>
         </div>
-      </div>
     </section>
   </main>
   <div th:replace="~{comlayout/base :: footer}"></div>

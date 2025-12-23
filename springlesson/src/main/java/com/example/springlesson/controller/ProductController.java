@@ -18,40 +18,34 @@ import com.example.springlesson.service.ProductService;
 @RequestMapping("/product")
 public class ProductController {
   private final ProductService productService;
-  
+
   public ProductController(ProductService productService) {
     this.productService = productService;
   }
 
-  // 商品ページの表示
-  @GetMapping({"","/"})
+  // 商品ページの表示 
+  @GetMapping({ "", "/" })
   public String product(HttpSession session, Model model) {
-    // 全商品情報の取得
+    // 全商品情報の取得 
     List<ProductDTO> list = productService.findAllProduct();
-    // セッションスコープへセット
+    // セッションスコープへセット 
     session.setAttribute("list", list);
-    // 画面表示に利用する場合は必ずmodel.addAttributeが必要
-    // ThymeleafはModelしか受け取らないため
+    // 画面表示に利用する場合は必ずmodel.addAttributeが必要 
+    // ThymeleafはModelしか受け取らないため 
     model.addAttribute("list", list);
-    
-    // 商品ページへ
+    // 商品ページへ 
     return "product/product";
   }
-  // キーワード検索
+
+  // キーワード検索 
   @PostMapping("/find")
-  String find(@RequestParam(required = false, defaultValue="") String keyword ,Model model) {
-    // 商品名で商品情報検索
+  String find(@RequestParam(required = false, defaultValue = "") String keyword, Model model) {
+    // 商品名で商品情報検索 
     List<ProductDTO> list = productService.findByNameContaining(keyword);
     model.addAttribute("keyword", keyword);
-    // 画面表示用
+    // 画面表示用 
     model.addAttribute("list", list);
-    // 商品ページへ
+    // 商品ページへ 
     return "product/product";
-  }
-  
-//商品詳細ページ（確認用）
-  @GetMapping("/detail")
-  public String productDetail() {
-      return "product/product-melonpan";
   }
 }
