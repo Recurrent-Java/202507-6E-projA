@@ -1,0 +1,16 @@
+package com.example.springlesson.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // /images/** というURLに来たら、実際のディレクトリを見に行くようにする
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:///C:/teama-git/202507-6E-projA/springlesson/src/main/resources/static/images/");
+    }
+}

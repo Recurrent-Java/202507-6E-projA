@@ -55,15 +55,10 @@
 
                     <label for="stockQuantity">在庫数:</label>
                     <input type="number" id="stockQuantity" th:field="*{stockQuantity}" placeholder="0"><br><br>
-
-                    <button type="submit" class="action-button primary-button">商品を登録・更新</button>
-                    
-					<!--
-                    <button type="submit" class="action-button delete-button"
-                            th:formaction="@{/admin/product/delete}"
-                            onclick="return confirm('入力されたIDの商品を削除しますか？');">商品を削除</button>
-					-->
-                </form>
+					<label for="imageFile">商品画像:</label>
+					<input type="file" id="imageFile" th:field="*{imageFile}" accept="image/*"><br><br>
+				    <button type="submit" class="action-button primary-button">商品を登録・更新</button>
+					</form>
             </section>
 
             <div class="section-separator"></div>
