@@ -55,6 +55,9 @@ public class Product {
   @Column(name = "is_low_stock", nullable = false)
   private Integer isLowStock;
 
+  @Column(name = "image_url") // DBの列名(image_url)とJavaの変数名を紐付け
+  private String imagePath;
+
   // その他のフィールドは省略...
   // @Column(name = "PROD_DESC")
   // private String prodDesc;
