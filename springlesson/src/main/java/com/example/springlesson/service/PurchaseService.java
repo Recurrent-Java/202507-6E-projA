@@ -25,8 +25,8 @@ public class PurchaseService {
       for (Item item : cart) {
         Purchase purchase = new Purchase(
             null,
-            item.getProduct().getId(),
-            item.getProduct().getName(),
+            item.getProduct().getProductId(),
+            item.getProduct().getProductName(),
             item.getProduct().getPrice(),
             item.getCount(),
             name,
@@ -34,7 +34,7 @@ public class PurchaseService {
         // DBへ登録
         purchaseRepository.save(purchase);
       }
-    }catch(DataAccessException dae) {
+    } catch (DataAccessException dae) {
       throw new Exception("購入処理が失敗しました。<br>" + dae.getMessage());
     }
   }

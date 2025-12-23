@@ -36,4 +36,12 @@ public class ProductService {
     List<Product> list = productRepository.findByProductNameContaining(keyword);
     return productMapper.toDtoList(list);
   }
+
+  /**
+   * カテゴリIDで商品を取得する
+   */
+  public List<ProductDTO> findByCategory(Integer catId) {
+    List<Product> list = productRepository.findByCatId(catId);
+    return productMapper.toDtoList(list);
+  }
 }

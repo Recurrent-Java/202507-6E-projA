@@ -14,6 +14,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
    */
   List<Product> findByProductNameContaining(String keyword);
 
+  List<Product> findByCatId(Integer catId);
+
   // ★修正ポイント：
   // existsById, findById, deleteById は JpaRepository が 
   // 自動的に「Integer型」で提供するため、ここに書くとエラーになります。

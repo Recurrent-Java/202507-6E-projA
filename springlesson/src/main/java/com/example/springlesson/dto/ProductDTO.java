@@ -6,29 +6,17 @@ import lombok.Data;
 
 @Data
 public class ProductDTO {
-  // 商品ID
-  private Integer id;
 
-  // 商品名
-  private String name;
-  
-  // 価格
+  private Long productId;
+  private String productName;
   private Integer price;
 
-  /** コンストラクター */
-  // 引数なし
-  public ProductDTO() {}
-  // 引数あり
-  public ProductDTO(Integer id, String name, Integer price) {
-    this.id = id;
-    this.name = name;
-    this.price = price;
-  } 
-  
-  
-  /** 表示用メソッド */
-  // 桁区切り(Thymeleaf3以上からThymeleafのみでは桁区切り不可になっている)
+  // 画像（DB未対応なら仮）
+  private String imagePath;
+
+  private Long catId;
+
   public String getFormattedPrice() {
-    return NumberFormat.getNumberInstance().format(this.price);
+    return NumberFormat.getNumberInstance().format(price);
   }
 }
