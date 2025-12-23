@@ -14,6 +14,12 @@
   <link rel="stylesheet" th:href="@{/css/html5reset-1.6.1.css}">
   <!-- Original CSS -->
   <link rel="stylesheet" th:href="@{/css/chap25.css}">
+  <!-- login CSS -->
+  <link rel="stylesheet" th:href="@{/css/login-style.css}">
+  <!-- Oregister CSS -->
+  <link rel="stylesheet" th:href="@{/css/register-style.css}">
+  <!-- mypage CSS -->
+  <link rel="stylesheet" th:href="@{/css/style.css}">
 </div>
   <title>共通化用のHTMLファイル</title>
 </head>
@@ -101,7 +107,7 @@
           <div class="footer-col">
             <h4>マイアカウント</h4>
             <ul>
-              <li><a th:href="@{/account}">アカウント情報</a></li>
+              <li><a th:href="@{/mypage}">アカウント情報</a></li>
               <li><a th:href="@{/orders}">注文履歴</a></li>
 
               <li sec:authorize="isAnonymous()">

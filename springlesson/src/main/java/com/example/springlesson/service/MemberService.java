@@ -22,18 +22,17 @@ public class MemberService {
   @Transactional
   public void registerNewMember(RegisterForm form) {
     Member member = new Member();
-
-    // FormからEntityへの値のコピー
-    member.setLastName(form.getLastName());
-    /* ★修正: form.getLogin() -> form.getEmail() (ログインIDとして利用) */
-    member.setFirstName(form.getFirstName());
-    member.setLogin(form.getEmail());
-
-    // member.setPassword(passwordEncoder.encode(form.getPassword())); // 本来は暗号化
-    member.setPassword(form.getPassword()); // テスト用
+    // 姓名を結合して full_name に入れる
+    member.setFullName(form.getLastName() + " " + form.getFirstName());
+    member.setEmail(form.getEmail());
+    member.setPasswordHash(form.getPassword());
+    member.setPostalCode(form.getPostalCode());
+    member.setPrefecture(form.getPrefecture());
+    // 市区町村と番地を結合して address_line1 に入れる
+    member.setAddressLine1(form.getCity() + form.getAddress1());
+    member.setAddressLine2(form.getAddress2());
     member.setPhoneNumber(form.getPhone());
-
-    member.setRole("ROLE_USER");
+    member.setRegistrationDate(java.time.LocalDateTime.now());
 
     memberRepository.save(member);
   }
@@ -42,6 +41,6 @@ public class MemberService {
    * ログインIDがすでに存在するかチェック
    */
   public boolean isLoginIdAlreadyExists(String loginId) {
-    return memberRepository.existsByLogin(loginId);
+    return memberRepository.existsByEmail(loginId);
   }
 }

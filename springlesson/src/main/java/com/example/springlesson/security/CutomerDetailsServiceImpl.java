@@ -25,7 +25,7 @@ public class CutomerDetailsServiceImpl implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
     try {
-      Member member = memberRepository.findByLogin(login);
+      Member member = memberRepository.findByEmail(login);
       if (member == null) {
         throw new UsernameNotFoundException("ユーザーが見つかりません：" + login);
       }

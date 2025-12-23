@@ -33,7 +33,6 @@
               <div class="form-group">
                 <label>メールアドレス（ログインID）</label>
                 <div class="input-wrapper">
-                  <span class="input-icon">📧</span>
                   <input type="text" class="form-input" name="username" required placeholder="example@email.com"
                     autocomplete="email" th:value="${param.error} ? ${loginId}" />
                 </div>
@@ -42,7 +41,6 @@
               <div class="form-group">
                 <label>パスワード</label>
                 <div class="input-wrapper">
-                  <span class="input-icon">🔒</span>
                   <input type="password" class="form-input" name="password" id="password" required
                     placeholder="パスワードを入力" autocomplete="current-password">
                   <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>

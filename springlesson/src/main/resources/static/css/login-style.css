@@ -448,3 +448,10 @@ nav a:hover {
         font-size: 1.8em;
     }
 }
+
+.fontRed {
+    color: #ff0000;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}

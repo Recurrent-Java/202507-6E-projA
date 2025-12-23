@@ -23,12 +23,12 @@ public class CustomerDetailsImpl implements UserDetails {
 
   @Override
   public String getUsername() {
-    return this.member.getLogin(); // ★修正: customer -> member
+    return this.member.getEmail(); // ★修正: customer -> member
   }
 
   @Override
   public String getPassword() {
-    return this.member.getPassword(); // ★修正: customer -> member
+    return this.member.getPasswordHash(); // ★修正: customer -> member
   }
 
   @Override

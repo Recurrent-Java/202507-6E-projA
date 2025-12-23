@@ -1,51 +1,199 @@
 package com.example.springlesson.controller;
 
-import java.util.Collections;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.springlesson.dto.MemberDTO;
+import com.example.springlesson.entity.AllergenMaster;
+import com.example.springlesson.entity.Member;
+import com.example.springlesson.entity.MemberRank;
+import com.example.springlesson.security.CustomerDetailsImpl;
 
 @Controller
 @RequestMapping("/mypage")
 public class MypageController {
 
+  @Autowired
+  private com.example.springlesson.repository.MemberRankRepository rankRepository;
   // Serviceなどは省略
+
+  //--- 【2. MemberRepositoryを自動注入する】 ---
+  // データの保存（save）に必要です。リポジトリのパッケージ名は環境に合わせて調整してください。
+  @Autowired
+  private com.example.springlesson.repository.MemberRepository memberRepository;
+
+  @Autowired
+  private com.example.springlesson.repository.AllergenMasterRepository allergenMasterRepository;
 
   /**
    * マイページ画面を表示する
    */
   @GetMapping
-  public String showMypage(Model model) {
-    // 実際の処理: ログインユーザーの情報をDBから取得する
-    // ここではデモデータを作成
-    MemberDTO member = createDummyMember();
+  public String showMypage(@AuthenticationPrincipal CustomerDetailsImpl userDetails, Model model) {
+    if (userDetails == null)
+      return "redirect:/login";
 
+    // 1. 最新の会員情報をDBから取得（新規登録時のデータ漏れを防ぐため）
+    Member member = memberRepository.findById(userDetails.getMember().getMemberId())
+        .orElse(userDetails.getMember());
+
+    BigDecimal spending = member.getAnnualSpending();
+    List<MemberRank> allRanks = rankRepository.findAllByOrderByThresholdAmountAsc();
+
+    // --- ランク計算ロジック (維持) ---
+    if (allRanks.isEmpty()) {
+      MemberRank dummy = new MemberRank();
+      dummy.setRankName("ランク未設定");
+      dummy.setIconHtml("❓");
+      member.setCurrentRank(dummy);
+    } else {
+      MemberRank currentRank = allRanks.get(0);
+      MemberRank nextRank = null;
+
+      for (int i = 0; i < allRanks.size(); i++) {
+        MemberRank r = allRanks.get(i);
+        if (spending.compareTo(r.getThresholdAmount()) >= 0) {
+          currentRank = r;
+          if (i + 1 < allRanks.size()) {
+            nextRank = allRanks.get(i + 1);
+          } else {
+            nextRank = null;
+          }
+        }
+      }
+      member.setCurrentRank(currentRank);
+      member.setNextRank(nextRank);
+
+      if (nextRank != null && nextRank.getThresholdAmount().compareTo(BigDecimal.ZERO) > 0) {
+        BigDecimal gap = nextRank.getThresholdAmount().subtract(spending);
+        member.setSpendingToNextRank(gap);
+        double percent = (spending.doubleValue() / nextRank.getThresholdAmount().doubleValue()) * 100;
+        member.setRankProgressPercent(Math.min(100, (int) percent));
+      } else {
+        member.setSpendingToNextRank(BigDecimal.ZERO);
+        member.setRankProgressPercent(100);
+      }
+    }
+
+    // --- アレルギー日本語変換ロジック (追加) ---
+    List<AllergenMaster> allergenMasters = allergenMasterRepository.findAll();
+    List<String> registeredAllergenNames = new ArrayList<>();
+
+    // member.getAllergens() が null の場合に備えて安全策
+    if (member.getAllergens() != null) {
+      for (String code : member.getAllergens()) {
+        for (AllergenMaster master : allergenMasters) {
+          if (master.getAllergenCode().equals(code)) {
+            registeredAllergenNames.add(master.getAllergenName());
+            break;
+          }
+        }
+      }
+    }
+
+    // --- モデル属性の追加 (維持 + 追加) ---
     model.addAttribute("member", member);
-    // ordersやallergenMastersなどのリストもダミーで追加
-    model.addAttribute("orders", Collections.emptyList());
-    model.addAttribute("allergenMasters", Collections.emptyList());
+    model.addAttribute("allergenMasters", allergenMasters); // 全選択肢
+    model.addAttribute("registeredAllergenNames", registeredAllergenNames); // 登録済みの日本語名リスト
 
-    // src/main/resources/templates/mypage/mypage.html を返す
+    // 注文履歴（後ほど実装するため、空リストでエラー回避）
+    model.addAttribute("orders", java.util.Collections.emptyList());
+
     return "mypage/mypage";
   }
 
-  // ... 実際の情報更新やパスワード変更処理は省略 ...
+  /**
+   * 会員情報を更新する
+   */
+  @PostMapping("/update_info")
+  public String updateInfo(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
+      Member formMember,
+      RedirectAttributes redirectAttributes) {
 
-  /** デモ用ダミーデータ作成メソッド */
-  private MemberDTO createDummyMember() {
-    MemberDTO member = new MemberDTO();
-    member.setFullName("田中 太郎");
-    member.setAnnualSpending(35000);
-    member.setAvailablePoints(1200);
-    // ランク情報 (DTO側で定義が必要)
-    member.setCurrentRank(new MemberDTO.RankInfo("ホールケーキランク", "👑"));
-    member.setNextRank(new MemberDTO.RankInfo("バースデーランク", "🎂"));
-    member.setSpendingToNextRank(15000);
-    member.setRankProgressPercent(70); // 35000/50000 * 100
-    return member;
+    if (userDetails == null)
+      return "redirect:/login";
+
+    // 1. 現在ログイン中の会員エンティティを取得
+    Member member = userDetails.getMember();
+
+    // 2. フォーム（formMember）から送られてきた内容で会員情報を更新
+    member.setFullName(formMember.getFullName());
+    member.setPhoneNumber(formMember.getPhoneNumber());
+    member.setPostalCode(formMember.getPostalCode());
+    member.setPrefecture(formMember.getPrefecture());
+    member.setAddressLine1(formMember.getAddressLine1());
+    member.setAddressLine2(formMember.getAddressLine2());
+
+    // 3. データベースに保存
+    memberRepository.save(member);
+
+    // 4. メッセージを添えてマイページへリダイレクト
+    redirectAttributes.addFlashAttribute("successMessage", "会員情報を更新しました。");
+
+    return "redirect:/mypage?section=info";
+  }
+
+  /**
+   * 【追加箇所】アレルギー情報を更新する
+   */
+  @PostMapping("/update_allergies")
+  public String updateAllergies(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
+      @RequestParam(value = "allergenCode", required = false) List<String> allergenCodes,
+      RedirectAttributes redirectAttributes) {
+
+    if (userDetails == null)
+      return "redirect:/login";
+
+    Member member = userDetails.getMember();
+
+    // チェックされたコードのリストをセット（空の場合は新規リストをセット）
+    if (allergenCodes == null) {
+      member.setAllergens(new ArrayList<>());
+    } else {
+      member.setAllergens(allergenCodes);
+    }
+
+    // これで ALLERGY_SETTING テーブルが更新される
+    memberRepository.save(member);
+    redirectAttributes.addFlashAttribute("successMessage", "アレルギー情報を更新しました。");
+
+    return "redirect:/mypage?section=allergy";
+  }
+
+  /**
+   * 会員退会処理を実行する
+   * @param userDetails
+   * @param request
+   * @return
+   */
+  @PostMapping("/withdraw")
+  public String withdraw(@AuthenticationPrincipal CustomerDetailsImpl userDetails, HttpServletRequest request) {
+    // 1. ユーザーを特定して退会フラグを更新（論理削除）
+    // Member member = userDetails.getMember();
+    // member.setStatus(0); 
+    // memberRepository.save(member);
+
+    // 2. セッションを無効化（ログアウト）
+    try {
+      request.logout();
+    } catch (ServletException e) {
+      e.printStackTrace();
+    }
+
+    // 3. TOP画面へリダイレクト
+    return "redirect:/?withdraw";
   }
 }

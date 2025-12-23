@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <div th:replace="~{comlayout/base :: meta}"></div>
+  <div th:replace="~{comlayout/base :: styles}"></div>
+  <link rel="stylesheet" th:href="@{/css/register-style.css}">
+  <title>登録内容確認 - HealSweets</title>
+</head>
+
+<body>
+  <div th:replace="~{comlayout/base :: header}"></div>
+
+  <section class="register-section">
+    <div class="container">
+      <div class="register-container">
+        <div class="register-header">
+          <h1>登録内容の確認</h1>
+          <p>以下の内容で登録してもよろしいですか？</p>
+        </div>
+
+        <form th:action="@{/register/execute}" th:object="${registerForm}" method="post">
+          <div class="confirm-box">
+
+            <div class="confirm-item">
+              <label>お名前</label>
+              <p th:text="*{lastName} + ' ' + *{firstName}"></p>
+              <input type="hidden" th:field="*{lastName}">
+              <input type="hidden" th:field="*{firstName}">
+            </div>
+
+            <div class="confirm-item">
+              <label>メールアドレス</label>
+              <p th:text="*{email}"></p>
+              <input type="hidden" th:field="*{email}">
+            </div>
+
+            <div class="confirm-item">
+              <label>電話番号</label>
+              <p th:text="*{phone}"></p>
+              <input type="hidden" th:field="*{phone}">
+            </div>
+
+            <div class="confirm-item">
+              <label>生年月日</label>
+              <p th:text="*{birthYear} + '年' + *{birthMonth} + '月' + *{birthDay} + '日'"></p>
+              <input type="hidden" th:field="*{birthYear}">
+              <input type="hidden" th:field="*{birthMonth}">
+              <input type="hidden" th:field="*{birthDay}">
+            </div>
+
+            <div class="confirm-item">
+              <label>住所</label>
+              <p th:text="${#strings.length(registerForm.postalCode) == 7 ? 
+                          '〒' + #strings.substring(registerForm.postalCode, 0, 3) + '-' + #strings.substring(registerForm.postalCode, 3, 7) : 
+                          '〒' + registerForm.postalCode}"></p>
+              <p th:text="*{prefecture} + *{city} + *{address1}"></p>
+              <p th:text="*{address2}"></p>
+              <input type="hidden" th:field="*{postalCode}">
+              <input type="hidden" th:field="*{prefecture}">
+              <input type="hidden" th:field="*{city}">
+              <input type="hidden" th:field="*{address1}">
+              <input type="hidden" th:field="*{address2}">
+            </div>
+
+            <div class="confirm-item">
+              <label>アレルギー情報</label>
+              <p
+                th:text="${registerForm.allergy != null and !registerForm.allergy.isEmpty()} ? ${#strings.listJoin(registerForm.allergy, ', ')} : 'なし'">
+              </p>
+
+              <input type="hidden" th:each="a : *{allergy}" name="allergy" th:value="${a}">
+            </div>
+
+            <input type="hidden" th:field="*{password}">
+          </div>
+
+          <div class="button-group" style="margin-top: 40px;">
+            <button type="button" class="back-btn" onclick="history.back()">修正する</button>
+            <button type="submit" class="submit-btn">この内容で登録する</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div th:replace="~{comlayout/base :: footer}"></div>
+</body>
+
+</html>
