@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>商品詳細 - HealSweets</title>
-    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
+	<link rel="stylesheet" th:href="@{/css/chap25.css}">
+	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <header>
@@ -23,11 +24,11 @@
 
     <div class="breadcrumb">
         <div class="container">
-            <a th:href="@{/product}">ホーム</a>
+            <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
             <a href="#">燃焼系ヘルシー</a>
             <span class="separator">›</span>
-            <span class="current">レッドホット・シュー</span>
+            <span class="current">レッドホットシュー</span>
         </div>
     </div>
 
@@ -36,13 +37,13 @@
             <div class="product-detail-container">
                 <div class="product-images">
                     <div class="main-image">
-                        <img th:src="@{/images/redhotshuwhite.jpg}" alt="レッドホット・シュー">
+                        <img th:src="@{/images/redhotshuwhite.png}" alt="レッドホットシュー">
                     </div>
                 </div>
 
                 <div class="product-info">
                     <div class="product-category-tag" style="background-color: #ff4d4d;">脂肪燃焼サポート</div>
-                    <h1 class="product-title">レッドホット・シュー</h1>
+                    <h1 class="product-title">レッドホットシュー</h1>
                     
                     <div class="product-price-section">
                         <div class="price-row">
@@ -127,7 +128,7 @@
         }
         document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
             const quantity = document.getElementById('quantity').value;
-            alert('「レッドホット・シュー」' + quantity + '個をカートに追加しました！燃焼の準備はいいですか？');
+            alert('「レッドホット・シュー」' + quantity + '個をカートに追加しました！');
         });
     </script>
 </body>
