@@ -14,4 +14,7 @@ public class Item {
   private ProductDTO product;
   // 個数
   private int count;
+  //★この1行を追加！
+  private boolean isGift;
+  
 }
