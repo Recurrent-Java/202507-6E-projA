@@ -34,7 +34,14 @@
 
                 <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <div class="product-category-tag">カカオ70％</div>
+                    <!-- 複数カテゴリー対応 -->
+                    <div class="product-category-tags">
+                        <th:block th:if="${product != null and product.categories != null}">
+                            <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
+                        </th:block>
+                        <!-- デフォルト表示（productがない場合） -->
+                        <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">カカオ70％</div>
+                    </div>
                     <h1 class="product-title">米粉のベリーチョコケーキ</h1>
                     
                     <div class="product-price-section">
