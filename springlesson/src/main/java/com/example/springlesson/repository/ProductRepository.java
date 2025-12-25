@@ -2,8 +2,9 @@ package com.example.springlesson.repository;
 
 import java.util.List;
 
-// Optionalのインポートは不要になります（標準機能を使うため）
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.example.springlesson.entity.Product;
 
@@ -14,10 +15,19 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
    */
   List<Product> findByProductNameContaining(String keyword);
 
+  /**
+   * 単一カテゴリIDで検索
+   */
   List<Product> findByCatId(Integer catId);
 
-  // ★修正ポイント：
-  // existsById, findById, deleteById は JpaRepository が 
-  // 自動的に「Integer型」で提供するため、ここに書くとエラーになります。
-  // すべて削除してください。
+  /**
+   * 複数カテゴリIDで検索（AND条件）
+   * 選択したすべてのカテゴリーに該当する商品のみを表示
+   */
+  @Query("SELECT p FROM Product p " +
+         "WHERE (SELECT COUNT(DISTINCT pcr.categoryId) " +
+         "       FROM ProductCategoryRelation pcr " +
+         "       WHERE pcr.productId = p.productId " +
+         "       AND pcr.categoryId IN :catIds) = :catCount")
+  List<Product> findByCategoryIds(@Param("catIds") List<Integer> catIds, @Param("catCount") long catCount);
 }

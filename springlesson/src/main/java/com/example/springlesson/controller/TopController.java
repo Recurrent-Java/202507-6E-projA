@@ -29,20 +29,24 @@ public class TopController {
    */
   @GetMapping("/")
   public String index(
-      @RequestParam(name = "catId", required = false) Integer catId,
-      @RequestParam(name = "keyword", required = false) String keyword, // ついでに追加しておくと便利
+      @RequestParam(name = "catIds", required = false) List<Integer> catIds,
+      @RequestParam(name = "keyword", required = false) String keyword,
       Model model) {
 
     // 商品リストの取得
-    List<ProductDTO> list = getFilteredProducts(keyword, catId);
+    List<ProductDTO> list = getFilteredProducts(keyword, catIds);
     model.addAttribute("products", list);
 
-    // ★3. カテゴリー一覧をDBから取得してHTMLに渡す
+    // カテゴリー一覧をDBから取得してHTMLに渡す
     List<Category> categoryList = categoryService.findAll();
     model.addAttribute("categoryList", categoryList);
 
-    // 現在選択中のIDを渡す（ボタンのactive切り替え用）
-    model.addAttribute("catId", catId);
+    // 選択中のカテゴリーIDリストを渡す（チェックボックスの状態用）
+    if (catIds != null && !catIds.isEmpty() && !catIds.contains(0)) {
+      model.addAttribute("selectedCatIds", catIds);
+    } else {
+      model.addAttribute("selectedCatIds", java.util.Collections.emptyList());
+    }
 
     return "index";
   }
@@ -52,10 +56,10 @@ public class TopController {
    */
   @GetMapping("/filter")
   public String filter(
-      @RequestParam(name = "catId", required = false) Integer catId,
+      @RequestParam(name = "catIds", required = false) List<Integer> catIds,
       Model model) {
 
-    List<ProductDTO> productList = getFilteredProducts(null, catId);
+    List<ProductDTO> productList = getFilteredProducts(null, catIds);
     model.addAttribute("products", productList);
 
     return "index :: product-list-fragment";
@@ -64,13 +68,14 @@ public class TopController {
   /**
    * 絞り込みロジックの共通化
    */
-  private List<ProductDTO> getFilteredProducts(String keyword, Integer catId) {
+  private List<ProductDTO> getFilteredProducts(String keyword, List<Integer> catIds) {
     List<ProductDTO> list;
 
     if (keyword != null && !keyword.isBlank()) {
       list = productService.findByNameContaining(keyword);
-    } else if (catId != null && catId != 0) {
-      list = productService.findByCategory(catId);
+    } else if (catIds != null && !catIds.isEmpty() && !catIds.contains(0)) {
+      // 複数カテゴリーでフィルタリング
+      list = productService.findByCategories(catIds);
     } else {
       list = productService.findAllProduct();
     }

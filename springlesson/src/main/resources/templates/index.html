@@ -34,19 +34,28 @@
 
     <!-- カテゴリー -->
     <section class="category">
-      <ul>
-        <li>
-          <a th:href="@{/}" class="category-btn" 
-             th:classappend="${catId == null || catId == 0} ? 'active' : ''">すべて</a>
-        </li>
+      <form id="categoryForm" th:action="@{/}" method="get">
+        <ul>
+          <li>
+            <label>
+              <input type="checkbox" name="catIds" value="0" 
+                     th:checked="${selectedCatIds == null || selectedCatIds.isEmpty()}" 
+                     onchange="handleCategoryChange(this)">
+              すべて
+            </label>
+          </li>
 
-        <li th:each="cat : ${categoryList}">
-          <a th:href="@{/(catId=${cat.catId})}" 
-             class="category-btn" 
-             th:classappend="${catId == cat.catId} ? 'active' : ''"
-             th:text="${cat.catName}">カテゴリー名</a>
-        </li>
-      </ul>
+          <li th:each="cat : ${categoryList}">
+            <label>
+              <input type="checkbox" name="catIds" 
+                     th:value="${cat.catId}" 
+                     th:checked="${selectedCatIds != null && selectedCatIds.contains(cat.catId)}" 
+                     onchange="handleCategoryChange(this)">
+              <span th:text="${cat.catName}">カテゴリー名</span>
+            </label>
+          </li>
+        </ul>
+      </form>
     </section>
 
     <!-- 商品一覧 -->
@@ -82,6 +91,33 @@
           speed: 1000           /* 切り替えにかける時間（1秒） */
         });
       });
+      
+      function handleCategoryChange(checkbox) {
+        const form = document.getElementById('categoryForm');
+        const allCheckbox = form.querySelector('input[value="0"]');
+        const categoryCheckboxes = form.querySelectorAll('input[name="catIds"]:not([value="0"])');
+        
+        if (checkbox.value === '0') {
+          // 「すべて」がチェックされた場合、他のチェックを外す
+          if (checkbox.checked) {
+            categoryCheckboxes.forEach(cb => cb.checked = false);
+          }
+        } else {
+          // 個別カテゴリーがチェックされた場合、「すべて」のチェックを外す
+          if (checkbox.checked) {
+            allCheckbox.checked = false;
+          }
+          
+          // すべてのカテゴリーチェックが外れた場合、「すべて」をチェック
+          const anyChecked = Array.from(categoryCheckboxes).some(cb => cb.checked);
+          if (!anyChecked) {
+            allCheckbox.checked = true;
+          }
+        }
+        
+        // フォーム送信
+        form.submit();
+      }
    </script>
   
 </body>

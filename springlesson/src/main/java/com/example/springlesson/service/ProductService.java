@@ -44,4 +44,13 @@ public class ProductService {
     List<Product> list = productRepository.findByCatId(catId);
     return productMapper.toDtoList(list);
   }
+
+  /**
+   * 複数カテゴリIDで商品を取得する（AND条件）
+   * 選択したすべてのカテゴリーに該当する商品のみを返す
+   */
+  public List<ProductDTO> findByCategories(List<Integer> catIds) {
+    List<Product> list = productRepository.findByCategoryIds(catIds, catIds.size());
+    return productMapper.toDtoList(list);
+  }
 }
