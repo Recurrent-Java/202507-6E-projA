@@ -65,8 +65,11 @@
 
             <div class="confirm-item">
               <label>アレルギー情報</label>
-              <p
-                th:text="${registerForm.allergy != null and !registerForm.allergy.isEmpty()} ? ${#strings.listJoin(registerForm.allergy, ', ')} : 'なし'">
+              <p th:text="${allergyNames != null and !allergyNames.isEmpty()} 
+                          ? ${#strings.listJoin(allergyNames, ', ')} 
+                          : (${registerForm.allergy != null and !registerForm.allergy.isEmpty()} 
+                             ? ${#strings.listJoin(registerForm.allergy, ', ')} 
+                             : 'なし')">
               </p>
 
               <input type="hidden" th:each="a : *{allergy}" name="allergy" th:value="${a}">

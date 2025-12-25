@@ -203,13 +203,16 @@
     </div>
   </main>
 
-  <div id="finalConfirmModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <h2>最終確認</h2>
-      <p>本当に退会してもよろしいですか？</p>
-      <div class="modal-actions">
-        <button class="submit-btn" onclick="executeWithdrawal()">はい</button>
-        <button class="danger-btn" onclick="closeModal('finalConfirmModal')">いいえ</button>
+  <div id="finalConfirmModal" class="modal">
+    <div class="modal-content"
+      style="background: white; padding: 30px; border-radius: 15px; position: relative; z-index: 10001;">
+      <h2 style="margin-top: 0; color: #333;">最終確認</h2>
+      <p style="color: #666; margin-bottom: 25px;">本当に退会してもよろしいですか？</p>
+      <div class="modal-actions" style="display: flex; gap: 15px; justify-content: center;">
+        <button type="button" class="submit-btn" onclick="executeWithdrawal()"
+          style="margin-top: 0; width: auto; padding: 10px 30px;">はい</button>
+        <button type="button" class="danger-btn" onclick="closeModal('finalConfirmModal')"
+          style="padding: 10px 30px; background-color: #666; color: white; border: none; border-radius: 8px; cursor: pointer;">いいえ</button>
       </div>
     </div>
   </div>
@@ -222,58 +225,98 @@
       const menuItems = document.querySelectorAll('.mypage-wrapper .menu-item');
       const contentSections = document.querySelectorAll('.mypage-wrapper .content-section');
 
+      // --- 追加：URLパラメータからセクションを取得して切り替えるロジック ---
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetSection = urlParams.get('section'); // "info" や "allergy" を取得
+
+      if (targetSection) {
+        // 1. 全ての active クラスを一旦消す
+        menuItems.forEach(m => m.classList.remove('active'));
+        contentSections.forEach(s => s.classList.remove('active'));
+
+        // 2. 該当するメニュー項目を active にする
+        const targetMenu = document.querySelector(`.menu-item[data-section="${targetSection}"]`);
+        if (targetMenu) targetMenu.classList.add('active');
+
+        // 3. 該当するコンテンツエリアを active にする
+        const targetContent = document.getElementById(targetSection);
+        if (targetContent) targetContent.classList.add('active');
+      }
+
+      // メニュー切り替えロジック
       menuItems.forEach(item => {
         item.addEventListener('click', function () {
           const sectionId = this.getAttribute('data-section');
           if (!sectionId) return;
 
-          // 1. 左メニューの active 付け替え
+          // 左メニューの active 付け替え
           menuItems.forEach(m => m.classList.remove('active'));
           this.classList.add('active');
 
-          // 2. 右コンテンツの active 付け替え
+          // 右コンテンツの active 付け替え
           contentSections.forEach(sec => {
             sec.classList.remove('active');
-            if (sec.id === sectionId) {
-              sec.classList.add('active');
-            }
+            if (sec.id === sectionId) sec.classList.add('active');
           });
         });
       });
+      // 退会制御
+      const confirmCheckbox = document.getElementById('confirm-withdrawal');
+      const withdrawalBtn = document.getElementById('withdrawal-btn');
+      if (confirmCheckbox) {
+        confirmCheckbox.addEventListener('change', function () {
+          withdrawalBtn.disabled = !this.checked;
+        });
+      }
     });
 
-    // 退会制御
-    const confirmCheckbox = document.getElementById('confirm-withdrawal');
-    const withdrawalBtn = document.getElementById('withdrawal-btn');
-    if (confirmCheckbox) {
-      confirmCheckbox.addEventListener('change', function () {
-        withdrawalBtn.disabled = !this.checked;
-      });
+    // 1. モーダルを開く（デバッグログ付き）
+    function openConfirmModal() {
+      console.log("モーダルを開く関数が呼ばれました");
+      const modal = document.getElementById('finalConfirmModal');
+      if (modal) {
+        modal.style.setProperty('display', 'flex', 'important');
+        console.log("displayをflex(!important)に変更しました");
+      } else {
+        console.error("ID: finalConfirmModal が見つかりません");
+      }
     }
 
-    function openConfirmModal() {document.getElementById('finalConfirmModal').style.display = 'flex';}
-    function closeModal(id) {document.getElementById(id).style.display = 'none';}
+    // 2. モーダルを閉じる
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.style.display = 'none';
+    }
 
+    // 3. 退会を実際に実行する
     function executeWithdrawal() {
-      closeModal('finalConfirmModal');
-      document.getElementById('withdrawalFormContainer').style.display = 'none';
-      document.getElementById('completionMessage').style.display = 'block';
+      console.log("退会処理を開始します");
 
-      setTimeout(() => {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = /*[[@{/mypage/withdraw}]]*/'/mypage/withdraw';
-        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
-        if (csrfToken) {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = '_csrf';
-          input.value = csrfToken;
-          form.appendChild(input);
-        }
-        document.body.appendChild(form);
-        form.submit();
-      }, 3000);
+      closeModal('finalConfirmModal');
+
+      const container = document.getElementById('withdrawalFormContainer');
+      const message = document.getElementById('completionMessage');
+      if (container) container.style.display = 'none';
+      if (message) message.style.display = 'block';
+
+      // 送信用フォームの動的生成
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = /*[[@{/mypage/withdraw}]]*/ '/mypage/withdraw';
+
+      // CSRFトークンの取得と設定
+      const csrfTokenEl = document.querySelector('meta[name="_csrf"]');
+      if (csrfTokenEl) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = '_csrf';
+        input.value = csrfTokenEl.getAttribute('content');
+        form.appendChild(input);
+      }
+
+      document.body.appendChild(form);
+      console.log("サーバーへ退会リクエストを送信します...");
+      form.submit();
     }
   </script>
 </body>

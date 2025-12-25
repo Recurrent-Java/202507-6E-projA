@@ -101,53 +101,71 @@
   <div th:replace="~{comlayout/base :: footer}"></div>
 
   <script th:inline="javascript">
-    // パスワード表示切替 (参照HTMLからコピー)
-    function togglePassword() {
-      const passwordInput = document.getElementById('password');
-      const toggleBtn = document.querySelector('.toggle-password');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        toggleBtn.textContent = '🙈';
-      } else {
-        passwordInput.type = 'password';
-        toggleBtn.textContent = '👁️';
-      }
-    }
+    // ページの読み込みが完了してから実行する
+    document.addEventListener('DOMContentLoaded', function () {
 
-    // パスワード忘れモーダル (参照HTMLからコピー)
-    function openModal() {
-      document.getElementById('forgotPasswordModal').style.display = 'flex';
-    }
-    function closeModal() {
-      document.getElementById('forgotPasswordModal').style.display = 'none';
-    }
-    document.querySelector('.forgot-link').addEventListener('click', function (e) {
-      e.preventDefault();
-      openModal();
-    });
-
-    // モーダル外クリックで閉じる
-    window.addEventListener('click', function (e) {
+      // 1. 【初期化】モーダルを確実に隠す
       const modal = document.getElementById('forgotPasswordModal');
-      if (e.target === modal) {
-        closeModal();
+      if (modal) {
+        modal.style.display = 'none';
       }
-    });
 
-    // パスワードリセットフォーム送信 (参照HTMLからコピー)
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const email = this.querySelector('input[type="email"]').value;
-      alert(`${email} にパスワードリセット用のリンクを送信しました。`);
-      closeModal();
-      this.reset();
-    });
+      // 2. パスワード表示切替
+      window.togglePassword = function () {
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.querySelector('.toggle-password');
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          toggleBtn.textContent = '🙈';
+        } else {
+          passwordInput.type = 'password';
+          toggleBtn.textContent = '👁️';
+        }
+      };
 
-    // ソーシャルログイン（デモ）
-    document.querySelectorAll('.social-btn').forEach(btn => {
-      btn.addEventListener('click', function () {
-        const provider = this.classList.contains('google') ? 'Google' : 'Apple';
-        alert(`${provider}アカウントでログインします（デモ機能）`);
+      // 3. モーダルを開く・閉じる
+      window.openModal = function () {
+        document.getElementById('forgotPasswordModal').style.display = 'flex';
+      };
+      window.closeModal = function () {
+        document.getElementById('forgotPasswordModal').style.display = 'none';
+      };
+
+      // 4. 「パスワードをお忘れの方」リンクのクリックイベント
+      const forgotLink = document.querySelector('.forgot-link');
+      if (forgotLink) {
+        forgotLink.addEventListener('click', function (e) {
+          e.preventDefault();
+          openModal();
+        });
+      }
+
+      // 5. モーダル外クリックで閉じる
+      window.addEventListener('click', function (e) {
+        const modal = document.getElementById('forgotPasswordModal');
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      // 6. パスワードリセットフォーム送信
+      const forgotForm = document.getElementById('forgotPasswordForm');
+      if (forgotForm) {
+        forgotForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const email = this.querySelector('input[type="email"]').value;
+          alert(`${email} にパスワードリセット用のリンクを送信しました。`);
+          closeModal();
+          this.reset();
+        });
+      }
+
+      // 7. ソーシャルログイン（デモ）
+      document.querySelectorAll('.social-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const provider = this.classList.contains('google') ? 'Google' : 'Apple';
+          alert(`${provider}アカウントでログインします（デモ機能）`);
+        });
       });
     });
   </script>

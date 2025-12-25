@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "PRODUCT")
+@Table(name = "product") // 小文字にする
 public class Product {
 
   @Id
@@ -22,13 +22,14 @@ public class Product {
   @Column(name = "product_name", nullable = false)
   private String productName;
 
-  // DB定義に存在するが、管理画面フォームにはない項目（NOT NULL対応が必要）
-  @Column(name = "CAT_ID", nullable = false)
+  // ここを small snake case (cat_id) に合わせる
+  @Column(name = "cat_id", nullable = false)
   private Integer catId;
 
   @Column(name = "LIMITED_FLG", nullable = false)
   private Integer limitedFlg;
 
+  // 予約語対策
   @Column(name = "`USAGE`", nullable = false)
   private String usage;
 
@@ -39,26 +40,20 @@ public class Product {
   private String saleStatus;
 
   @Column(name = "is_limited", nullable = false)
-  private Integer isLimited; // TINYINT(1)をIntegerでマッピング
+  private Integer isLimited;
 
-  // フォームで入力される項目
   @Column(name = "price", nullable = false)
   private Integer price;
 
   @Column(name = "stock_quantity", nullable = false)
   private Integer stockQuantity;
 
-  // エラーの原因となったフィールド群
   @Column(name = "is_gift_available", nullable = false)
   private Integer isGiftAvailable;
 
   @Column(name = "is_low_stock", nullable = false)
   private Integer isLowStock;
 
-  @Column(name = "image_url") // DBの列名(image_url)とJavaの変数名を紐付け
+  @Column(name = "image_url")
   private String imagePath;
-
-  // その他のフィールドは省略...
-  // @Column(name = "PROD_DESC")
-  // private String prodDesc;
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,6 +36,9 @@ public class MypageController {
 
   @Autowired
   private com.example.springlesson.repository.AllergenMasterRepository allergenMasterRepository;
+
+  @Autowired
+  private com.example.springlesson.service.MemberService memberService;
 
   /**
    * マイページ画面を表示する
@@ -157,19 +159,26 @@ public class MypageController {
     if (userDetails == null)
       return "redirect:/login";
 
-    Member member = userDetails.getMember();
+    // 1. DBから「今の最新状態」を直接取ってくる（超重要！）
+    Member member = memberRepository.findById(userDetails.getMember().getMemberId())
+        .orElseThrow(() -> new RuntimeException("会員が見つかりません"));
 
-    // チェックされたコードのリストをセット（空の場合は新規リストをセット）
+    // 2. リストの中身を入れ替える
+    // 新しいArrayListを作ることでHibernateに「変更があった」と確実に伝えます
     if (allergenCodes == null) {
-      member.setAllergens(new ArrayList<>());
+      member.getAllergens().clear(); // 中身を空にする
     } else {
-      member.setAllergens(allergenCodes);
+      member.setAllergens(new ArrayList<>(allergenCodes));
     }
 
-    // これで ALLERGY_SETTING テーブルが更新される
-    memberRepository.save(member);
-    redirectAttributes.addFlashAttribute("successMessage", "アレルギー情報を更新しました。");
+    // 3. DBへ保存
+    Member savedMember = memberRepository.save(member);
 
+    // 4. ログイン情報（userDetails）の中身も最新に更新する
+    // これをしないと、リダイレクト後の画面で古い情報が表示される原因になります
+    userDetails.setMember(savedMember);
+
+    redirectAttributes.addFlashAttribute("successMessage", "アレルギー情報を更新しました。");
     return "redirect:/mypage?section=allergy";
   }
 
@@ -180,20 +189,23 @@ public class MypageController {
    * @return
    */
   @PostMapping("/withdraw")
-  public String withdraw(@AuthenticationPrincipal CustomerDetailsImpl userDetails, HttpServletRequest request) {
-    // 1. ユーザーを特定して退会フラグを更新（論理削除）
-    // Member member = userDetails.getMember();
-    // member.setStatus(0); 
-    // memberRepository.save(member);
+  public String withdraw(java.security.Principal principal, jakarta.servlet.http.HttpServletRequest request) {
+    // principal を引数に入れることで解決
+    if (principal == null) {
+      return "redirect:/login";
+    }
 
-    // 2. セッションを無効化（ログアウト）
+    // Serviceを呼び出してDBを更新(status=0にする)
+    memberService.withdraw(principal.getName());
+
+    // セッションを無効化（ログアウト）
     try {
       request.logout();
     } catch (ServletException e) {
       e.printStackTrace();
     }
 
-    // 3. TOP画面へリダイレクト
-    return "redirect:/?withdraw";
+    // TOP画面へ（退会完了メッセージ用パラメータ付与）
+    return "redirect:/?withdraw_success=true";
   }
 }

@@ -1,5 +1,7 @@
 package com.example.springlesson.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.springlesson.entity.AllergenMaster;
 import com.example.springlesson.form.RegisterForm;
 import com.example.springlesson.service.MemberService;
 
@@ -19,7 +22,9 @@ public class RegisterController {
 
   // 登録Service, Mapperなどは省略
   private final MemberService memberService; // Serviceを呼び出せるように定義
-  
+
+  private final com.example.springlesson.repository.AllergenMasterRepository allergenMasterRepository;
+
   /**
    * 新規会員登録画面を表示する
    */
@@ -36,7 +41,43 @@ public class RegisterController {
    */
   @PostMapping("/confirm")
   public String confirmRegistration(@ModelAttribute RegisterForm registerForm, Model model) {
-    // フォームの値を保持したまま confirm/confirm.html へ
+    List<String> selectedCodes = registerForm.getAllergy();
+    System.out.println("=== デバッグ開始 ===");
+    System.out.println("① 画面からの受信: " + selectedCodes);
+
+    List<String> selectedNames = new java.util.ArrayList<>();
+
+    // DBから全件取得
+    List<AllergenMaster> masters = allergenMasterRepository.findAll();
+
+    if (masters == null || masters.isEmpty()) {
+      System.out.println("② エラー: DBからマスタが1件も取得できていません！");
+    } else {
+      System.out.println("② マスタ取得成功: " + masters.size() + "件取得しました");
+
+      for (AllergenMaster m : masters) {
+        // ここで中身が null かどうかを物理的に確認
+        System.out.println("   -> DBの中身: Code=[" + m.getAllergenCode() + "], Name=[" + m.getAllergenName() + "]");
+      }
+    }
+
+    if (selectedCodes != null && masters != null) {
+      for (String sCode : selectedCodes) {
+        for (AllergenMaster m : masters) {
+          // nullチェックを入れた安全な比較
+          String dbCode = (m.getAllergenCode() != null) ? m.getAllergenCode().trim() : "";
+          if (dbCode.equalsIgnoreCase(sCode.trim())) {
+            selectedNames.add(m.getAllergenName());
+            System.out.println("③ 一致確認: " + sCode + " -> " + m.getAllergenName());
+          }
+        }
+      }
+    }
+
+    System.out.println("④ 最終結果(selectedNames): " + selectedNames);
+    System.out.println("=== デバッグ終了 ===");
+
+    model.addAttribute("allergyNames", selectedNames);
     model.addAttribute("registerForm", registerForm);
     return "confirm/confirm";
   }
@@ -53,6 +94,6 @@ public class RegisterController {
 
   @GetMapping("/complete")
   public String complete() {
-    return "complete/complete"; 
+    return "complete/complete";
   }
 }

@@ -19,7 +19,7 @@ public class MemberDTO {
   private Integer availablePoints; // 保有ポイント
 
   // アレルギー情報
-  private List<AllergenInfo> allergens;
+  private List<String> allergens;
 
   /** ランク情報内部クラス */
   @Data

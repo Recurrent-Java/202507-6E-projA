@@ -34,6 +34,12 @@ public class MemberService {
     member.setPhoneNumber(form.getPhone());
     member.setRegistrationDate(java.time.LocalDateTime.now());
 
+    // 【追加：アレルギー情報のセット】
+    // form.getAllergens() が List<String> を返す想定です
+    if (form.getAllergy() != null && !form.getAllergy().isEmpty()) {
+      member.setAllergens(new java.util.ArrayList<>(form.getAllergy()));
+    }
+
     memberRepository.save(member);
   }
 
@@ -42,5 +48,17 @@ public class MemberService {
    */
   public boolean isLoginIdAlreadyExists(String loginId) {
     return memberRepository.existsByEmail(loginId);
+  }
+
+  @Transactional
+  public void withdraw(String email) {
+    Member member = memberRepository.findByEmail(email);
+    if (member == null) {
+      throw new RuntimeException("ユーザーが見つかりません");
+    }
+
+    // Member.java の status が Integer 型なので 0（退会）をセット
+    member.setStatus(0);
+    memberRepository.save(member);
   }
 }
