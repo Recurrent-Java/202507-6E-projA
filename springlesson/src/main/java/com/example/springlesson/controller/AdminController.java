@@ -1,5 +1,6 @@
 package com.example.springlesson.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -46,9 +47,11 @@ public class AdminController {
 
   /**
    * 商品登録・更新処理
+ * @throws IOException 
+ * @throws IllegalStateException 
    */
   @PostMapping("/product/save")
-  public String saveProduct(@Validated @ModelAttribute AdminProductForm form, BindingResult result, Model model) {
+  public String saveProduct(@Validated @ModelAttribute AdminProductForm form, BindingResult result, Model model) throws IllegalStateException, IOException {
     if (result.hasErrors()) {
       return index(model);
     }

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,13 +83,13 @@ public class ProductController {
   //商品詳細ページ（焼きドーナツ）
   @GetMapping("/products/6")
   public String productbakeddonut() {
-    return "product/product-bakeddonut";
+    return "product/product-bakeddonuts";
   }
 
   //商品詳細ページ（ココアエクレア）
   @GetMapping("/products/4")
   public String productcocoaeclair() {
-    return "product/product-cocoaeclair";
+    return "product/product-cacaoeclair";
   }
 
   //商品詳細ページ（チョコケーキ）
@@ -100,7 +101,7 @@ public class ProductController {
   //商品詳細ページ（ココナッツマカロン）
   @GetMapping("/products/8")
   public String productcoconutmacaron() {
-    return "product/product-coconutmacaron";
+    return "product/product-coconutmacaroons";
   }
 
   //商品詳細ページ（クッキー缶）
@@ -120,4 +121,13 @@ public class ProductController {
   public String productlemoncake() {
     return "product/product-lemoncake";
   }
+  
+  //商品詳細ページのID12～追加商品分
+  @GetMapping("/products/{id}")
+public String tempProductDetail(@PathVariable("id") Integer id, Model model) {
+    // IDをModelに渡しておけば、HTML側で「商品ID: 19 の詳細」と表示できます
+    model.addAttribute("id", id);
+    // 共通の「準備中」または「汎用詳細ページ」を1枚作って返す
+    return "product/product-generic-detail";
+}
 }

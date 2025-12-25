@@ -3,7 +3,6 @@ package com.example.springlesson.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,7 @@ public class AdminService {
     }
 
     // --- 商品登録・更新 ---
-    public void saveProduct(AdminProductForm form) {
+    public void saveProduct(AdminProductForm form) throws IllegalStateException, IOException {
 
         Product product;
         Integer productId = form.getProductId();
@@ -60,31 +59,23 @@ public class AdminService {
         product.setPrice(form.getPrice());
         product.setStockQuantity(form.getStockQuantity());
 
-        // --- 画像アップロード処理 ---
-        if (form.getImageFile() != null && !form.getImageFile().isEmpty()) {
-            try {
-                // UUID でファイル名の衝突を防ぐ
-                String fileName = UUID.randomUUID().toString() + "_" +
-                                  form.getImageFile().getOriginalFilename();
+     // --- 画像アップロード処理 ---
+     // 元のファイル名をそのまま利用
+        String fileName = form.getImageFile().getOriginalFilename();
 
-                File dest = new File(UPLOAD_DIR + fileName);
+        // 保存先
+        File dest = new File(UPLOAD_DIR + fileName);
 
-                // ディレクトリが無ければ作成
-                if (!dest.getParentFile().exists()) {
-                    dest.getParentFile().mkdirs();
-                }
-
-                // ファイル保存
-                form.getImageFile().transferTo(dest);
-
-                // DB にはファイル名だけ保存（パスは固定）
-                product.setImagePath(fileName);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                // 必要に応じて例外スロー
-            }
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
         }
+
+        // ファイル保存
+        form.getImageFile().transferTo(dest);
+
+        // DBには公開用URL形式で保存
+        product.setImagePath("/images/" + fileName);
+
 
         productRepository.save(product);
     }

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品詳細 - HealSweets</title>
+    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-spacer"></div>
+            <div class="logo">
+                <a th:href="@{/product}">
+                    <img th:src="@{/images/logo.png}" alt="HealSweets" class="logo-image">
+                </a>
+            </div>
+            <div class="header-icons">
+                <a th:href="@{/product}" class="top-btn">🏠 トップ</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="breadcrumb">
+        <div class="container">
+            <a th:href="@{/product}">ホーム</a>
+            <span class="separator">›</span>
+            <a href="#">燃焼系ヘルシー</a>
+            <span class="separator">›</span>
+            <span class="current">レッドホット・シュー</span>
+        </div>
+    </div>
+
+    <section class="product-detail-section">
+        <div class="container">
+            <div class="product-detail-container">
+                <div class="product-images">
+                    <div class="main-image">
+                        <img th:src="@{/images/redhotshuwhite.jpg}" alt="レッドホット・シュー">
+                    </div>
+                </div>
+
+                <div class="product-info">
+                    <div class="product-category-tag" style="background-color: #ff4d4d;">脂肪燃焼サポート</div>
+                    <h1 class="product-title">レッドホット・シュー</h1>
+                    
+                    <div class="product-price-section">
+                        <div class="price-row">
+                            <span class="current-price">¥216</span>
+                        </div>
+                        <p class="tax-note">※税込価格</p>
+                    </div>
+
+                    <div class="product-description">
+                        <h3>商品説明</h3>
+                        <p>「スイーツを食べて、内側から熱くなる。」そんな新感覚の体験をお届けする、燃焼系シュークリーム。
+                        真っ赤な光を放つオーラを纏ったかのようなインパクトある見た目とは裏腹に、中身は濃厚でとろけるようなカスタードクリームがたっぷり。
+                        生地には代謝を促進するカプサイシンを微量に配合し、後味にほんのりとした温かさを感じさせます。甘さと刺激が融合した、まさに「攻め」のスイーツです。</p>
+                    </div>
+
+                    <div class="product-features">
+                        <h3>商品の特徴</h3>
+                        <ul>
+                            <li>✓ 脂肪燃焼サポート：唐辛子由来のカプサイシンとL-カルニチンを配合。食べることで体温上昇を促し、代謝をサポートします。</li>
+                            <li>✓ 濃厚豆乳カスタード：動物性脂質を抑えつつ、濃厚なコクを実現した特製カスタード。満足感が高いのに、後味はスッキリ。</li>
+                            <li>✓ ジンジャーの隠し味：クリームの中には、高知県産の黄金生姜をブレンド。冷えが気になる方にもおすすめの「温活」スイーツです。</li>
+                            <li>✓ 低GIシュガー使用：血糖値の上昇が緩やかなココナッツシュガーを採用。太りにくい体づくりを応援します。</li>
+                        </ul>
+                    </div>
+
+                    <div class="product-specs">
+                        <h3>商品詳細</h3>
+                        <table class="specs-table">
+                            <tr><th>内容量</th><td>1個</td></tr>
+                            <tr><th>賞味期限</th><td>製造日より2日（要冷蔵）</td></tr>
+                            <tr><th>保存方法</th><td>10℃以下で保存してください</td></tr>
+                            <tr><th>アレルギー</th><td>大豆、アーモンド（※小麦粉不使用の米粉生地）</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="product-quantity">
+                        <label>数量</label>
+                        <div class="quantity-selector">
+                            <button class="qty-btn" onclick="decreaseQty()">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="99">
+                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                        </div>
+                    </div>
+
+                    <div class="product-actions">
+                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-company">
+                    <div class="footer-logo">
+                        <span class="footer-heart">❤</span>
+                        <h2>HealSweets</h2>
+                    </div>
+                    <p class="footer-description">
+                        Our company is guided by the philosophy of bringing smiles
+                        to people around the world through the power of sweets.
+                    </p>
+                </div>
+                </div>
+            <div class="footer-bottom">
+                <p>〒810-0072 福岡県福岡市中央区長浜1丁目4番13号</p>
+                <p>© HealSweets</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function increaseQty() {
+            const qtyInput = document.getElementById('quantity');
+            if (parseInt(qtyInput.value) < 99) qtyInput.value = parseInt(qtyInput.value) + 1;
+        }
+        function decreaseQty() {
+            const qtyInput = document.getElementById('quantity');
+            if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
+        }
+        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
+            const quantity = document.getElementById('quantity').value;
+            alert('「レッドホット・シュー」' + quantity + '個をカートに追加しました！燃焼の準備はいいですか？');
+        });
+    </script>
+</body>
+</html>
