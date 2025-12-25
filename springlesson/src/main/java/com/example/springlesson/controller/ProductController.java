@@ -120,4 +120,13 @@ public class ProductController {
   public String productlemoncake() {
     return "product/product-lemoncake";
   }
+  
+  //商品詳細ページのID12～追加商品分
+  @GetMapping("/products/{id}")
+public String tempProductDetail(@PathVariable("id") Integer id, Model model) {
+    // IDをModelに渡しておけば、HTML側で「商品ID: 19 の詳細」と表示できます
+    model.addAttribute("id", id);
+    // 共通の「準備中」または「汎用詳細ページ」を1枚作って返す
+    return "product/product-generic-detail";
+}
 }
