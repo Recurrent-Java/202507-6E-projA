@@ -5,6 +5,9 @@
 <head>
   <div th:replace="~{comlayout/base :: meta}"></div>
   <div th:replace="~{comlayout/base :: styles}"></div>
+  
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 
   <link rel="stylesheet" th:href="@{/css/top.css}">
   <title>トップページ</title>
@@ -16,7 +19,9 @@
   <main>
     <!-- メインビジュアル -->
     <section class="hero">
-      <img th:src="@{/images/top1.png}" alt="スイーツメイン画像">
+        <div><img th:src="@{/images/top1.png}" alt="スイーツ1"></div>
+        <div><img th:src="@{/images/top2.png}" alt="スイーツ2"></div>
+        <div><img th:src="@{/images/top3.png}" alt="スイーツ3"></div>
     </section>
 
     <!-- 検索 -->
@@ -62,6 +67,23 @@
     </section>
   </main>
   <div th:replace="~{comlayout/base :: footer}"></div>
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    
+  <script>
+      $(document).ready(function(){
+        $('.hero').slick({
+          autoplay: true,       /* 自動再生 */
+          autoplaySpeed: 3000,  /* 3秒ごとに次へ */
+          dots: true,           /* 下に丸いドットを表示 */
+          arrows: false,        /* 左右の矢印は一旦なし（デザインに合わせやすい） */
+          fade: true,           /* ふわっと切り替える */
+          speed: 1000           /* 切り替えにかける時間（1秒） */
+        });
+      });
+   </script>
+  
 </body>
 
 </html>

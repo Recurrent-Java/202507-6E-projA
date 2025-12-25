@@ -331,3 +331,19 @@ main#purchase input[name="address"] {
 body {
   padding-top: 130px !important;
 }
+/* --- スライダー（Slick）用の調整 --- */
+.hero {
+  width: 100%;
+  margin: 0 auto 30px; /* 左右中央寄せ、下に隙間 */
+}
+
+.hero img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 下の丸い点（ドット）の位置 */
+.slick-dots {
+  bottom: 15px;
+}
