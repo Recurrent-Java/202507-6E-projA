@@ -20,119 +20,137 @@ import com.example.springlesson.form.Item;
 @RequestMapping("/cart")
 public class CartController {
 
-  // 合計金額を計算し、Modelに追加するプライベートメソッド
-  private void prepareCartView(HttpSession session, Model model) {
-    // セッションスコープよりカート情報取得
-    List<Item> cart = (List<Item>) session.getAttribute("cart");
-
-    long totalPrice = 0; // 商品合計金額 (税込) を格納
-    if (cart != null) {
-      // Item.getProduct().getPrice() は税込単価であることを想定
-      totalPrice = cart.stream()
-          .mapToLong(item -> (long) item.getProduct().getPrice() * item.getCount())
-          .sum();
-    }
-
-    // 画面表示用
-    model.addAttribute("cart", cart);
-    model.addAttribute("totalPrice", totalPrice); // 合計金額をModelに追加
-  }
-
-  // 1. カートページの表示
-  @GetMapping({ "", "/" })
-  public String cart(HttpSession session, Model model) {
-    prepareCartView(session, model);
-    return "cart/cart";
-  }
-
-  // 2. カートに追加
-  @GetMapping("/add")
-  public String add(HttpSession session, Model model,
-      @RequestParam Long id, @RequestParam(required = false) Integer count) {
-
-    List<Item> cart = (List<Item>) session.getAttribute("cart");
-    int addCount = (count != null && count > 0) ? count : 1; // countが有効でなければ1とする
-
-    if (cart == null) {
-      cart = new ArrayList<>();
-    }
-
-    // 商品情報の取得（既存ロジック）
-    List<ProductDTO> productList = (List<ProductDTO>) session.getAttribute("list");
-    ProductDTO productDTO = productList.stream()
-        .filter(pro -> pro.getProductId().equals(id))
-        .findFirst().orElse(null);
-
-    if (productDTO != null) {
-      Optional<Item> existingItem = cart.stream()
-          .filter(item -> item.getProduct().getProductId().equals(id))
-          .findFirst();
-
-      if (existingItem.isPresent()) {
-        // 既存商品なら数量を加算
-        existingItem.get().setCount(existingItem.get().getCount() + addCount);
-      } else {
-        // 新規商品なら追加
-        Item item = new Item(productDTO, addCount);
-        cart.add(item);
-      }
-    }
-
-    session.setAttribute("cart", cart);
-    prepareCartView(session, model);
-
-    return "cart/cart";
-  }
-
-  // 3. カートから完全削除
-  @GetMapping("/remove")
-  public String remove(HttpSession session, Model model, @RequestParam Long id) {
-    List<Item> cart = (List<Item>) session.getAttribute("cart");
-
-    if (cart != null) {
-      // 該当の商品IDを持つItemを完全に削除
-      cart.removeIf(item -> item.getProduct().getProductId().equals(id));
-    }
-
-    session.setAttribute("cart", cart);
-    prepareCartView(session, model);
-
-    return "cart/cart";
-  }
-
-  // 4. 数量更新処理
-  @PostMapping("/update")
-  public String update(HttpSession session, Model model,
-      @RequestParam List<Long> productId,
-      @RequestParam List<Integer> quantity) {
-
-    List<Item> cart = (List<Item>) session.getAttribute("cart");
-
-    if (cart != null && productId.size() == quantity.size()) {
-      for (int i = 0; i < productId.size(); i++) {
-        final Long currentProductId = productId.get(i);
-        final Integer newQuantity = quantity.get(i);
-
-        Optional<Item> resultItem = cart.stream()
-            .filter(item -> item.getProduct().getProductId().equals(currentProductId))
-            .findFirst();
-
-        if (resultItem.isPresent()) {
-          Item item = resultItem.get();
-          if (newQuantity != null && newQuantity >= 1) {
-            // 数量を更新
-            item.setCount(newQuantity);
-          } else {
-            // 数量が0以下ならカートから削除
-            cart.remove(item);
-          }
+    /**
+     * 合計金額を計算し、Modelに追加する共通メソッド
+     */
+    private void prepareCartView(HttpSession session, Model model) {
+        @SuppressWarnings("unchecked")
+        List<Item> cart = (List<Item>) session.getAttribute("cart");
+        long totalPrice = 0;
+        
+        // カートがnullの場合は空のリストとして扱う（Thymeleafのエラー防止）
+        if (cart == null) {
+            cart = new ArrayList<>();
+        } else {
+            // カート内商品の小計を計算
+            totalPrice = cart.stream()
+                .mapToLong(item -> (long) item.getProduct().getPrice() * item.getCount())
+                .sum();
         }
-      }
+        
+        model.addAttribute("cart", cart);
+        model.addAttribute("totalPrice", totalPrice);
     }
 
-    session.setAttribute("cart", cart);
-    prepareCartView(session, model);
+    /**
+     * 1. カートページの表示
+     */
+    @GetMapping({ "", "/" })
+    public String cart(HttpSession session, Model model) {
+        // テストデータは削除しました。今後は商品一覧からの追加、
+        // または保存したテストコードをSlackから戻して使用してください。
+        prepareCartView(session, model);
+        return "cart/cart"; 
+    }
 
-    return "cart/cart";
-  }
+    /**
+     * 2. カートに商品を追加
+     */
+    @GetMapping("/add")
+    public String add(HttpSession session, Model model,
+            @RequestParam(name = "id") Long productId, 
+            @RequestParam(required = false) Integer count) {
+
+        @SuppressWarnings("unchecked")
+        List<Item> cart = (List<Item>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
+        }
+
+        // 商品マスター（商品一覧）から該当商品を探す
+        @SuppressWarnings("unchecked")
+        List<ProductDTO> productList = (List<ProductDTO>) session.getAttribute("list");
+        
+        ProductDTO productDTO = null;
+        if (productList != null) {
+            productDTO = productList.stream()
+                .filter(pro -> pro.getProductId().equals(productId))
+                .findFirst().orElse(null);
+        }
+
+        if (productDTO != null) {
+            Optional<Item> existingItem = cart.stream()
+                .filter(item -> item.getProduct().getProductId().equals(productId))
+                .findFirst();
+
+            int addCount = (count != null && count > 0) ? count : 1;
+            
+            if (existingItem.isPresent()) {
+                // 既にカートにある場合は数量アップ
+                existingItem.get().setCount(existingItem.get().getCount() + addCount);
+            } else {
+                // 新規追加（Itemクラスの引数3つ：product, count, isGift）
+                cart.add(new Item(productDTO, addCount, false));
+            }
+        }
+
+        session.setAttribute("cart", cart);
+        prepareCartView(session, model);
+        return "cart/cart";
+    }
+
+    /**
+     * 3. カートから商品を削除
+     */
+    @GetMapping("/remove")
+    public String remove(HttpSession session, Model model, @RequestParam(name = "id") Long productId) {
+        @SuppressWarnings("unchecked")
+        List<Item> cart = (List<Item>) session.getAttribute("cart");
+        
+        if (cart != null) {
+            cart.removeIf(item -> item.getProduct().getProductId().equals(productId));
+        }
+        
+        session.setAttribute("cart", cart);
+        prepareCartView(session, model);
+        return "cart/cart";
+    }
+
+    /**
+     * 4. 数量・ギフト設定の一括更新
+     */
+    @PostMapping("/update")
+    public String update(HttpSession session, Model model,
+            @RequestParam List<Long> productId,
+            @RequestParam List<Integer> quantity,
+            @RequestParam(required = false) List<Boolean> isGift) { 
+
+        @SuppressWarnings("unchecked")
+        List<Item> cart = (List<Item>) session.getAttribute("cart");
+
+        if (cart != null && productId.size() == quantity.size()) {
+            for (int i = 0; i < productId.size(); i++) {
+                final Long currentId = productId.get(i);
+                final Integer newQty = quantity.get(i);
+
+                Optional<Item> itemOpt = cart.stream()
+                    .filter(item -> item.getProduct().getProductId().equals(currentId))
+                    .findFirst();
+
+                if (itemOpt.isPresent()) {
+                    Item item = itemOpt.get();
+                    if (newQty != null && newQty >= 1) {
+                        item.setCount(newQty);
+                    } else {
+                        // 0以下の数量が入力された場合はカートから除外
+                        cart.remove(item);
+                    }
+                }
+            }
+        }
+
+        session.setAttribute("cart", cart);
+        prepareCartView(session, model);
+        return "cart/cart";
+    }
 }
