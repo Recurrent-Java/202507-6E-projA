@@ -129,5 +129,5 @@ public String tempProductDetail(@PathVariable("id") Integer id, Model model) {
     model.addAttribute("id", id);
     // 共通の「準備中」または「汎用詳細ページ」を1枚作って返す
     return "product/product-generic-detail";
-}
+  }
 }

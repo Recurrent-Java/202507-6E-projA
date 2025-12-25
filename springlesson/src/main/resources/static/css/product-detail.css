@@ -17,39 +17,7 @@ body {
     padding: 0 20px;
 }
 
-/* ===== ヘッダー ===== */
-header {
-    background-color: #e8d5c4;
-    padding: 15px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
 
-header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-spacer {
-    width: 80px;
-}
-
-.logo-image {
-    height: 60px;
-}
-
-.header-icons {
-    display: flex;
-    gap: 15px;
-}
-
-.top-btn {
-    background-color: #4a7c59;
-    color: white;
-    padding: 8px 20px;
-    border-radius: 20px;
-    text-decoration: none;
-}
 
 /* ===== パンくず ===== */
 .breadcrumb {
@@ -103,66 +71,6 @@ header .container {
     color: #4a7c59;
 }
 
-/* ===== フッター（← ここが重要） ===== */
-.site-footer {
-    background-color: #f9f9f9;
-    border-top: 1px solid #ddd;
-    margin-top: 80px;
-    padding: 50px 0 30px;
-    font-size: 13px;
-    color: #555;
-}
-
-.footer-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.footer-top {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 40px;
-    margin-bottom: 30px;
-}
-
-.footer-company h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-.footer-heart {
-    color: #e88;
-    margin-right: 6px;
-}
-
-.footer-description {
-    font-size: 12px;
-    line-height: 1.6;
-}
-
-.footer-column h3 {
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-.footer-column ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-column li {
-    margin-bottom: 6px;
-    font-size: 12px;
-}
-
-.footer-bottom {
-    border-top: 1px solid #ddd;
-    padding-top: 15px;
-    text-align: center;
-    font-size: 11px;
-    color: #777;
-}
 
 /* ===== レスポンシブ ===== */
 @media (max-width: 1024px) {
