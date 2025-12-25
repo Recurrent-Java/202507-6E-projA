@@ -82,13 +82,13 @@ public class ProductController {
   //商品詳細ページ（焼きドーナツ）
   @GetMapping("/products/6")
   public String productbakeddonut() {
-    return "product/product-bakeddonut";
+    return "product/product-bakeddonuts";
   }
 
   //商品詳細ページ（ココアエクレア）
   @GetMapping("/products/4")
   public String productcocoaeclair() {
-    return "product/product-cocoaeclair";
+    return "product/product-cacaoeclair";
   }
 
   //商品詳細ページ（チョコケーキ）
@@ -100,7 +100,7 @@ public class ProductController {
   //商品詳細ページ（ココナッツマカロン）
   @GetMapping("/products/8")
   public String productcoconutmacaron() {
-    return "product/product-coconutmacaron";
+    return "product/product-coconutmacaroons";
   }
 
   //商品詳細ページ（クッキー缶）

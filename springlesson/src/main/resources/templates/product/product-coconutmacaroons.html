@@ -4,23 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>商品詳細 - HealSweets</title>
+    <link rel="stylesheet" th:href="@{/css/chap25.css}">
 	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
-    <!-- ヘッダー -->
-    <header>
-        <div class="container">
-            <div class="header-spacer"></div>
-            <div class="logo">
-                <a href="index.html">
-                    <img src="logo.png" alt="HealSweets" class="logo-image">
-                </a>
-            </div>
-            <div class="header-icons">
-                <a href="index.html" class="top-btn">🏠 トップ</a>
-            </div>
-        </div>
-    </header>
+    <div th:replace="~{comlayout/base :: header}"></div>
 
     <!-- パンくずリスト -->
     <div class="breadcrumb">
@@ -40,7 +28,7 @@
                 <!-- 左側：商品画像 -->
                 <div class="product-images">
                     <div class="main-image">
-                        <img th:src="@{/images/coconutmacaroons.jpg}" alt="米粉のココナッツマカロン">
+                        <img th:src="@{/images/coconutmacaroons.png}" alt="米粉のココナッツマカロン">
                     </div>
                 </div>
 
@@ -97,60 +85,7 @@
             </div>
         </div>
     </section>
-	<!-- フッター -->
-	<footer class="site-footer">
-	    <div class="footer-container">
-
-	        <div class="footer-top">
-	            <!-- 会社情報 -->
-	            <div class="footer-company">
-	                <div class="footer-logo">
-	                    <span class="footer-heart">❤</span>
-	                    <h2>HealSweets</h2>
-	                </div>
-	                <p class="footer-description">
-	                    Our company is guided by the philosophy of bringing smiles
-	                    to people around the world through the power of sweets.
-	                </p>
-	            </div>
-
-	            <!-- カテゴリ -->
-	            <div class="footer-column">
-	                <h3>Category</h3>
-	                <ul>
-	                    <li>低糖質</li>
-	                    <li>グルテンフリー</li>
-	                    <li>アレルギー対応</li>
-	                </ul>
-	            </div>
-
-	            <!-- 会社情報 -->
-	            <div class="footer-column">
-	                <h3>Company</h3>
-	                <ul>
-	                    <li>会社概要</li>
-	                    <li>利用規約</li>
-	                    <li>プライバシー</li>
-	                </ul>
-	            </div>
-
-	            <!-- アカウント -->
-	            <div class="footer-column">
-	                <h3>Account</h3>
-	                <ul>
-	                    <li>マイページ</li>
-	                    <li>カート</li>
-	                </ul>
-	            </div>
-	        </div>
-
-	        <div class="footer-bottom">
-	            <p>〒810-0072 福岡県福岡市中央区長浜1丁目4番13号</p>
-	            <p>© HealSweets</p>
-	        </div>
-
-	    </div>
-	</footer>
+	<div th:replace="~{comlayout/base :: footer}"></div>
     <script>
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
