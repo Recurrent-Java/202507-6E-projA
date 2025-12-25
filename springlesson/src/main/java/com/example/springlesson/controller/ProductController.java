@@ -52,80 +52,127 @@ public class ProductController {
 
   //商品詳細ページ（メロンパン）
   @GetMapping("/products/1")
-  public String productDetail() {
+  public String productDetail(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(1).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
     return "product/product-melonpan";
-  }
-
-  //商品詳細ページ（ピーチタルト）
-  @GetMapping("/products/3")
-  public String productPeach() {
-    return "product/product-peachtart";
-  }
-
-  //商品詳細ページ（アニマルクッキー缶）
-  @GetMapping("/products/9")
-  public String productanimalcookie() {
-    return "product/product-animalcookie";
-  }
-
-  //商品詳細ページ（アニバーサリーケーキ）
-  @GetMapping("/products/11")
-  public String productanniversarycake() {
-    return "product/product-anniversarycake";
   }
 
   //商品詳細ページ（アップルパイ）
   @GetMapping("/products/2")
-  public String productapplepie() {
+  public String productapplepie(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(2).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
     return "product/product-applepie";
   }
 
-  //商品詳細ページ（焼きドーナツ）
-  @GetMapping("/products/6")
-  public String productbakeddonut() {
-    return "product/product-bakeddonuts";
+  //商品詳細ページ（ピーチタルト）
+  @GetMapping("/products/3")
+  public String productPeach(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(3).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
+    return "product/product-peachtart";
   }
 
   //商品詳細ページ（ココアエクレア）
   @GetMapping("/products/4")
-  public String productcocoaeclair() {
+  public String productcocoaeclair(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(4).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
     return "product/product-cacaoeclair";
-  }
-
-  //商品詳細ページ（チョコケーキ）
-  @GetMapping("/products/10")
-  public String productchocolatecake() {
-    return "product/product-chocolatecake";
-  }
-
-  //商品詳細ページ（ココナッツマカロン）
-  @GetMapping("/products/8")
-  public String productcoconutmacaron() {
-    return "product/product-coconutmacaroons";
-  }
-
-  //商品詳細ページ（クッキー缶）
-  @GetMapping("/products/")
-  public String productcookie() {
-    return "product/product-cookie";
   }
 
   //商品詳細ページ（ムーランルージュ）
   @GetMapping("/products/5")
-  public String producteggfreerouge() {
+  public String producteggfreerouge(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(5).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
     return "product/product-eggfreerouge";
+  }
+
+  //商品詳細ページ（焼きドーナツ）
+  @GetMapping("/products/6")
+  public String productbakeddonut(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(6).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
+    return "product/product-bakeddonuts";
   }
 
   //商品詳細ページ（レモンケーキ）
   @GetMapping("/products/7")
-  public String productlemoncake() {
+  public String productlemoncake(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(7).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
     return "product/product-lemoncake";
+  }
+
+  //商品詳細ページ（ココナッツマカロン）
+  @GetMapping("/products/8")
+  public String productcoconutmacaron(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(8).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
+    return "product/product-coconutmacaroons";
+  }
+
+  //商品詳細ページ（アニマルクッキー缶）
+  @GetMapping("/products/9")
+  public String productanimalcookie(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(9).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
+    return "product/product-animalcookie";
+  }
+
+  //商品詳細ページ（チョコケーキ）
+  @GetMapping("/products/10")
+  public String productchocolatecake(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(10).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
+    return "product/product-chocolatecake";
+  }
+
+  //商品詳細ページ（アニバーサリーケーキ）
+  @GetMapping("/products/11")
+  public String productanniversarycake(Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(11).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
+    return "product/product-anniversarycake";
+  }
+
+  //商品詳細ページ（クッキー缶）
+  @GetMapping("/products/")
+  public String productcookie(Model model) {
+    return "product/product-cookie";
   }
   
   //商品詳細ページのID12～追加商品分
   @GetMapping("/products/{id}")
-public String tempProductDetail(@PathVariable("id") Integer id, Model model) {
-    // IDをModelに渡しておけば、HTML側で「商品ID: 19 の詳細」と表示できます
+  public String tempProductDetail(@PathVariable("id") Integer id, Model model) {
+    // 商品情報（カテゴリー付き）を取得
+    productService.findProductById(id).ifPresent(product -> {
+      model.addAttribute("product", product);
+    });
     model.addAttribute("id", id);
     // 共通の「準備中」または「汎用詳細ページ」を1枚作って返す
     return "product/product-generic-detail";

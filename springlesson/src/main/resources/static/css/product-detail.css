@@ -52,12 +52,20 @@ body {
     gap: 25px;
 }
 
+/* 複数カテゴリータグのコンテナ */
+.product-category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 .product-category-tag {
     background-color: #e8f5e9;
     color: #4a7c59;
     padding: 6px 15px;
     border-radius: 20px;
     width: fit-content;
+    font-size: 0.9em;
 }
 
 .product-title {
