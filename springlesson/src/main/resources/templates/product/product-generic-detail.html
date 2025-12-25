@@ -4,23 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>商品詳細 - HealSweets</title>
-	<link rel="stylesheet" th:href="@{/css/chap25.css}">
-	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/chap25.css}">
+    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-spacer"></div>
-            <div class="logo">
-                <a th:href="@{/product}">
-                    <img th:src="@{/images/logo.png}" alt="HealSweets" class="logo-image">
-                </a>
-            </div>
-            <div class="header-icons">
-                <a th:href="@{/product}" class="top-btn">🏠 トップ</a>
-            </div>
-        </div>
-    </header>
+    <div th:replace="~{comlayout/base :: header}"></div>
 
     <div class="breadcrumb">
         <div class="container">
@@ -62,10 +50,10 @@
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ 脂肪燃焼サポート：唐辛子由来のカプサイシンとL-カルニチンを配合。食べることで体温上昇を促し、代謝をサポートします。</li>
-                            <li>✓ 濃厚豆乳カスタード：動物性脂質を抑えつつ、濃厚なコクを実現した特製カスタード。満足感が高いのに、後味はスッキリ。</li>
-                            <li>✓ ジンジャーの隠し味：クリームの中には、高知県産の黄金生姜をブレンド。冷えが気になる方にもおすすめの「温活」スイーツです。</li>
-                            <li>✓ 低GIシュガー使用：血糖値の上昇が緩やかなココナッツシュガーを採用。太りにくい体づくりを応援します。</li>
+                            <li>✓ 脂肪燃焼サポート：唐辛子由来のカプサイシンとL-カルニチンを配合。</li>
+                            <li>✓ 濃厚豆乳カスタード：動物性脂質を抑えつつ、濃厚なコクを実現。</li>
+                            <li>✓ ジンジャーの隠し味：高知県産の黄金生姜をブレンド。</li>
+                            <li>✓ 低GIシュガー使用：血糖値の上昇が緩やかなココナッツシュガーを採用。</li>
                         </ul>
                     </div>
 
@@ -96,26 +84,7 @@
         </div>
     </section>
 
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-top">
-                <div class="footer-company">
-                    <div class="footer-logo">
-                        <span class="footer-heart">❤</span>
-                        <h2>HealSweets</h2>
-                    </div>
-                    <p class="footer-description">
-                        Our company is guided by the philosophy of bringing smiles
-                        to people around the world through the power of sweets.
-                    </p>
-                </div>
-                </div>
-            <div class="footer-bottom">
-                <p>〒810-0072 福岡県福岡市中央区長浜1丁目4番13号</p>
-                <p>© HealSweets</p>
-            </div>
-        </div>
-    </footer>
+    <div th:replace="~{comlayout/base :: footer}"></div>
 
     <script>
         function increaseQty() {
@@ -128,6 +97,7 @@
         }
         document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
             const quantity = document.getElementById('quantity').value;
+            // HTML 1の詳細なメッセージを維持
             alert('「レッドホット・シュー」' + quantity + '個をカートに追加しました！');
         });
     </script>
