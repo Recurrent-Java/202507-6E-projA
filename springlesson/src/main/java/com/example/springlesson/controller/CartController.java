@@ -96,7 +96,7 @@ public class CartController {
 
         session.setAttribute("cart", cart);
         prepareCartView(session, model);
-        return "cart/cart";
+        return "redirect:/product/products/" + productId;
     }
 
     /**
