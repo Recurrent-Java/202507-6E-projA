@@ -36,7 +36,8 @@
                 <h2>商品追加</h2>
                 <p>新商品の登録を行います。</p>
                 
-                <form method="post" th:action="@{/admin/product/save}" th:object="${adminProductForm}" class="placeholder-form">
+				<form method="post" th:action="@{/admin/product/save}" th:object="${adminProductForm}" 
+				      enctype="multipart/form-data" class="placeholder-form">
                     <h3>【商品情報フォーム】</h3>
                     
                     <input type="hidden" th:field="*{productId}">
