@@ -9,7 +9,6 @@ import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,53 +17,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.springlesson.form.Item;
-import com.example.springlesson.security.CustomerDetailsImpl;
-import com.example.springlesson.service.CartService;
 import com.example.springlesson.service.PurchaseService;
 
 @Controller
 @RequestMapping("/purchase")
 public class PurchaseController {
     private final PurchaseService purchaseService;
-    private final CartService cartService;
 
-    public PurchaseController(PurchaseService purchaseService, CartService cartService) {
+    public PurchaseController(PurchaseService purchaseService) {
         this.purchaseService = purchaseService;
-        this.cartService = cartService;
-    }
-
-    /**
-     * ログインユーザーのIDを取得
-     */
-    private Long getUserId(CustomerDetailsImpl userDetails) {
-        if (userDetails != null && userDetails.getMember() != null) {
-            return userDetails.getMember().getMemberId();
-        }
-        return null;
     }
 
     /**
      * 購入入力ページの表示
      */
     @GetMapping({ "", "/", "/input" })
-    public String purchaseInput(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
-                                HttpSession session, Model model) {
-        Long userId = getUserId(userDetails);
-        String sessionId = session.getId();
-
-        // カートから商品を取得
-        List<Item> cart = cartService.getCartItems(userId, sessionId);
+    public String purchaseInput(HttpSession session, Model model) {
+        // セッションからカートを取得
+        @SuppressWarnings("unchecked")
+        List<Item> cart = (List<Item>) session.getAttribute("cart");
         
         // カートが空の場合はカートページにリダイレクト
         if (cart == null || cart.isEmpty()) {
             return "redirect:/cart";
         }
 
-        // セッションにも保持（互換性のため）
-        session.setAttribute("cart", cart);
-
         // 商品合計金額を計算
-        long productTotal = cartService.calculateTotalPrice(cart);
+        long productTotal = cart.stream()
+            .mapToLong(item -> (long) item.getProduct().getPrice() * item.getCount())
+            .sum();
         
         // 送料（基本420円）
         int shippingFee = 420;
@@ -94,8 +75,7 @@ public class PurchaseController {
      * 注文確定処理
      */
     @PostMapping("/confirm")
-    public String confirm(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
-                          HttpSession session, Model model,
+    public String confirm(HttpSession session, Model model,
                           @RequestParam(required = false) String deliveryDate,
                           @RequestParam(required = false) String deliveryTime,
                           @RequestParam(required = false) String shippingDestination,
@@ -103,13 +83,11 @@ public class PurchaseController {
                           @RequestParam(required = false) String paymentMethod,
                           @RequestParam(required = false) String couponCode,
                           @RequestParam(required = false) String remarks) {
-        
-        Long userId = getUserId(userDetails);
-        String sessionId = session.getId();
 
         try {
-            // カートから商品を取得
-            List<Item> cart = cartService.getCartItems(userId, sessionId);
+            // セッションからカートを取得
+            @SuppressWarnings("unchecked")
+            List<Item> cart = (List<Item>) session.getAttribute("cart");
             
             if (cart == null || cart.isEmpty()) {
                 throw new Exception("購入する商品が選択されていません。");
@@ -118,10 +96,7 @@ public class PurchaseController {
             // 購入処理（簡易版）
             // TODO: 実際の購入処理を実装（注文テーブルへの登録など）
             
-            // カートを空にする
-            cartService.clearCart(userId, sessionId);
-            
-            // セッションからもカート情報を削除
+            // セッションからカート情報を削除
             session.removeAttribute("cart");
 
             // 購入完了画面へ

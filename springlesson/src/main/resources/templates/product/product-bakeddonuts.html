@@ -70,6 +70,7 @@
                         </table>
                     </div>
 
+<<<<<<< HEAD
                     <form th:action="@{/cart/add}" method="post">
                         <input type="hidden" name="id" value="6">
                         <div class="product-quantity">
@@ -78,14 +79,30 @@
                                 <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
                                 <input type="number" id="quantity" name="count" value="1" min="1" max="99">
                                 <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+=======
+                   <form th:action="@{/cart/add}" method="get">
+                         <input type="hidden" name="id" value="6"> <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" value="1" min="1" max="99">
+                                <button class="qty-btn" onclick="increaseQty()">+</button>
+>>>>>>> branch 'main' of https://github.com/Recurrent-Java/202507-6E-projA.git
                             </div>
                         </div>
 
                         <div class="product-actions">
+<<<<<<< HEAD
                             <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
                         </div>
                     </form>
                 </div>
+=======
+                            <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                        </div>
+                    </form>
+ 
+>>>>>>> branch 'main' of https://github.com/Recurrent-Java/202507-6E-projA.git
             </div>
         </div>
     </section>

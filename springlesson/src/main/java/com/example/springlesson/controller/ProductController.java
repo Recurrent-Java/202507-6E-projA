@@ -43,6 +43,7 @@ public class ProductController {
   String find(@RequestParam(required = false, defaultValue = "") String keyword, Model model) {
     // 商品名で商品情報検索 
     List<ProductDTO> list = productService.findByNameContaining(keyword);
+
     model.addAttribute("keyword", keyword);
     // 画面表示用 
     model.addAttribute("list", list);
@@ -165,7 +166,7 @@ public class ProductController {
   public String productcookie(Model model) {
     return "product/product-cookie";
   }
-  
+
   //商品詳細ページのID12～追加商品分
   @GetMapping("/products/{id}")
   public String tempProductDetail(@PathVariable("id") Integer id, Model model) {

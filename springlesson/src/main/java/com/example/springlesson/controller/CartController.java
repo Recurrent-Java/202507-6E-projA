@@ -2,10 +2,10 @@ package com.example.springlesson.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,168 +13,169 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.springlesson.dto.ProductDTO;
 import com.example.springlesson.form.Item;
-import com.example.springlesson.security.CustomerDetailsImpl;
-import com.example.springlesson.service.CartService;
+import com.example.springlesson.service.ProductService;
 
 @Controller
 @RequestMapping("/cart")
 public class CartController {
 
-    private final CartService cartService;
+  private final ProductService productService;
 
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
+  public CartController(ProductService productService) {
+    this.productService = productService;
+  }
+
+  private void prepareCartView(HttpSession session, Model model) {
+    @SuppressWarnings("unchecked")
+    List<Item> cart = (List<Item>) session.getAttribute("cart");
+    long totalPrice = 0;
+
+    if (cart == null) {
+      cart = new ArrayList<>();
+    } else {
+      totalPrice = cart.stream()
+          .mapToLong(item -> (long) item.getProduct().getPrice() * item.getCount())
+          .sum();
     }
 
-    /**
-     * ログインユーザーのIDを取得
-     * @param userDetails ログイン情報
-     * @return ユーザーID（未ログイン時はnull）
-     */
-    private Long getUserId(CustomerDetailsImpl userDetails) {
-        if (userDetails != null && userDetails.getMember() != null) {
-            return userDetails.getMember().getMemberId();
-        }
-        return null;
+    model.addAttribute("cart", cart);
+    model.addAttribute("totalPrice", totalPrice);
+  }
+
+  @GetMapping({ "", "/" })
+  public String cart(HttpSession session, Model model) {
+    prepareCartView(session, model);
+    return "cart/cart";
+  }
+
+  /**
+   * カートに商品を追加（GETメソッド）
+   */
+  @GetMapping("/add")
+  public String add(HttpSession session, Model model,
+      @RequestParam(name = "id") Integer productId,
+      @RequestParam(required = false) Integer count) {
+
+    @SuppressWarnings("unchecked")
+    List<Item> cart = (List<Item>) session.getAttribute("cart");
+    if (cart == null) {
+      cart = new ArrayList<>();
     }
 
-    /**
-     * カートの内容をModelにセット
-     */
-    private void prepareCartView(CustomerDetailsImpl userDetails, HttpSession session, Model model) {
-        Long userId = getUserId(userDetails);
-        String sessionId = session.getId();
+    ProductDTO productDTO = productService.findProductById(productId).orElse(null);
 
-        List<Item> cart = cartService.getCartItems(userId, sessionId);
-        long totalPrice = cartService.calculateTotalPrice(cart);
+    if (productDTO != null) {
+      final Long prodIdLong = productId.longValue();
+      Optional<Item> existingItem = cart.stream()
+          .filter(item -> item.getProduct().getProductId().equals(prodIdLong))
+          .findFirst();
 
-        // セッションにも保持（他の画面で使用する可能性があるため）
-        session.setAttribute("cart", cart);
-        
-        model.addAttribute("cart", cart);
-        model.addAttribute("totalPrice", totalPrice);
+      int addCount = (count != null && count > 0) ? count : 1;
+
+      if (existingItem.isPresent()) {
+        existingItem.get().setCount(existingItem.get().getCount() + addCount);
+      } else {
+        cart.add(new Item(productDTO, addCount, false));
+      }
     }
 
-    /**
-     * 1. カートページの表示
-     */
-    @GetMapping({ "", "/" })
-    public String cart(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
-                       HttpSession session, Model model) {
-        prepareCartView(userDetails, session, model);
-        return "cart/cart";
+    session.setAttribute("cart", cart);
+
+    return "redirect:/product/products/" + productId;
+  }
+
+  /**
+   * カートに商品を追加（POSTメソッド）
+   */
+  @PostMapping("/add")
+  public String addPost(HttpSession session, Model model,
+      @RequestParam(name = "id") Integer productId,
+      @RequestParam(required = false) Integer count) {
+
+    @SuppressWarnings("unchecked")
+    List<Item> cart = (List<Item>) session.getAttribute("cart");
+    if (cart == null) {
+      cart = new ArrayList<>();
     }
 
-    /**
-     * 2. カートに商品を追加
-     */
-    @GetMapping("/add")
-    public String add(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
-                      HttpSession session, Model model,
-                      @RequestParam(name = "id") Long productId,
-                      @RequestParam(required = false, defaultValue = "1") Integer count) {
+    ProductDTO productDTO = productService.findProductById(productId).orElse(null);
 
-        Long userId = getUserId(userDetails);
-        String sessionId = session.getId();
+    if (productDTO != null) {
+      final Long prodIdLong = productId.longValue();
+      Optional<Item> existingItem = cart.stream()
+          .filter(item -> item.getProduct().getProductId().equals(prodIdLong))
+          .findFirst();
 
-        // DBに商品を追加
-        cartService.addToCart(userId, sessionId, productId, count);
+      int addCount = (count != null && count > 0) ? count : 1;
 
-        // カートの内容を更新
-        prepareCartView(userDetails, session, model);
-        
-        return "redirect:/product/products/" + productId;
-    }
-    
-    /**
-     * 2-2. カートに商品を追加（POSTメソッド対応）
-     */
-    @PostMapping("/add")
-    public String addPost(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
-                          HttpSession session, Model model,
-                          @RequestParam(name = "id") Long productId,
-                          @RequestParam(required = false, defaultValue = "1") Integer count) {
-
-        Long userId = getUserId(userDetails);
-        String sessionId = session.getId();
-
-        // DBに商品を追加
-        cartService.addToCart(userId, sessionId, productId, count);
-
-        // カートの内容を更新
-        prepareCartView(userDetails, session, model);
-        
-        // カートページにリダイレクト
-        return "redirect:/cart";
+      if (existingItem.isPresent()) {
+        existingItem.get().setCount(existingItem.get().getCount() + addCount);
+      } else {
+        cart.add(new Item(productDTO, addCount, false));
+      }
     }
 
-    /**
-     * 3. カートから商品を削除
-     */
-    @GetMapping("/remove")
-    public String remove(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
-                         HttpSession session, Model model,
-                         @RequestParam(name = "id") Long productId) {
+    session.setAttribute("cart", cart);
 
-        Long userId = getUserId(userDetails);
-        String sessionId = session.getId();
+    return "redirect:/cart";
+  }
 
-        // DBから商品を削除
-        cartService.removeFromCart(userId, sessionId, productId);
-
-        // カートの内容を更新
-        prepareCartView(userDetails, session, model);
-        
-        return "cart/cart";
+  /**
+   * カートから商品を削除
+   */
+  @GetMapping("/remove")
+  public String remove(HttpSession session, Model model, @RequestParam(name = "id") Integer productId) {
+    @SuppressWarnings("unchecked")
+    List<Item> cart = (List<Item>) session.getAttribute("cart");
+    if (cart != null) {
+      final Long prodIdLong = productId.longValue();
+      cart.removeIf(item -> item.getProduct().getProductId().equals(prodIdLong));
     }
+    session.setAttribute("cart", cart);
+    return "redirect:/cart";
+  }
 
-    /**
-     * 4. 数量・ギフト設定の一括更新
-     */
-    @PostMapping("/update")
-    public String update(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
-                         HttpSession session, Model model,
-                         @RequestParam List<Long> productId,
-                         @RequestParam List<Integer> quantity,
-                         @RequestParam(required = false) List<Long> giftProductIds) {
+  /**
+   * 数量・ギフト設定の更新
+   */
+  @PostMapping("/update")
+  public String update(HttpSession session, Model model,
+      @RequestParam List<Integer> productId,
+      @RequestParam List<Integer> quantity,
+      @RequestParam(required = false) List<Integer> giftProductIds) {
 
-        Long userId = getUserId(userDetails);
-        String sessionId = session.getId();
+    @SuppressWarnings("unchecked")
+    List<Item> cart = (List<Item>) session.getAttribute("cart");
 
-        // 各商品の数量とギフト設定を更新
-        for (int i = 0; i < productId.size(); i++) {
-            Long prodId = productId.get(i);
-            Integer qty = quantity.get(i);
-            
-            // チェックボックスがチェックされた商品IDのリストでギフト判定
-            boolean isGift = giftProductIds != null && giftProductIds.contains(prodId);
-            
-            cartService.updateCartItem(userId, sessionId, prodId, qty, isGift);
-        }
+    if (cart != null && productId.size() == quantity.size()) {
+      for (int i = 0; i < productId.size(); i++) {
+        final Integer currentId = productId.get(i);
+        final Integer newQty = quantity.get(i);
+        final boolean isGift = giftProductIds != null && giftProductIds.contains(currentId);
+        final Long currentIdLong = currentId.longValue();
 
-        // カートの内容を更新
-        prepareCartView(userDetails, session, model);
-        
-        return "cart/cart";
+        cart.stream()
+            .filter(item -> item.getProduct().getProductId().equals(currentIdLong))
+            .findFirst()
+            .ifPresent(item -> {
+              if (newQty >= 1)
+                item.setCount(newQty);
+              item.setGift(isGift);
+            });
+      }
     }
-    
-    /**
-     * 5. カートを空にする
-     */
-    @GetMapping("/clear")
-    public String clear(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
-                        HttpSession session, Model model) {
-        
-        Long userId = getUserId(userDetails);
-        String sessionId = session.getId();
+    session.setAttribute("cart", cart);
+    return "redirect:/cart";
+  }
 
-        // カートを空にする
-        cartService.clearCart(userId, sessionId);
-
-        // カートの内容を更新
-        prepareCartView(userDetails, session, model);
-        
-        return "redirect:/cart";
-    }
+  /**
+   * カートを空にする
+   */
+  @GetMapping("/clear")
+  public String clear(HttpSession session) {
+    session.removeAttribute("cart");
+    return "redirect:/cart";
+  }
 }
