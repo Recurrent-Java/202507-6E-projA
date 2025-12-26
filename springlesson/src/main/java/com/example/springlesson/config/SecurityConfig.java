@@ -21,7 +21,7 @@ public class SecurityConfig {
             // 全ての静的リソースと、共通レイアウトのパスを完全に許可
             .requestMatchers("/css/**", "/js/**", "/images/**", "/storage/**", "/comlayout/**").permitAll()
             // TOP、商品、ログイン、登録に関わる全てのURLを許可
-            .requestMatchers("/", "/index", "/login", "/register/**", "/product/**", "/privacy/**").permitAll()
+            .requestMatchers("/", "/index", "/login", "/register/**", "/product/**", "/privacy/**", "/contact/**").permitAll()
             // それ以外（管理画面など）のみ認証を必要とする
             .anyRequest().permitAll() // ★デバッグのため、一度ここを permitAll() にしてください
         )
