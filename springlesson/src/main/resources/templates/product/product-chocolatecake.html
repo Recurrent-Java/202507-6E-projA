@@ -26,18 +26,17 @@
         <div class="container">
             <div class="product-detail-container">
                 <!-- 左側：商品画像 -->
-                <div class="product-images">
-                    <div class="main-image">
-                        <img th:src="@{/images/chocolatecake.png}" alt="米粉のベリーチョコケーキ">
-                    </div>
-                </div>
-				     <!-- サブ画像 -->
+				<div class="product-images">
+				    <div class="main-image">
+				        <img th:src="@{/images/chocolatecake.png}" alt="米粉のベリーチョコケーキ" id="mainImage">
+				    </div>
+				<!-- 左側：サブ画像 -->
 				    <div class="thumb-images">
 				        <img th:src="@{/images/chocolatecake.png}" alt="全体図" onclick="changeImage(this.src)">
-				        <img th:src="@{/images/chocolatecake_cross.png}" alt="断面図" onclick="changeImage(this.src)">
-				        <img th:src="@{/images/chocolatecake_zoom.png}" alt="包装" onclick="changeImage(this.src)">
+				        <img th:src="@{/images/chocolatecake-yoko.png}" alt="断面図" onclick="changeImage(this.src)">
+				        <img th:src="@{/images/cake-hako.png}" alt="包装" onclick="changeImage(this.src)">
 				    </div>
-				    </div>
+				</div>
 
                 <!-- 右側：商品情報 -->
                 <div class="product-info">

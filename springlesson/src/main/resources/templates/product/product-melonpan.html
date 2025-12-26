@@ -25,12 +25,18 @@
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
-                <!-- 左側：商品画像 -->
-                <div class="product-images">
-                    <div class="main-image">
-                        <img th:src="@{/images/melonpan.png}" alt="雪どけメロンパン">
-                    </div>
-                </div>
+				<!-- 左側：商品画像 -->
+								<div class="product-images">
+								    <div class="main-image">
+								        <img th:src="@{/images/melonpan.png}" alt="雪どけメロンパン">
+								    </div>
+								<!-- 左側：サブ画像 -->
+								    <div class="thumb-images">
+								        <img th:src="@{/images/melonpan.png}" alt="全体図" onclick="changeImage(this.src)">
+								        <img th:src="@{/images/melonpan-yoko.png}" alt="断面図" onclick="changeImage(this.src)">
+								        <img th:src="@{/images/cake-hako.png}" alt="包装" onclick="changeImage(this.src)">
+								    </div>
+								</div>
 
                 <!-- 右側：商品情報 -->
                 <div class="product-info">
@@ -107,6 +113,10 @@
             const quantity = document.getElementById('quantity').value;
             alert(quantity + '個をカートに追加しました！');
         });
+	
+		       function changeImage(src) {
+            document.querySelector('.main-image img').src = src;
+        }
     </script>
 </body>
 </html>
