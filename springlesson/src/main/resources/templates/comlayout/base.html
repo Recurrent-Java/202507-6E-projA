@@ -103,8 +103,7 @@
         <div class="footer-col">
           <h4>会社情報</h4>
           <ul>
-            <li><a th:href="@{/company}">会社概要</a></li>
-            <li><a th:href="@{/contact}">お問い合わせ</a></li>
+            <p>会社概要</p>
             <li><a th:href="@{/privacy}">プライバシーポリシー</a></li>
           </ul>
         </div>
@@ -114,7 +113,6 @@
           <h4>マイアカウント</h4>
           <ul>
             <li><a th:href="@{/mypage}">アカウント情報</a></li>
-            <li><a th:href="@{/orders}">注文履歴</a></li>
 
             <li sec:authorize="isAnonymous()">
               <a th:href="@{/login}">ログイン</a>
