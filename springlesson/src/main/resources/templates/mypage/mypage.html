@@ -114,8 +114,8 @@
 
               <div class="form-group">
                 <label>郵便番号</label>
-                <input type="text" name="postalCode" th:value="${member.postalCode}" class="form-input"
-                  placeholder="1234567">
+                <input type="text" id="postalCodeInput" name="postalCode" th:value="${member.postalCode}"
+                  class="form-input" placeholder="123-4567" maxlength="8" oninput="formatPostalCode(this)">
               </div>
               <div class="form-group">
                 <label>都道府県</label>
@@ -183,13 +183,17 @@
                 <li>アカウント情報が完全に削除されます</li>
               </ul>
               <div class="withdrawal-form">
-                <textarea class="withdrawal-reason" id="withdrawalReason" placeholder="退会理由（任意）"></textarea>
+                <textarea name="withdrawalReason" 
+                          class="withdrawal-reason-textarea" 
+                          placeholder="退会理由（任意）"></textarea>
                 <label class="checkbox-item confirm-checkbox">
                   <input type="checkbox" id="confirm-withdrawal">
                   <span>上記の内容を理解し、退会を希望します</span>
                 </label>
-                <button type="button" class="danger-btn" id="withdrawal-btn" disabled
-                  onclick="openConfirmModal()">退会する</button>
+                <button type="button" 
+                        id="withdrawal-btn" 
+                        onclick="openConfirmModal()" 
+                        disabled>退会する</button>
               </div>
             </div>
           </div>
@@ -224,6 +228,12 @@
       // セレクタを .mypage-wrapper 内に限定して競合を避ける
       const menuItems = document.querySelectorAll('.mypage-wrapper .menu-item');
       const contentSections = document.querySelectorAll('.mypage-wrapper .content-section');
+
+      // --- ここに追加！ (画面表示時の郵便番号整形) ---
+      const pcInput = document.getElementById('postalCodeInput');
+      if (pcInput && pcInput.value) {
+        formatPostalCode(pcInput);
+      }
 
       // --- 追加：URLパラメータからセクションを取得して切り替えるロジック ---
       const urlParams = new URLSearchParams(window.location.search);
@@ -286,6 +296,17 @@
     function closeModal(id) {
       const modal = document.getElementById(id);
       if (modal) modal.style.display = 'none';
+    }
+
+    // --- ★ここに追加：郵便番号の自動ハイフン整形 ---
+    function formatPostalCode(input) {
+      // 数字以外を除去
+      let value = input.value.replace(/\D/g, '');
+      // 3文字目以降にハイフンを挿入（最大7桁の数字を想定）
+      if (value.length > 3) {
+        value = value.slice(0, 3) + '-' + value.slice(3, 7);
+      }
+      input.value = value;
     }
 
     // 3. 退会を実際に実行する
