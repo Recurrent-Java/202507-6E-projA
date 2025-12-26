@@ -44,9 +44,11 @@
         </a>
 
         <a th:href="@{/cart}" class="header-icon">
-          <img th:src="@{/images/cart.png}" alt="カート">
-          <span class="cart-badge">
-          </span>
+            <img th:src="@{/images/cart.png}" alt="カート">
+            <span class="cart-badge" 
+                  th:if="${session.cart != null and !session.cart.empty}" 
+                  th:text="${#aggregates.sum(session.cart.![count])}">
+            </span>
         </a>
 
       </div>
