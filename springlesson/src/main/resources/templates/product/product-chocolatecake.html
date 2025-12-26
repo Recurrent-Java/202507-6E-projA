@@ -1,52 +1,39 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>米粉のベリーチョコケーキ - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
 	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
 
-    <!-- パンくずリスト -->
     <div class="breadcrumb">
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=3)}">カカオ70％</a>
+            <a th:href="@{/product}">全商品</a>
             <span class="separator">›</span>
             <span class="current">米粉のベリーチョコケーキ</span>
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
-                <!-- 左側：商品画像 -->
                 <div class="product-images">
                     <div class="main-image">
-                        <img th:src="@{/images/chocolatecake.png}" alt="米粉のベリーチョコケーキ">
+                        <img id="mainImage" th:src="@{/images/chocolatecake.png}" alt="米粉のベリーチョコケーキ">
                     </div>
                 </div>
-				     <!-- サブ画像 -->
-				    <div class="thumb-images">
-				        <img th:src="@{/images/chocolatecake.png}" alt="全体図" onclick="changeImage(this.src)">
-				        <img th:src="@{/images/chocolatecake_cross.png}" alt="断面図" onclick="changeImage(this.src)">
-				        <img th:src="@{/images/chocolatecake_zoom.png}" alt="包装" onclick="changeImage(this.src)">
-				    </div>
-				    </div>
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">カカオ70％</div>
                     </div>
                     <h1 class="product-title">米粉のベリーチョコケーキ</h1>
@@ -60,16 +47,16 @@
 
                     <div class="product-description">
                         <h3>商品説明</h3>
-                        <p>カカオ分80%の濃厚なオーガニックチョコレートを贅沢に使用した、ずっしりと食べ応えのある本格派チョコケーキです。 小麦粉の代わりに国産米粉を使用し、卵や乳製品を使わずにしっとりと焼き上げました。層の間にはなめらかなチョコクリームを挟み、表面は艶やかなチョコグラサージュでコーティング。トップに飾ったラズベリーとブラックベリーの甘酸っぱさが、カカオの深いコクを引き立てます。特別な日のメインを飾るのにふさわしい、贅沢な一品です。</p>
+                        <p>カカオ分80%の濃厚なオーガニックチョコレートを贅沢に使用した、ずっしりと食べ応えのある本格派チョコケーキです。</p>
                     </div>
 
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ 80%ハイカカオの深い味わい：ポリフェノール豊富な高カカオチョコレートをメインに使用。甘さを抑え、カカオ本来の芳醇な香りとほろ苦さを存分に楽しめます。</li>
-                            <li>✓ 驚きのしっとり食感：米粉と大豆由来の素材を独自の配合でブレンド。ヴィーガン・グルテンフリーとは思えないほど、濃厚でなめらかな口どけを実現しました。</li>
-                            <li>✓ 低GI・ギルトフリー：甘みにはミネラル豊富な甜菜糖と希少糖を使用。食後の満足感は高いのに、体に優しい仕上がりです。</li>
-                            <li>✓ ビタミン豊富なベリーのトッピング：フレッシュなベリー類をたっぷり使用。チョコの抗酸化作用とベリーのビタミンで、美容を意識する方にも嬉しい組み合わせです。</li>
+                            <li>✓ 80%ハイカカオの深い味わい：ポリフェノール豊富。</li>
+                            <li>✓ 驚きのしっとり食感：濃厚でなめらかな口どけ。</li>
+                            <li>✓ 低GI・ギルトフリー：甜菜糖と希少糖を使用。</li>
+                            <li>✓ ビタミン豊富なベリーのトッピング：美容にも嬉しい。</li>
                         </ul>
                     </div>
 
@@ -78,23 +65,26 @@
                         <table class="specs-table">
                             <tr><th>内容量</th><td>1ホール（直径12cm）</td></tr>
                             <tr><th>賞味期限</th><td>製造日を含め3日間</td></tr>
-                            <tr><th>保存方法</th><td>乾燥を避けて冷蔵庫で保管し、お早めにお召し上がりください。</td></tr>
-                            <tr><th>アレルギー</th><td>大豆（豆乳クリーム・大豆バター・大豆ホイップ由来）、アーモンド（生地に使用）、ラズベリー、ブラックベリー</td></tr>
+                            <tr><th>保存方法</th><td>冷蔵庫で保管</td></tr>
+                            <tr><th>アレルギー</th><td>大豆、アーモンド</td></tr>
                         </table>
                     </div>
 
-                    <div class="product-quantity">
-                        <label>数量</label>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="99">
-                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="id" value="10">
+                        <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="product-actions">
-                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-                    </div>
+                        <div class="product-actions">
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -109,16 +99,6 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
-        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
-            const quantity = document.getElementById('quantity').value;
-            alert(quantity + '個をカートに追加しました！');
-        });
-		
-		function changeImage(src) {
-		    // メイン画像のIDを指定して、srcを書き換える
-		    document.getElementById('mainImage').src = src;
-		}
-		
     </script>
 </body>
 </html>

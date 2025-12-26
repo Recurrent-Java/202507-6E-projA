@@ -1,73 +1,257 @@
 package com.example.springlesson.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.springlesson.form.Item;
-import com.example.springlesson.form.PurchaseForm;
+import com.example.springlesson.security.CustomerDetailsImpl;
+import com.example.springlesson.service.CartService;
 import com.example.springlesson.service.PurchaseService;
 
 @Controller
 @RequestMapping("/purchase")
 public class PurchaseController {
-  private final PurchaseService purchaseService;
+    private final PurchaseService purchaseService;
+    private final CartService cartService;
 
-  public PurchaseController(PurchaseService purchaseService) {
-    this.purchaseService = purchaseService;
-  }
-  // 購入ページの表示
-  @GetMapping({"","/"})
-  public String purchase(HttpSession session, Model model) {
-    // セッションスコープよりカートを取得
-    List<Item> cart = (List<Item>)session.getAttribute("cart");
-    // 画面表示用
-    model.addAttribute("cart", cart);
-    // バリデーション用(バリデーションを行うformを最初に開く場合には必要
-    model.addAttribute("purchaseForm", new PurchaseForm());
-    // 購入ページへ
-    return "purchase/purchase-in";
-  }
-  // 購入ページ
-  @PostMapping("/regist")
-  public String regist(
-      @Valid @ModelAttribute("purchaseForm") PurchaseForm form,
-      BindingResult bindingResult,
-      HttpSession session, Model model) {
-    // 入力エラーのチェック
-    if(bindingResult.hasErrors()) {
-      // 入力エラーあり
-      // セッションスコープよりカートを取得
-      List<Item> cart = (List<Item>)session.getAttribute("cart");
-      // 画面表示用
-      model.addAttribute("cart", cart);
-      return "purchase/purchase-in";
+    public PurchaseController(PurchaseService purchaseService, CartService cartService) {
+        this.purchaseService = purchaseService;
+        this.cartService = cartService;
     }
-    /** 購入処理 */
-    try {
-      // セッションスコープよりカートを取得
-      List<Item> cart = (List<Item>)session.getAttribute("cart");
-      if(cart == null || cart.isEmpty()) {
-        throw new Exception("購入する商品が選択されていません。");
-      }
-      // 購入情報登録
-      purchaseService.save(cart, form.getName(), form.getAddress());
-      // セッションスコープよりカート情報削除
-      session.removeAttribute("cart");
-      // 購入完了画面へ
-      return "purchase/purchase-out";
-    }catch(Exception e) {
-      model.addAttribute("errMsg", e.getMessage());
-      return "error/error";
+
+    /**
+     * ログインユーザーのIDを取得
+     */
+    private Long getUserId(CustomerDetailsImpl userDetails) {
+        if (userDetails != null && userDetails.getMember() != null) {
+            return userDetails.getMember().getMemberId();
+        }
+        return null;
     }
-  }
+
+    /**
+     * 購入入力ページの表示
+     */
+    @GetMapping({ "", "/", "/input" })
+    public String purchaseInput(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
+                                HttpSession session, Model model) {
+        Long userId = getUserId(userDetails);
+        String sessionId = session.getId();
+
+        // カートから商品を取得
+        List<Item> cart = cartService.getCartItems(userId, sessionId);
+        
+        // カートが空の場合はカートページにリダイレクト
+        if (cart == null || cart.isEmpty()) {
+            return "redirect:/cart";
+        }
+
+        // セッションにも保持（互換性のため）
+        session.setAttribute("cart", cart);
+
+        // 商品合計金額を計算
+        long productTotal = cartService.calculateTotalPrice(cart);
+        
+        // 送料（基本420円）
+        int shippingFee = 420;
+        
+        // 合計金額
+        long grandTotal = productTotal + shippingFee;
+
+        // 選択肢を作成
+        model.addAttribute("deliveryDateOptions", createDeliveryDateOptions());
+        model.addAttribute("deliveryTimeOptions", createDeliveryTimeOptions());
+        model.addAttribute("destinationOptions", createDestinationOptions());
+        model.addAttribute("giftOptions", createGiftOptions());
+        model.addAttribute("paymentOptions", createPaymentOptions());
+
+        // 金額情報
+        model.addAttribute("productTotal", productTotal);
+        model.addAttribute("shippingFee", shippingFee);
+        model.addAttribute("grandTotal", grandTotal);
+        
+        // カート情報
+        model.addAttribute("cart", cart);
+
+        return "purchase/purchase-in";
+    }
+
+    /**
+     * 注文確定処理
+     */
+    @PostMapping("/confirm")
+    public String confirm(@AuthenticationPrincipal CustomerDetailsImpl userDetails,
+                          HttpSession session, Model model,
+                          @RequestParam(required = false) String deliveryDate,
+                          @RequestParam(required = false) String deliveryTime,
+                          @RequestParam(required = false) String shippingDestination,
+                          @RequestParam(required = false) String giftOption,
+                          @RequestParam(required = false) String paymentMethod,
+                          @RequestParam(required = false) String couponCode,
+                          @RequestParam(required = false) String remarks) {
+        
+        Long userId = getUserId(userDetails);
+        String sessionId = session.getId();
+
+        try {
+            // カートから商品を取得
+            List<Item> cart = cartService.getCartItems(userId, sessionId);
+            
+            if (cart == null || cart.isEmpty()) {
+                throw new Exception("購入する商品が選択されていません。");
+            }
+
+            // 購入処理（簡易版）
+            // TODO: 実際の購入処理を実装（注文テーブルへの登録など）
+            
+            // カートを空にする
+            cartService.clearCart(userId, sessionId);
+            
+            // セッションからもカート情報を削除
+            session.removeAttribute("cart");
+
+            // 購入完了画面へ
+            return "purchase/purchase-out";
+            
+        } catch (Exception e) {
+            model.addAttribute("errMsg", e.getMessage());
+            return "error/error";
+        }
+    }
+
+    /**
+     * 配送希望日の選択肢を作成
+     */
+    private List<Map<String, String>> createDeliveryDateOptions() {
+        List<Map<String, String>> options = new ArrayList<>();
+        
+        // 「指定なし」オプション
+        Map<String, String> noSpec = new HashMap<>();
+        noSpec.put("value", "");
+        noSpec.put("label", "指定なし");
+        options.add(noSpec);
+        
+        // 3日後から14日後までの日付を選択肢として追加
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)");
+        
+        for (int i = 3; i <= 14; i++) {
+            LocalDate date = today.plusDays(i);
+            Map<String, String> option = new HashMap<>();
+            option.put("value", date.toString());
+            option.put("label", date.format(formatter));
+            options.add(option);
+        }
+        
+        return options;
+    }
+
+    /**
+     * 時間指定の選択肢を作成
+     */
+    private List<Map<String, String>> createDeliveryTimeOptions() {
+        List<Map<String, String>> options = new ArrayList<>();
+        
+        String[][] timeSlots = {
+            {"", "指定なし"},
+            {"08-12", "午前中 (8:00-12:00)"},
+            {"12-14", "12:00-14:00"},
+            {"14-16", "14:00-16:00"},
+            {"16-18", "16:00-18:00"},
+            {"18-20", "18:00-20:00"},
+            {"19-21", "19:00-21:00"}
+        };
+        
+        for (String[] slot : timeSlots) {
+            Map<String, String> option = new HashMap<>();
+            option.put("value", slot[0]);
+            option.put("label", slot[1]);
+            options.add(option);
+        }
+        
+        return options;
+    }
+
+    /**
+     * 配送先の選択肢を作成
+     */
+    private List<Map<String, String>> createDestinationOptions() {
+        List<Map<String, String>> options = new ArrayList<>();
+        
+        String[][] destinations = {
+            {"home", "登録住所に届ける"},
+            {"other", "別の住所に届ける"},
+            {"hokkaido", "北海道 (+1,100円)"},
+            {"okinawa", "沖縄 (+1,100円)"}
+        };
+        
+        for (String[] dest : destinations) {
+            Map<String, String> option = new HashMap<>();
+            option.put("value", dest[0]);
+            option.put("label", dest[1]);
+            options.add(option);
+        }
+        
+        return options;
+    }
+
+    /**
+     * ギフトオプションの選択肢を作成
+     */
+    private List<Map<String, String>> createGiftOptions() {
+        List<Map<String, String>> options = new ArrayList<>();
+        
+        String[][] giftOpts = {
+            {"none", "ギフトラッピングなし"},
+            {"standard", "標準ラッピング (+300円)"},
+            {"premium", "プレミアムラッピング (+500円)"},
+            {"message", "メッセージカード付き (+200円)"}
+        };
+        
+        for (String[] gift : giftOpts) {
+            Map<String, String> option = new HashMap<>();
+            option.put("value", gift[0]);
+            option.put("label", gift[1]);
+            options.add(option);
+        }
+        
+        return options;
+    }
+
+    /**
+     * 支払い方法の選択肢を作成
+     */
+    private List<Map<String, String>> createPaymentOptions() {
+        List<Map<String, String>> options = new ArrayList<>();
+        
+        String[][] payments = {
+            {"credit", "クレジットカード"},
+            {"convenience", "コンビニ支払い"},
+            {"bank", "銀行振込"},
+            {"cod", "代金引換 (+330円)"}
+        };
+        
+        for (String[] payment : payments) {
+            Map<String, String> option = new HashMap<>();
+            option.put("value", payment[0]);
+            option.put("label", payment[1]);
+            options.add(option);
+        }
+        
+        return options;
+    }
 }

@@ -1,45 +1,39 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>まるごと桃の米粉タルト - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
 	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
-   　<div th:replace="~{comlayout/base :: header}"></div>
+    <div th:replace="~{comlayout/base :: header}"></div>
 
-    <!-- パンくずリスト -->
     <div class="breadcrumb">
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=2)}">低糖質</a>
+            <a th:href="@{/product}">全商品</a>
             <span class="separator">›</span>
             <span class="current">まるごと桃の米粉タルト</span>
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
-                <!-- 左側：商品画像 -->
                 <div class="product-images">
                     <div class="main-image">
                         <img th:src="@{/images/peachtart.png}" alt="まるごと桃の米粉タルト">
                     </div>
                 </div>
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">低糖質</div>
                     </div>
                     <h1 class="product-title">まるごと桃の米粉タルト</h1>
@@ -59,10 +53,10 @@
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ フルーツが主役の低糖質：桃本来の甘さを最大限に活かし、シロップやクリームには体に優しい甜菜糖やエリスリトールを使用。見た目のボリュームに反して、カロリーと糖質は控えめです。</li>
-                            <li>✓ こだわりのグルテンフリー：小麦粉を一切使わない専用キッチンで製造。小麦アレルギーの方も安心してお召し上がりいただけます。</li>
-                            <li>✓ 植物性100%のヴィーガン対応：卵や乳製品を使わず、大豆由来の素材でコク深いクリームを再現しました。</li>
-                            <li>✓ 美容成分たっぷり：桃に含まれるビタミンや食物繊維をまるごと摂取。さらにタルト生地にはビタミンE豊富なアーモンドをたっぷり使用しています。</li>
+                            <li>✓ フルーツが主役の低糖質：桃本来の甘さを最大限に活かし、シロップやクリームには体に優しい甜菜糖やエリスリトールを使用。</li>
+                            <li>✓ こだわりのグルテンフリー：小麦粉を一切使わない専用キッチンで製造。</li>
+                            <li>✓ 植物性100%のヴィーガン対応：卵や乳製品を使わず、大豆由来の素材でコク深いクリームを再現。</li>
+                            <li>✓ 美容成分たっぷり：桃に含まれるビタミンや食物繊維をまるごと摂取。</li>
                         </ul>
                     </div>
 
@@ -71,28 +65,31 @@
                         <table class="specs-table">
                             <tr><th>内容量</th><td>1個</td></tr>
                             <tr><th>賞味期限</th><td>当日中</td></tr>
-                            <tr><th>保存方法</th><td>時間の経過とともに桃の変色や食感の変化が起こります。最も美味しい状態でお召し上がりいただくため、当日中にお召し上がりください。</td></tr>
-                            <tr><th>アレルギー</th><td>桃、大豆（豆乳クリーム・大豆バター由来）、アーモンド（タルト生地に使用）</td></tr>
+                            <tr><th>保存方法</th><td>当日中にお召し上がりください。</td></tr>
+                            <tr><th>アレルギー</th><td>桃、大豆、アーモンド</td></tr>
                         </table>
                     </div>
 
-                    <div class="product-quantity">
-                        <label>数量</label>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="99">
-                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="id" value="3">
+                        <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="product-actions">
-                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-                    </div>
+                        <div class="product-actions">
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
-   　<div th:replace="~{comlayout/base :: footer}"></div>
+    <div th:replace="~{comlayout/base :: footer}"></div>
     <script>
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
@@ -102,10 +99,6 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
-        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
-            const quantity = document.getElementById('quantity').value;
-            alert(quantity + '個をカートに追加しました！');
-        });
     </script>
 </body>
 </html>

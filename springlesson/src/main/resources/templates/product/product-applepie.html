@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>完熟りんごのヘルシーパイ - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
 	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
@@ -15,7 +15,7 @@
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            <a th:href="@{/product}">全商品</a>
             <span class="separator">›</span>
             <span class="current">完熟りんごのヘルシーパイ</span>
         </div>
@@ -36,10 +36,9 @@
                 <div class="product-info">
                     <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">アレルゲンフリー</div>
                     </div>
                     <h1 class="product-title">完熟りんごのヘルシーパイ</h1>
@@ -59,10 +58,10 @@
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ 独自製法のサクサク生地：米粉とアーモンドプードル、さらに大豆由来のヴィーガンバターを独自の配合でブレンド。グルテンフリー特有の物足りなさを一切感じさせない、香ばしい風味を実現しました。</li>
-                            <li>✓ 砂糖控えめ・低GI：精製された白砂糖は一切使用せず、体にゆっくり吸収される甜菜糖や希少糖を使用。食後の血糖値の上昇を緩やかに抑えます。</li>
-                            <li>✓ りんごの栄養をまるごと：ポリフェノール豊富な皮ごと煮込むことで、美容と健康に嬉しい栄養素もたっぷり摂取できます。</li>
-                            <li>✓ バター不使用・低カロリー：一般的なアップルパイに比べ、脂質を約40%カット。ダイエット中の方でも安心してホールでお楽しみいただけます。</li>
+                            <li>✓ 独自製法のサクサク生地：米粉とアーモンドプードル、さらに大豆由来のヴィーガンバターを独自の配合でブレンド。</li>
+                            <li>✓ 砂糖控えめ・低GI：精製された白砂糖は一切使用せず、体にゆっくり吸収される甜菜糖や希少糖を使用。</li>
+                            <li>✓ りんごの栄養をまるごと：ポリフェノール豊富な皮ごと煮込むことで、美容と健康に嬉しい栄養素もたっぷり。</li>
+                            <li>✓ バター不使用・低カロリー：一般的なアップルパイに比べ、脂質を約40%カット。</li>
                         </ul>
                     </div>
 
@@ -71,23 +70,26 @@
                         <table class="specs-table">
                             <tr><th>内容量</th><td>1個</td></tr>
                             <tr><th>賞味期限</th><td>製造日より3日</td></tr>
-                            <tr><th>保存方法</th><td>冷蔵にて、お早めにお召し上がりいただくことを推奨しています。</td></tr>
-                            <tr><th>アレルギー</th><td>りんご、大豆（大豆バター由来）、アーモンド（パイ生地のコク出しに使用）</td></tr>
+                            <tr><th>保存方法</th><td>冷蔵にて、お早めにお召し上がりください。</td></tr>
+                            <tr><th>アレルギー</th><td>りんご、大豆、アーモンド</td></tr>
                         </table>
                     </div>
 
-                    <div class="product-quantity">
-                        <label>数量</label>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="99">
-                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="id" value="2">
+                        <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="product-actions">
-                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-                    </div>
+                        <div class="product-actions">
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -102,10 +104,6 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
-        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
-            const quantity = document.getElementById('quantity').value;
-            alert(quantity + '個をカートに追加しました！');
-        });
     </script>
 </body>
 </html>

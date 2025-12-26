@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title th:text="${product != null ? product.productName + ' - HealSweets' : '商品詳細 - HealSweets'}">商品詳細 - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
     <link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
@@ -14,9 +14,9 @@
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/}">全商品</a>
+            <a th:href="@{/product}">全商品</a>
             <span class="separator">›</span>
-            <span class="current">レッドホットシュー</span>
+            <span class="current" th:text="${product != null ? product.productName : '商品詳細'}">商品名</span>
         </div>
     </div>
 
@@ -25,67 +25,53 @@
             <div class="product-detail-container">
                 <div class="product-images">
                     <div class="main-image">
-                        <img th:src="@{/images/redhotshuwhite.png}" alt="レッドホットシュー">
+                        <img th:src="@{${product != null ? product.imagePath : '/images/redhotshuwhite.png'}}" 
+                             th:alt="${product != null ? product.productName : '商品画像'}">
                     </div>
                 </div>
 
                 <div class="product-info">
                     <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
                         <!-- デフォルト表示（productがない場合） -->
-                        <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">脂肪燃焼サポート</div>
+                        <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">スイーツ</div>
                     </div>
-                    <h1 class="product-title" th:text="${product != null ? product.productName : 'レッドホットシュー'}">レッドホットシュー</h1>
+                    <h1 class="product-title" th:text="${product != null ? product.productName : '商品名'}">商品名</h1>
                     
                     <div class="product-price-section">
                         <div class="price-row">
-                            <span class="current-price">¥216</span>
+                            <span class="current-price" th:text="${product != null ? '¥' + #numbers.formatInteger(product.price, 1, 'COMMA') : '¥---'}">¥---</span>
                         </div>
                         <p class="tax-note">※税込価格</p>
                     </div>
 
                     <div class="product-description">
                         <h3>商品説明</h3>
-                        <p>「スイーツを食べて、内側から熱くなる。」そんな新感覚の体験をお届けする、燃焼系シュークリーム。
-                        真っ赤な光を放つオーラを纏ったかのようなインパクトある見た目とは裏腹に、中身は濃厚でとろけるようなカスタードクリームがたっぷり。
-                        生地には代謝を促進するカプサイシンを微量に配合し、後味にほんのりとした温かさを感じさせます。甘さと刺激が融合した、まさに「攻め」のスイーツです。</p>
+                        <p>おいしいスイーツです。詳細な説明は準備中です。</p>
                     </div>
 
-                    <div class="product-features">
-                        <h3>商品の特徴</h3>
-                        <ul>
-                            <li>✓ 脂肪燃焼サポート：唐辛子由来のカプサイシンとL-カルニチンを配合。</li>
-                            <li>✓ 濃厚豆乳カスタード：動物性脂質を抑えつつ、濃厚なコクを実現。</li>
-                            <li>✓ ジンジャーの隠し味：高知県産の黄金生姜をブレンド。</li>
-                            <li>✓ 低GIシュガー使用：血糖値の上昇が緩やかなココナッツシュガーを採用。</li>
-                        </ul>
-                    </div>
-
-                    <div class="product-specs">
-                        <h3>商品詳細</h3>
-                        <table class="specs-table">
-                            <tr><th>内容量</th><td>1個</td></tr>
-                            <tr><th>賞味期限</th><td>製造日より2日（要冷蔵）</td></tr>
-                            <tr><th>保存方法</th><td>10℃以下で保存してください</td></tr>
-                            <tr><th>アレルギー</th><td>大豆、アーモンド（※小麦粉不使用の米粉生地）</td></tr>
-                        </table>
-                    </div>
-
-                    <div class="product-quantity">
-                        <label>数量</label>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="99">
-                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                    <!-- カートに追加フォーム -->
+                    <form th:action="@{/cart/add}" method="post" id="addToCartForm">
+                        <input type="hidden" name="id" th:value="${product != null ? product.productId : 0}">
+                        
+                        <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="product-actions">
-                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-                    </div>
+                        <div class="product-actions">
+                            <button type="submit" class="add-to-cart-btn" th:disabled="${product == null}">
+                                <span class="cart-icon">🛒</span>カートに入れる
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -93,7 +79,7 @@
 
     <div th:replace="~{comlayout/base :: footer}"></div>
 
-    <script>
+    <script th:inline="javascript">
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) < 99) qtyInput.value = parseInt(qtyInput.value) + 1;
@@ -102,11 +88,6 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
-        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
-            const quantity = document.getElementById('quantity').value;
-            // HTML 1の詳細なメッセージを維持
-            alert('「レッドホット・シュー」' + quantity + '個をカートに追加しました！');
-        });
     </script>
 </body>
 </html>

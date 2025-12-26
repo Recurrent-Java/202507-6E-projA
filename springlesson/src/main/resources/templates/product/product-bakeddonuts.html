@@ -1,45 +1,39 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>米粉のしっとり焼きドーナツ - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
 	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
 
-    <!-- パンくずリスト -->
     <div class="breadcrumb">
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            <a th:href="@{/product}">全商品</a>
             <span class="separator">›</span>
             <span class="current">米粉のしっとり焼きドーナツ</span>
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
-                <!-- 左側：商品画像 -->
                 <div class="product-images">
                     <div class="main-image">
                         <img th:src="@{/images/bakeddonuts.png}" alt="米粉のしっとり焼きドーナツ">
                     </div>
                 </div>
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">アレルゲンフリー</div>
                     </div>
                     <h1 class="product-title">米粉のしっとり焼きドーナツ</h1>
@@ -53,16 +47,16 @@
 
                     <div class="product-description">
                         <h3>商品説明</h3>
-                        <p>「油で揚げない」から、とってもヘルシー。国産米粉と豆乳をベースに、じっくりと焼き上げた体に優しいドーナツです。 米粉ならではの**「しっとり・もちっ」**とした食感が特徴で、時間が経ってもパサつきません。 定番の「プレーン」、高カカオチョコを使用した「ショコラ」、香り高い「宇治抹茶」など、素材の味を大切に焼き上げました。朝食やお子様のおやつにも安心して選んでいただける、当店のロングセラー商品です。</p>
+                        <p>「油で揚げない」から、とってもヘルシー。国産米粉と豆乳をベースに、じっくりと焼き上げた体に優しいドーナツです。</p>
                     </div>
 
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ ノンフライでカロリーカット：油で揚げていないため、一般的なドーナツに比べて脂質を大幅に抑えました。1個食べても重たく感じない、軽やかな後味です。</li>
-                            <li>✓ 選べる楽しさ：素材そのものの色味を活かした、見た目も可愛いラインナップ。Webサイトの「ギフトセット」としても人気の高いアイテムです。</li>
-                            <li>✓ 白砂糖・添加物不使用：甘みには低GIな甜菜糖を使用。保存料や着色料も使わず、体に負担の少ない自然な美味しさを追求しました。</li>
-                            <li>✓ 満足感のある食べ応え：アーモンドプードルを配合することで、バターを使わなくてもリッチなコクと香ばしさをプラスしています。</li>
+                            <li>✓ ノンフライでカロリーカット：油で揚げていないため脂質を大幅カット。</li>
+                            <li>✓ 選べる楽しさ：素材そのものの色味を活かしたラインナップ。</li>
+                            <li>✓ 白砂糖・添加物不使用：低GIな甜菜糖を使用。</li>
+                            <li>✓ 満足感のある食べ応え：アーモンドプードルでリッチなコクをプラス。</li>
                         </ul>
                     </div>
 
@@ -72,22 +66,25 @@
                             <tr><th>内容量</th><td>4個</td></tr>
                             <tr><th>賞味期限</th><td>製造日より5日間</td></tr>
                             <tr><th>保存方法</th><td>直射日光・高温多湿を避けて保存</td></tr>
-                            <tr><th>アレルギー</th><td>大豆（豆乳・大豆バター由来）、アーモンド（アーモンドプードル由来）※ショコラには「アーモンドスライス」、抹茶には「抹茶」が含まれます。</td></tr>
+                            <tr><th>アレルギー</th><td>大豆、アーモンド</td></tr>
                         </table>
                     </div>
 
-                    <div class="product-quantity">
-                        <label>数量</label>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="99">
-                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="id" value="6">
+                        <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="product-actions">
-                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-                    </div>
+                        <div class="product-actions">
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -102,10 +99,6 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
-        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
-            const quantity = document.getElementById('quantity').value;
-            alert(quantity + '個をカートに追加しました！');
-        });
     </script>
 </body>
 </html>

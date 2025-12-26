@@ -1,20 +1,58 @@
 <!DOCTYPE html>
-<!-- Thymeleafを使用するための記述 -->
 <html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <div th:replace="~{comlayout/base :: meta}"></div>
   <div th:replace="~{comlayout/base :: styles}"></div>
-
-  <title>購入ページ</title>
+  <title>購入完了 | HealSweets</title>
+  <style>
+    .purchase-complete {
+      max-width: 600px;
+      margin: 60px auto;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .purchase-complete h2 {
+      color: #4caf50;
+      margin-bottom: 20px;
+    }
+    .purchase-complete .icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    .purchase-complete p {
+      color: #666;
+      margin-bottom: 30px;
+      line-height: 1.8;
+    }
+    .purchase-complete .btn-home {
+      display: inline-block;
+      background-color: #8d6e63;
+      color: white;
+      padding: 12px 40px;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .purchase-complete .btn-home:hover {
+      background-color: #6d4c41;
+    }
+  </style>
 </head>
 
 <body>
   <div th:replace="~{comlayout/base :: header}"></div>
-  <div th:replace="~{comlayout/base :: nav}"></div>
-  <main>
-    <h2>購入手続き完了</h2>
-    <p>購入手続きが完了しました。</p>
+  
+  <main class="purchase-complete">
+    <div class="icon">✅</div>
+    <h2>ご注文ありがとうございます</h2>
+    <p>
+      購入手続きが完了しました。<br>
+      ご注文内容の確認メールをお送りしましたので、ご確認ください。<br>
+      商品の発送準備が整い次第、発送のご連絡をいたします。
+    </p>
+    <a th:href="@{/}" class="btn-home">トップページへ戻る</a>
   </main>
+  
   <div th:replace="~{comlayout/base :: footer}"></div>
 </body>
 

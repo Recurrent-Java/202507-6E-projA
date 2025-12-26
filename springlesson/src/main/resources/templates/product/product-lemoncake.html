@@ -1,45 +1,39 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>さわやかレモンのしっとりおからケーキ - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
 	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
 
-    <!-- パンくずリスト -->
     <div class="breadcrumb">
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            <a th:href="@{/product}">全商品</a>
             <span class="separator">›</span>
             <span class="current">さわやかレモンのしっとりおからケーキ</span>
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
-                <!-- 左側：商品画像 -->
                 <div class="product-images">
                     <div class="main-image">
                         <img th:src="@{/images/lemoncake.png}" alt="さわやかレモンのしっとりおからケーキ">
                     </div>
                 </div>
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">アレルゲンフリー</div>
                     </div>
                     <h1 class="product-title">さわやかレモンのしっとりおからケーキ</h1>
@@ -53,16 +47,16 @@
 
                     <div class="product-description">
                         <h3>商品説明</h3>
-                        <p>生おからをたっぷりと練り込んだ、驚くほどしっとり、それでいて口当たりの軽いヘルシーなケーキです。 生地には瀬戸内産のレモン果汁とゼスト（皮）を贅沢に使用し、一口ごとにレモンの爽やかな香りが弾けます。上には豆乳ベースの甘酸っぱいアイシングをたっぷりとかけ、仕上げにシロップ漬けのレモンとピスタチオをトッピング。 「おから感」を全く感じさせない、ティータイムにぴったりの上品な味わいに仕上げました。</p>
+                        <p>生おからをたっぷりと練り込んだ、驚くほどしっとり、それでいて口当たりの軽いヘルシーなケーキです。</p>
                     </div>
 
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ おからで糖質大幅カット：小麦粉の代わりに「生おから」と「米粉」を使用。一般的なパウンドケーキに比べて糖質を約50%カットしながら、満足感のある食べ応えを実現しました。</li>
-                            <li>✓ 食物繊維たっぷり：おから由来の不溶性食物繊維が豊富に含まれており、美味しく食べながら腸内環境を整えたい方にもおすすめです。</li>
-                            <li>✓ 天然レモンのビタミンC：香料に頼らず、本物のレモンをまるごと使用。自然な酸味とほろ苦さが、アイシングの優しい甘さを引き立てます。</li>
-                            <li>✓ ギルトフリーなアイシング：通常は粉糖で作るアイシングに、カロリーゼロの甘味料をブレンド。シャリッとした食感はそのままに、カロリーを抑えています。</li>
+                            <li>✓ おからで糖質大幅カット：糖質を約50%カット。</li>
+                            <li>✓ 食物繊維たっぷり：おから由来の不溶性食物繊維が豊富。</li>
+                            <li>✓ 天然レモンのビタミンC：本物のレモンをまるごと使用。</li>
+                            <li>✓ ギルトフリーなアイシング：カロリーゼロの甘味料をブレンド。</li>
                         </ul>
                     </div>
 
@@ -71,23 +65,26 @@
                         <table class="specs-table">
                             <tr><th>内容量</th><td>1個</td></tr>
                             <tr><th>賞味期限</th><td>製造日より4日間</td></tr>
-                            <tr><th>保存方法</th><td>アイシングが溶けやすい夏場などは特に冷蔵庫での保管をお願いいたします。</td></tr>
-                            <tr><th>アレルギー</th><td>大豆（おから・豆乳由来）、ピスタチオ（トッピング）、アーモンド（生地に使用）</td></tr>
+                            <tr><th>保存方法</th><td>冷蔵庫で保管してください。</td></tr>
+                            <tr><th>アレルギー</th><td>大豆、ピスタチオ、アーモンド</td></tr>
                         </table>
                     </div>
 
-                    <div class="product-quantity">
-                        <label>数量</label>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="99">
-                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="id" value="7">
+                        <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="product-actions">
-                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-                    </div>
+                        <div class="product-actions">
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -102,10 +99,6 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
-        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
-            const quantity = document.getElementById('quantity').value;
-            alert(quantity + '個をカートに追加しました！');
-        });
     </script>
 </body>
 </html>
