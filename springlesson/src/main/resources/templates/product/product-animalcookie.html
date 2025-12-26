@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>米粉のアニマルクッキー缶 - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
-	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
@@ -15,54 +15,54 @@
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
+                <a th:href="@{/(catIds=${product.categories[0].catId})}" th:text="${product.categories[0].catName}">カテゴリー</a>
+            </th:block>
+            <th:block th:if="${product == null or product.categories == null or product.categories.empty}">
+                <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            </th:block>
             <span class="separator">›</span>
             <span class="current">米粉のアニマルクッキー缶</span>
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
-                <!-- 左側：商品画像 -->
                 <div class="product-images">
                     <div class="main-image">
                         <img th:src="@{/images/animalcookie.png}" alt="米粉のアニマルクッキー缶">
                     </div>
                 </div>
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">アレルゲンフリー</div>
                     </div>
                     <h1 class="product-title">米粉のアニマルクッキー缶</h1>
                     
                     <div class="product-price-section">
                         <div class="price-row">
-                            <span class="current-price">¥3,500</span>
+                            <span class="current-price">¥3,200</span>
                         </div>
                         <p class="tax-note">※税込価格</p>
                     </div>
 
                     <div class="product-description">
                         <h3>商品説明</h3>
-                        <p>クマ、キツネ、フクロウなど、森の動物たちをかたどったアイシングクッキーの詰め合わせです。 見た目の可愛らしさはもちろん、ベースの生地は国産米粉100%でサクサクとした食感。アイシング部分も卵白を使わず、植物性素材のみで仕上げました。 「可愛くて食べるのがもったいない！」そんな会話が弾む、心温まるギフトセットです。</p>
+                        <p>クマ、キツネ、フクロウなど、森の動物たちをかたどったアイシングクッキーの詰め合わせです。</p>
                     </div>
 
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ 卵・乳・小麦不使用のアイシング：通常アイシングに使用する卵白の代わりに、植物性由来の材料を使用。アレルギーをお持ちのお子様でも、みんなと一緒に「可愛い！」を楽しみながら食べられます。</li>
-                            <li>✓ 天然由来の着色料：動物たちの色は、野菜やフルーツから抽出した天然の着色料を使用。合成着色料不使用なので、体にも優しく、自然で柔らかな色合いが特徴です。</li>
-                            <li>✓ 食べるのが楽しいデザイン：表情豊かな動物たちのクッキーは、SNS映えも抜群。Webサイトの「お子様向けギフト」や「出産祝い」のセクションで非常に人気の出るアイテムです。</li>
-                            <li>✓ こだわりの米粉生地：生地にはアーモンドプードルをブレンドし、バターを使わなくてもリッチで香ばしい風味を引き出しました。</li>
+                            <li>✓ 卵・乳・小麦不使用のアイシング：アレルギーをお持ちのお子様でも安心。</li>
+                            <li>✓ 天然由来の着色料：野菜やフルーツから抽出。</li>
+                            <li>✓ 食べるのが楽しいデザイン：SNS映えも抜群。</li>
+                            <li>✓ こだわりの米粉生地：アーモンドプードルをブレンド。</li>
                         </ul>
                     </div>
 
@@ -71,17 +71,18 @@
                         <table class="specs-table">
                             <tr><th>内容量</th><td>1缶</td></tr>
                             <tr><th>賞味期限</th><td>製造日より30日間</td></tr>
-                            <tr><th>保存方法</th><td>アイシングは湿気にデリケートなため、開封後は乾燥剤を入れたまま涼しい場所で保管し、お早めにお召し上がりください。</td></tr>
-                            <tr><th>アレルギー</th><td>大豆（豆乳・大豆バター由来）、アーモンド（アーモンドプードル由来）</td></tr>
+                            <tr><th>保存方法</th><td>涼しい場所で保管</td></tr>
+                            <tr><th>アレルギー</th><td>大豆、アーモンド</td></tr>
                         </table>
                     </div>
 
                     <form th:action="@{/cart/add}" method="get">
-                        <input type="hidden" name="id" value="9"> <div class="product-quantity">
+                        <input type="hidden" name="id" value="9">
+                        <div class="product-quantity">
                             <label>数量</label>
                             <div class="quantity-selector">
                                 <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
-                                <input type="number" id="quantity" name="count" value="1">
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
                                 <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
                             </div>
                         </div>
@@ -90,10 +91,11 @@
                             <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
                         </div>
                     </form>
+                </div>
             </div>
         </div>
     </section>
-	<div th:replace="~{comlayout/base :: footer}"></div>
+    <div th:replace="~{comlayout/base :: footer}"></div>
     <script>
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
@@ -103,10 +105,6 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
-        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
-            const quantity = document.getElementById('quantity').value;
-            alert(quantity + '個をカートに追加しました！');
-        });
     </script>
 </body>
 </html>

@@ -29,7 +29,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr th:each="item : ${cart}" style="border-bottom: 1px solid #eee;">
+            <tr th:each="item : ${cart}" th:data-product-id="${item.product.productId}" class="cart-item-row" style="border-bottom: 1px solid #eee;">
               <td style="padding: 15px; width: 100px;">
                 <img th:src="@{${item.product.imagePath}}" 
                      th:alt="${item.product.productName}" 
@@ -38,7 +38,7 @@
               <td th:text="${item.product.productName}" style="font-weight: bold; padding: 10px;">商品名</td>
               
               <td style="text-align: center;">
-                <span th:id="|price-${item.product.productId}|" 
+                <span class="item-price"
                       th:text="${#numbers.formatInteger(item.product.price, 1, 'COMMA')} + '円'"
                       th:data-price="${item.product.price}">0円</span>
               </td>
@@ -46,21 +46,22 @@
               <td style="text-align: center;">
                 <div class="quantity-control" style="display: flex; align-items: center; justify-content: center; gap: 5px;">
                     <input type="number" name="quantity" 
-                           th:id="|quantity-${item.product.productId}|" 
-                           th:value="${item.count}" min="1" 
-                           style="width: 50px; text-align: center;"
-                           th:onchange="|updateSubtotal(${item.product.productId})|" >
+                           class="item-quantity"
+                           th:value="${item.count}" min="1" max="99"
+                           style="width: 50px; text-align: center;">
                     <input type="hidden" name="productId" th:value="${item.product.productId}">
                 </div>
               </td>
               
               <td style="text-align: center;">
-                <span th:id="|subtotal-${item.product.productId}|" 
+                <span class="item-subtotal"
                       th:text="${#numbers.formatInteger(item.product.price * item.count, 1, 'COMMA')} + '円'">0円</span>
               </td>
 
               <td style="text-align: center;">
-                  <input type="checkbox" name="isGift" th:checked="${item.isGift}">
+                  <input type="checkbox" name="giftProductIds" 
+                         th:value="${item.product.productId}" 
+                         th:checked="${item.gift}">
               </td>
               
               <td style="text-align: center;">
@@ -76,7 +77,7 @@
             <tr style="background-color: #fdf5e6; font-weight: bold;">
               <td colspan="4" style="text-align: right; padding: 15px;">商品合計金額 (税込):</td>
               <td colspan="3" style="padding: 15px; color: #d32f2f; font-size: 1.2em;">
-                <span th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')} + '円'">0円</span>
+                <span id="total-price" th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')} + '円'">0円</span>
               </td>
             </tr>
           </tfoot>
@@ -96,21 +97,55 @@
     </div>
   </main>
   
-  <script th:inline="javascript">
-  function updateSubtotal(productId) {
-      const qtyInput = document.getElementById(`quantity-${productId}`);
-      const priceSpan = document.getElementById(`price-${productId}`);
-      const subtotalSpan = document.getElementById(`subtotal-${productId}`);
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // 全ての数量入力フィールドにイベントリスナーを追加
+      const quantityInputs = document.querySelectorAll('.item-quantity');
       
-      const quantity = parseInt(qtyInput.value);
-      const price = parseInt(priceSpan.getAttribute('data-price'));
-      
-      subtotalSpan.innerHTML = (price * quantity).toLocaleString() + '円'; 
-  }
+      quantityInputs.forEach(function(input) {
+          input.addEventListener('change', updateCart);
+          input.addEventListener('input', updateCart);
+      });
+  });
 
-  function deleteConfirm(productId) {
-      if (confirm("この商品をカートから削除しますか？")) {
-         window.location.href = "remove?id=" + productId;
+  function updateCart() {
+      let totalPrice = 0;
+      
+      // 全ての商品行を取得
+      const rows = document.querySelectorAll('.cart-item-row');
+      
+      rows.forEach(function(row) {
+          const priceSpan = row.querySelector('.item-price');
+          const quantityInput = row.querySelector('.item-quantity');
+          const subtotalSpan = row.querySelector('.item-subtotal');
+          
+          // 単価を取得
+          const price = parseInt(priceSpan.getAttribute('data-price'));
+          // 数量を取得（1未満の場合は1に）
+          let quantity = parseInt(quantityInput.value);
+          if (isNaN(quantity) || quantity < 1) {
+              quantity = 1;
+              quantityInput.value = 1;
+          }
+          if (quantity > 99) {
+              quantity = 99;
+              quantityInput.value = 99;
+          }
+          
+          // 小計を計算
+          const subtotal = price * quantity;
+          
+          // 小計を表示
+          subtotalSpan.textContent = subtotal.toLocaleString() + '円';
+          
+          // 合計に加算
+          totalPrice += subtotal;
+      });
+      
+      // 合計金額を表示
+      const totalPriceSpan = document.getElementById('total-price');
+      if (totalPriceSpan) {
+          totalPriceSpan.textContent = totalPrice.toLocaleString() + '円';
       }
   }
   </script>

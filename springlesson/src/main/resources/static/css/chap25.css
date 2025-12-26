@@ -52,9 +52,15 @@ header, .header {
   z-index: 10000; /* ロゴより手前に */
 }
 
+.header-icon {
+  position: relative;    /* ★重要：数字の基準点にする */
+  display: inline-block; /* 横並びにする */
+}
+
 .header-icon img {
   height: 30px;
   width: auto;
+  display: block;        /* 余計な隙間を消す */
 }
 
 /* ===== ナビゲーション（メニュー） ===== */
@@ -320,13 +326,19 @@ main#purchase input[name="address"] {
 /* カート件数バッジ */
 .cart-badge {
   position: absolute;
-  top: -5px;
-  right: -10px;
-  background: #c96;
+  top: -8px;             /* 画像の上端からの位置 */
+  right: -10px;          /* 画像の右端からの位置 */
+  background: #c96;      /* 今の色をキープ（赤にしたければ #ff4d4d） */
   color: #fff;
   border-radius: 50%;
-  font-size: 12px;
-  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: bold;
+  min-width: 18px;       /* 1桁でも2桁でもきれいに見えるように */
+  height: 18px;
+  display: flex;         /* 中の数字を真ん中に寄せる */
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 body {
   padding-top: 130px !important;

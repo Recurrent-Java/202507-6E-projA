@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>米粉のココナッツマカロン - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
-	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
@@ -15,31 +15,31 @@
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
+                <a th:href="@{/(catIds=${product.categories[0].catId})}" th:text="${product.categories[0].catName}">カテゴリー</a>
+            </th:block>
+            <th:block th:if="${product == null or product.categories == null or product.categories.empty}">
+                <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            </th:block>
             <span class="separator">›</span>
             <span class="current">米粉のココナッツマカロン</span>
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
-                <!-- 左側：商品画像 -->
                 <div class="product-images">
                     <div class="main-image">
                         <img th:src="@{/images/coconutmacaroons.png}" alt="米粉のココナッツマカロン">
                     </div>
                 </div>
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">アレルゲンフリー</div>
                     </div>
                     <h1 class="product-title">米粉のココナッツマカロン</h1>
@@ -53,16 +53,16 @@
 
                     <div class="product-description">
                         <h3>商品説明</h3>
-                        <p>ココナッツを贅沢に使い、一口サイズに焼き上げた素朴でリッチな味わいのマカロンです（※メレンゲを使うフランス菓子ではなく、ココナッツを固めて焼いた伝統的なスタイルです）。 国産米粉と豆乳を使い、卵白を使わずに独自の製法でまとめ上げました。口に入れた瞬間にココナッツの南国風の香りが広がり、噛むほどに優しい甘みが溢れ出します。</p>
+                        <p>ココナッツを贅沢に使い、一口サイズに焼き上げた素朴でリッチな味わいのマカロンです。</p>
                     </div>
 
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ 外はカリッ、中はシャキッ：表面はこんがり香ばしく焼き上げ、中はココナッツ特有のシャキシャキとした食感を残しました。一度食べるとクセになる、食べ応えのあるおやつです。</li>
-                            <li>✓ 食物繊維が豊富：ココナッツは食物繊維の宝庫。少量でも満足感が高く、ダイエット中の「ちょっと甘いものが食べたい」時にぴったりです。</li>
-                            <li>✓ 完全ヴィーガン・グルテンフリー：卵や乳製品、小麦粉を一切使用していません。植物性素材100%で作った、どなたにも安心しておすすめできる一品です。</li>
-                            <li>✓ 天然の甘み：ミネラルを多く含む甜菜糖を使用。精製糖不使用で、体にゆっくりと吸収される穏やかな甘さに仕上げました。</li>
+                            <li>✓ 外はカリッ、中はシャキッ：食べ応えのあるおやつ。</li>
+                            <li>✓ 食物繊維が豊富：ココナッツは食物繊維の宝庫。</li>
+                            <li>✓ 完全ヴィーガン・グルテンフリー：植物性素材100%。</li>
+                            <li>✓ 天然の甘み：甜菜糖を使用。</li>
                         </ul>
                     </div>
 
@@ -71,29 +71,31 @@
                         <table class="specs-table">
                             <tr><th>内容量</th><td>1袋5個入り</td></tr>
                             <tr><th>賞味期限</th><td>製造日より14日間</td></tr>
-                            <tr><th>保存方法</th><td>湿気に弱いため、開封後はお早めにお召し上がりください。</td></tr>
-                            <tr><th>アレルギー</th><td>大豆（豆乳由来）、アーモンド（アーモンドプードル由来）</td></tr>
+                            <tr><th>保存方法</th><td>湿気を避けて保存</td></tr>
+                            <tr><th>アレルギー</th><td>大豆、アーモンド</td></tr>
                         </table>
                     </div>
 
                     <form th:action="@{/cart/add}" method="get">
-                        <input type="hidden" name="id" value="8"> <div class="product-quantity">
+                        <input type="hidden" name="id" value="8">
+                        <div class="product-quantity">
                             <label>数量</label>
                             <div class="quantity-selector">
-                                <button class="qty-btn" onclick="decreaseQty()">-</button>
-                                <input type="number" id="quantity" value="1" min="1" max="99">
-                                <button class="qty-btn" onclick="increaseQty()">+</button>
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
                             </div>
                         </div>
 
                         <div class="product-actions">
-                            <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
                         </div>
                     </form>
+                </div>
             </div>
         </div>
     </section>
-	<div th:replace="~{comlayout/base :: footer}"></div>
+    <div th:replace="~{comlayout/base :: footer}"></div>
     <script>
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
@@ -103,10 +105,6 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
-        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
-            const quantity = document.getElementById('quantity').value;
-            alert(quantity + '個をカートに追加しました！');
-        });
     </script>
 </body>
 </html>

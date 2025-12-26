@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>雪どけメロンパン - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
-	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
@@ -15,7 +15,12 @@
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
+                <a th:href="@{/(catIds=${product.categories[0].catId})}" th:text="${product.categories[0].catName}">カテゴリー</a>
+            </th:block>
+            <th:block th:if="${product == null or product.categories == null or product.categories.empty}">
+                <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            </th:block>
             <span class="separator">›</span>
             <span class="current">雪どけメロンパン</span>
         </div>
@@ -42,7 +47,7 @@
                 <div class="product-info">
                     <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
                         <!-- デフォルト表示（productがない場合） -->
@@ -82,24 +87,26 @@
                         </table>
                     </div>
 					
-					<form th:action="@{/cart/add}" method="get">
-					    <input type="hidden" name="id" value="1"> <div class="product-quantity">
-					        <label>数量</label>
-					        <div class="quantity-selector">
-					            <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
-					            <input type="number" id="quantity" name="count" value="1" min="1" max="99">
-					            <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
-					        </div>
-					    </div>
+                    <form th:action="@{/cart/add}" method="get">
+                        <input type="hidden" name="id" value="1">
+                        <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
+                        </div>
 
-					    <div class="product-actions">
-					        <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-					    </div>
-					</form>
+                        <div class="product-actions">
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
-	<div th:replace="~{comlayout/base :: footer}"></div>
+    <div th:replace="~{comlayout/base :: footer}"></div>
     <script>
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
@@ -109,6 +116,7 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
+
         document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
             const quantity = document.getElementById('quantity').value;
             alert(quantity + '個をカートに追加しました！');
@@ -117,6 +125,7 @@
 		       function changeImage(src) {
             document.querySelector('.main-image img').src = src;
         }
+
     </script>
 </body>
 </html>

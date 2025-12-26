@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>無卵（ムーラン）・ルージュ - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
-	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
@@ -15,16 +15,21 @@
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
+                <a th:href="@{/(catIds=${product.categories[0].catId})}" th:text="${product.categories[0].catName}">カテゴリー</a>
+            </th:block>
+            <th:block th:if="${product == null or product.categories == null or product.categories.empty}">
+                <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            </th:block>
             <span class="separator">›</span>
             <span class="current">無卵（ムーラン）・ルージュ</span>
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
+<<<<<<< HEAD
 				<!-- 左側：商品画像 -->
 								<div class="product-images">
 								    <div class="main-image">
@@ -37,15 +42,19 @@
 								        <img th:src="@{/images/cake-hako.png}" alt="包装" onclick="changeImage(this.src)">
 								    </div>
 								</div>
+=======
+                <div class="product-images">
+                    <div class="main-image">
+                        <img th:src="@{/images/eggfreerouge.png}" alt="無卵（ムーラン）・ルージュ">
+                    </div>
+                </div>
+>>>>>>> branch 'main' of https://github.com/Recurrent-Java/202507-6E-projA.git
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">アレルゲンフリー</div>
                     </div>
                     <h1 class="product-title">無卵（ムーラン）・ルージュ</h1>
@@ -59,16 +68,16 @@
 
                     <div class="product-description">
                         <h3>商品説明</h3>
-                        <p>名前の通り、卵を一切使用せずに作り上げた、真っ赤な情熱の色が美しい苺のグラスデザートです。 下層には、完熟苺を惜しみなく使った濃厚な自家製コンフィチュールと、酸味の効いた苺ムースを重ねました。その上には、雪のような口溶けの豆乳ホイップクリームをたっぷりと。 トップを飾るフレッシュな苺の甘酸っぱさと、豆乳クリームの優しいコクが絶妙なハーモニーを奏でます。見た目は華やかですが、後味はスッキリと軽い、まさに「罪悪感ゼロ」のルージュです。</p>
+                        <p>名前の通り、卵を一切使用せずに作り上げた、真っ赤な情熱の色が美しい苺のグラスデザートです。 下層には、完熟苺を惜しみなく使った濃厚な自家製コンフィチュールと、酸味の効いた苺ムースを重ねました。その上には、雪のような口溶けの豆乳ホイップクリームをたっぷりと。</p>
                     </div>
 
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ 完全卵不使用（無卵）：「ムーラン」の名にふさわしく、卵アレルギーの方でも安心してお召し上がりいただけるよう、卵を使わずに素材の力を引き出しました。</li>
-                            <li>✓ ダブルベリーの抗酸化パワー：たっぷりの苺とベリー果汁を使用。美肌に嬉しいビタミンCやポリフェノールが豊富に含まれています。</li>
-                            <li>✓ 低GI・植物性100%：白砂糖ではなく、ミネラル豊富な甜菜糖を使用。乳製品も使わず、植物性素材のみでリッチな満足感を実現しています。</li>
-                            <li>✓ Web映えするコントラスト：苺の「赤」とクリームの「白」、そしてミントの「緑」。層の美しさは、Webサイトのトップページを飾るメインビジュアルにも最適です。</li>
+                            <li>✓ 完全卵不使用（無卵）：卵アレルギーの方でも安心。</li>
+                            <li>✓ ダブルベリーの抗酸化パワー：美肌に嬉しいビタミンCやポリフェノールが豊富。</li>
+                            <li>✓ 低GI・植物性100%：白砂糖ではなく甜菜糖を使用。</li>
+                            <li>✓ 層の美しさが映える：苺の「赤」とクリームの「白」のコントラスト。</li>
                         </ul>
                     </div>
 
@@ -77,29 +86,31 @@
                         <table class="specs-table">
                             <tr><th>内容量</th><td>1個</td></tr>
                             <tr><th>賞味期限</th><td>当日中</td></tr>
-                            <tr><th>保存方法</th><td>フレッシュな苺の果汁と豆乳クリームの鮮度を保つため、当日中にお召し上がりください。</td></tr>
-                            <tr><th>アレルギー</th><td>いちご、大豆（豆乳ホイップ・豆乳ヨーグルト由来）、ゼラチン（または寒天）</td></tr>
+                            <tr><th>保存方法</th><td>当日中にお召し上がりください。</td></tr>
+                            <tr><th>アレルギー</th><td>いちご、大豆、ゼラチン</td></tr>
                         </table>
                     </div>
 
                     <form th:action="@{/cart/add}" method="get">
-                        <input type="hidden" name="id" value="5"> <div class="product-quantity">
+                        <input type="hidden" name="id" value="5">
+                        <div class="product-quantity">
                             <label>数量</label>
                             <div class="quantity-selector">
-                                <button class="qty-btn" onclick="decreaseQty()">-</button>
-                                <input type="number" id="quantity" value="1" min="1" max="99">
-                                <button class="qty-btn" onclick="increaseQty()">+</button>
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
                             </div>
                         </div>
 
                         <div class="product-actions">
-                            <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
                         </div>
                     </form>
+                </div>
             </div>
         </div>
     </section>
-	<div th:replace="~{comlayout/base :: footer}"></div>
+    <div th:replace="~{comlayout/base :: footer}"></div>
     <script>
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
@@ -109,6 +120,7 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
+		
         document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
             const quantity = document.getElementById('quantity').value;
             alert(quantity + '個をカートに追加しました！');

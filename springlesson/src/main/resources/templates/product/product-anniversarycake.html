@@ -1,29 +1,35 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>米粉の3段アニバーサリーケーキ - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
-	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
+
     <!-- パンくずリスト -->
     <div class="breadcrumb">
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
+                <a th:href="@{/(catIds=${product.categories[0].catId})}" th:text="${product.categories[0].catName}">カテゴリー</a>
+            </th:block>
+            <th:block th:if="${product == null or product.categories == null or product.categories.empty}">
+                <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            </th:block>
             <span class="separator">›</span>
             <span class="current">米粉の3段アニバーサリーケーキ</span>
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
+<<<<<<< HEAD
 				<!-- 左側：商品画像 -->
 								<div class="product-images">
 								    <div class="main-image">
@@ -36,15 +42,19 @@
 								        <img th:src="@{/images/anniversarycake-hako.png}" alt="包装" onclick="changeImage(this.src)">
 								    </div>
 								</div>
+=======
+                <div class="product-images">
+                    <div class="main-image">
+                        <img th:src="@{/images/anniversarycake.png}" alt="米粉の3段アニバーサリーケーキ">
+                    </div>
+                </div>
+>>>>>>> branch 'main' of https://github.com/Recurrent-Java/202507-6E-projA.git
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">アレルゲンフリー</div>
                     </div>
                     <h1 class="product-title">米粉の3段アニバーサリーケーキ</h1>
@@ -58,16 +68,16 @@
 
                     <div class="product-description">
                         <h3>商品説明</h3>
-                        <p>大切な日の記憶に一生残る、当店最高峰のデコレーションケーキです。 純白のドレスのようなクリームは、豆乳をベースに独自の製法でコク深く仕上げたヴィーガンホイップ。3段に重ねたスポンジ生地は、国産米粉100%で驚くほどしっとりと焼き上げました。 色とりどりのエディブルフラワーと新鮮なベリー、そして純金箔を贅沢に散らし、トップには輝くティアラを添えています。「アレルギーがあっても、みんなと同じ豪華なケーキで祝いたい」という願いを叶える、夢の一台です。</p>
+                        <p>大切な日の記憶に一生残る、当店最高峰のデコレーションケーキです。</p>
                     </div>
 
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ 圧巻の3段デコレーション：高さとボリュームがあり、パーティーの主役にふさわしい存在感。どの角度から見ても美しい、フォトジェニックな仕上がりです。</li>
-                            <li>✓ 低GIの優しい甘さ：これだけのボリュームでも、甘みには希少糖や甜菜糖を使用しているため、後味は驚くほど軽やか。健康を気遣う方へのギフトにも最適です。</li>
-                            <li>✓ 完全オーダーメイド対応：お客様のご要望に合わせて、サンドするフルーツやメッセージプレートのカスタマイズが可能です。</li>
-                            <li>✓ 植物性100%のこだわり：装飾の細部に至るまで、動物性原料を一切使用していません。ヴィーガンの方も、そうでない方も、同じテーブルで最高の笑顔になれる美味しさです。</li>
+                            <li>✓ 圧巻の3段デコレーション：パーティーの主役にふさわしい存在感。</li>
+                            <li>✓ 低GIの優しい甘さ：希少糖や甜菜糖を使用。</li>
+                            <li>✓ 完全オーダーメイド対応：カスタマイズ可能。</li>
+                            <li>✓ 植物性100%のこだわり：ヴィーガンの方も安心。</li>
                         </ul>
                     </div>
 
@@ -76,28 +86,31 @@
                         <table class="specs-table">
                             <tr><th>内容量</th><td>1台</td></tr>
                             <tr><th>賞味期限</th><td>当日中（要冷蔵）</td></tr>
-                            <tr><th>保存方法</th><td>お受け取り後は速やかに冷蔵庫へ入れ、当日中にお召し上がりください。</td></tr>
-                            <tr><th>アレルギー</th><td>大豆（豆乳クリーム・豆乳ヨーグルト由来）、アーモンド（生地に使用）、りんご、いちご、ゼラチン（装飾の一部に使用）</td></tr>
+                            <tr><th>保存方法</th><td>速やかに冷蔵庫へ</td></tr>
+                            <tr><th>アレルギー</th><td>大豆、アーモンド、りんご、いちご、ゼラチン</td></tr>
                         </table>
                     </div>
 
-                    <div class="product-quantity">
-                        <label>数量</label>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="99">
-                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                    <form th:action="@{/cart/add}" method="get">
+                        <input type="hidden" name="id" value="11">
+                        <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="product-actions">
-                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-                    </div>
+                        <div class="product-actions">
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
-    <div th:replace="~{comlayout/base :: header}"></div>
+    <div th:replace="~{comlayout/base :: footer}"></div>
     <script>
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
@@ -107,6 +120,7 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
+
         document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
             const quantity = document.getElementById('quantity').value;
             alert(quantity + '個をカートに追加しました！');

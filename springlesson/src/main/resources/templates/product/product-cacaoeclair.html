@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品詳細 - HealSweets</title>
+    <title>濃密カカオの米粉エクレア - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
-	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
@@ -15,31 +15,31 @@
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/(catIds=3)}">カカオ70％</a>
+            <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
+                <a th:href="@{/(catIds=${product.categories[0].catId})}" th:text="${product.categories[0].catName}">カテゴリー</a>
+            </th:block>
+            <th:block th:if="${product == null or product.categories == null or product.categories.empty}">
+                <a th:href="@{/(catIds=3)}">カカオ70％</a>
+            </th:block>
             <span class="separator">›</span>
             <span class="current">濃密カカオの米粉エクレア</span>
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
-                <!-- 左側：商品画像 -->
                 <div class="product-images">
                     <div class="main-image">
                         <img th:src="@{/images/cacaoeclair.png}" alt="濃密カカオの米粉エクレア">
                     </div>
                 </div>
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
-                        <th:block th:if="${product != null and product.categories != null}">
+                        <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
                         </th:block>
-                        <!-- デフォルト表示（productがない場合） -->
                         <div th:if="${product == null or product.categories == null or product.categories.empty}" class="product-category-tag">カカオ70％</div>
                     </div>
                     <h1 class="product-title">濃密カカオの米粉エクレア</h1>
@@ -53,16 +53,16 @@
 
                     <div class="product-description">
                         <h3>商品説明</h3>
-                        <p>ひと口食べれば、カカオの芳醇な香りが口いっぱいに広がる贅沢なエクレアです。 国産米粉を使用したシュー生地は、小麦粉不使用とは思えないほど香ばしく、歯切れの良い食感。中には、カカオ分85%のオーガニックチョコと豆乳を合わせた、なめらかな自家製チョコクリームを隙間なく詰め込みました。 表面にはビターチョコをコーティングし、仕上げに食感のアクセントとしてカカオニブをトッピング。甘さ控えめで、大人のためのヘルシースイーツに仕上げています。</p>
+                        <p>ひと口食べれば、カカオの芳醇な香りが口いっぱいに広がる贅沢なエクレアです。 国産米粉を使用したシュー生地は、小麦粉不使用とは思えないほど香ばしく、歯切れの良い食感。中には、カカオ分85%のオーガニックチョコと豆乳を合わせた、なめらかな自家製チョコクリームを隙間なく詰め込みました。</p>
                     </div>
 
                     <div class="product-features">
                         <h3>商品の特徴</h3>
                         <ul>
-                            <li>✓ 85%ハイカカオを使用：ポリフェノールたっぷりの高カカオチョコレートを使用。深いコクと程よい苦味があり、満足感が非常に高いのが特徴です。</li>
-                            <li>✓ 米粉のサクふわ生地：小麦を使わずに、独自の焼き上げ温度調整で「サクッ」とした表面と「ふわっ」とした内側の食感を実現しました。</li>
-                            <li>✓ 植物性素材で低カロリー：バターや生クリームの代わりに大豆由来の素材を使用することで、一般的なエクレアに比べカロリーを約35%カットしました。</li>
-                            <li>✓ エリスリトールで糖質オフ：甘味料には天然由来のエリスリトールをブレンドし、糖質制限中の方も安心してお楽しみいただけます。</li>
+                            <li>✓ 85%ハイカカオを使用：ポリフェノールたっぷりの高カカオチョコレートを使用。</li>
+                            <li>✓ 米粉のサクふわ生地：小麦を使わずに「サクッ」と「ふわっ」の食感を実現。</li>
+                            <li>✓ 植物性素材で低カロリー：一般的なエクレアに比べカロリーを約35%カット。</li>
+                            <li>✓ エリスリトールで糖質オフ：天然由来のエリスリトールをブレンド。</li>
                         </ul>
                     </div>
 
@@ -71,29 +71,31 @@
                         <table class="specs-table">
                             <tr><th>内容量</th><td>1個</td></tr>
                             <tr><th>賞味期限</th><td>当日中</td></tr>
-                            <tr><th>保存方法</th><td>生地の食感を大切にするため、また保存料・安定剤を一切使用していないため、当日中にお召し上がりください。</td></tr>
-                            <tr><th>アレルギー</th><td>大豆（豆乳・大豆バター・大豆ホイップ由来）、アーモンド（生地のコク出しに使用）</td></tr>
+                            <tr><th>保存方法</th><td>当日中にお召し上がりください。</td></tr>
+                            <tr><th>アレルギー</th><td>大豆、アーモンド</td></tr>
                         </table>
                     </div>
 
                     <form th:action="@{/cart/add}" method="get">
-                        <input type="hidden" name="id" value="4"> <div class="product-quantity">
+                        <input type="hidden" name="id" value="4">
+                        <div class="product-quantity">
                             <label>数量</label>
                             <div class="quantity-selector">
-                                <button class="qty-btn" onclick="decreaseQty()">-</button>
-                                <input type="number" id="quantity" value="1" min="1" max="99">
-                                <button class="qty-btn" onclick="increaseQty()">+</button>
+                                <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" name="count" value="1" min="1" max="99">
+                                <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
                             </div>
                         </div>
 
                         <div class="product-actions">
-                            <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                            <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
                         </div>
                     </form>
+                </div>
             </div>
         </div>
     </section>
-	<div th:replace="~{comlayout/base :: footer}"></div>
+    <div th:replace="~{comlayout/base :: footer}"></div>
     <script>
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
@@ -103,10 +105,6 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
-        document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
-            const quantity = document.getElementById('quantity').value;
-            alert(quantity + '個をカートに追加しました！');
-        });
     </script>
 </body>
 </html>
