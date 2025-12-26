@@ -10,7 +10,6 @@
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
 
-    <!-- パンくずリスト -->
     <div class="breadcrumb">
         <div class="container">
             <a th:href="@{/}">ホーム</a>
@@ -21,20 +20,16 @@
         </div>
     </div>
 
-    <!-- 商品詳細セクション -->
     <section class="product-detail-section">
         <div class="container">
             <div class="product-detail-container">
-                <!-- 左側：商品画像 -->
                 <div class="product-images">
                     <div class="main-image">
                         <img th:src="@{/images/applepie.png}" alt="完熟りんごのヘルシーパイ">
                     </div>
                 </div>
 
-                <!-- 右側：商品情報 -->
                 <div class="product-info">
-                    <!-- 複数カテゴリー対応 -->
                     <div class="product-category-tags">
                         <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
                             <div th:each="category : ${product.categories}" class="product-category-tag" th:text="${category.catName}">カテゴリー</div>
@@ -75,8 +70,7 @@
                         </table>
                     </div>
 
-<<<<<<< HEAD
-                    <form th:action="@{/cart/add}" method="post">
+                    <form th:action="@{/cart/add}" method="get">
                         <input type="hidden" name="id" value="2">
                         <div class="product-quantity">
                             <label>数量</label>
@@ -84,29 +78,14 @@
                                 <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
                                 <input type="number" id="quantity" name="count" value="1" min="1" max="99">
                                 <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
-=======
-                    <form th:action="@{/cart/add}" method="get">
-                        <input type="hidden" name="id" value="2"> <div class="product-quantity">
-                            <label>数量</label>
-                            <div class="quantity-selector">
-                                <button class="qty-btn" onclick="decreaseQty()">-</button>
-                                <input type="number" id="quantity" value="1" min="1" max="99">
-                                <button class="qty-btn" onclick="increaseQty()">+</button>
->>>>>>> branch 'main' of https://github.com/Recurrent-Java/202507-6E-projA.git
                             </div>
                         </div>
 
                         <div class="product-actions">
-<<<<<<< HEAD
                             <button type="submit" class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
                         </div>
                     </form>
                 </div>
-=======
-                            <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-                        </div>
-                    </form>
->>>>>>> branch 'main' of https://github.com/Recurrent-Java/202507-6E-projA.git
             </div>
         </div>
     </section>

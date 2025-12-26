@@ -54,7 +54,7 @@
                     </div>
 
                     <!-- カートに追加フォーム -->
-                    <form th:action="@{/cart/add}" method="post" id="addToCartForm">
+                    <form th:action="@{/cart/add}" method="get" id="addToCartForm">
                         <input type="hidden" name="id" th:value="${product != null ? product.productId : 0}">
                         
                         <div class="product-quantity">
