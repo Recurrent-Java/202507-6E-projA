@@ -112,6 +112,11 @@
             const qtyInput = document.getElementById('quantity');
             if (parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1;
         }
+		
+		        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
+        }
+		
     </script>
 </body>
 </html>
