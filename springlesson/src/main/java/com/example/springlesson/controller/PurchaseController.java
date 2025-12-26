@@ -192,9 +192,9 @@ public class PurchaseController {
         
         String[][] giftOpts = {
             {"none", "ギフトラッピングなし"},
-            {"standard", "標準ラッピング (+300円)"},
-            {"premium", "プレミアムラッピング (+500円)"},
-            {"message", "メッセージカード付き (+200円)"}
+            {"standard", "標準ラッピング (無料)"},
+            {"premium", "プレミアムラッピング (無料)"},
+            {"message", "メッセージカード付き (無料)"}
         };
         
         for (String[] gift : giftOpts) {
@@ -217,7 +217,7 @@ public class PurchaseController {
             {"credit", "クレジットカード"},
             {"convenience", "コンビニ支払い"},
             {"bank", "銀行振込"},
-            {"cod", "代金引換 (+330円)"}
+            {"cod", "代金引換"}
         };
         
         for (String[] payment : payments) {
