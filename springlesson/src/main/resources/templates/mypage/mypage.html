@@ -183,13 +183,17 @@
                 <li>アカウント情報が完全に削除されます</li>
               </ul>
               <div class="withdrawal-form">
-                <textarea class="withdrawal-reason" id="withdrawalReason" placeholder="退会理由（任意）"></textarea>
+                <textarea name="withdrawalReason" 
+                          class="withdrawal-reason-textarea" 
+                          placeholder="退会理由（任意）"></textarea>
                 <label class="checkbox-item confirm-checkbox">
                   <input type="checkbox" id="confirm-withdrawal">
                   <span>上記の内容を理解し、退会を希望します</span>
                 </label>
-                <button type="button" class="danger-btn" id="withdrawal-btn" disabled
-                  onclick="openConfirmModal()">退会する</button>
+                <button type="button" 
+                        id="withdrawal-btn" 
+                        onclick="openConfirmModal()" 
+                        disabled>退会する</button>
               </div>
             </div>
           </div>

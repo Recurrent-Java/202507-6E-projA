@@ -413,3 +413,56 @@ footer {
   display: flex;
   flex-direction: column;
 }
+
+/* --- 退会手続き画面のカスタムスタイル --- */
+
+/* 退会理由の入力枠を大きくする */
+.withdrawal-reason-textarea {
+  width: 100%;
+  /* 横幅いっぱい */
+  min-height: 150px;
+  /* 縦幅を確保 */
+  padding: 15px;
+  /* 内側の余白 */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+  font-size: 1.6rem;
+  /* 文字サイズ調整 */
+  resize: vertical;
+  /* ユーザーが縦方向にのみサイズ調整可能に */
+  margin: 10px 0 20px 0;
+  /* 上下の余白 */
+}
+
+/* 退会ボタンのスタイル調整 */
+#withdrawal-btn {
+  width: auto;
+  /* 横幅をコンテンツに合わせる */
+  min-width: 200px;
+  /* 最低限の横幅を確保 */
+  padding: 12px 30px;
+  /* 上下左右の余白を増やして大きく見せる */
+  background-color: #d9534f;
+  /* 退会らしい赤色系（任意） */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* ボタン無効化時（チェックボックス未入力）のスタイル */
+#withdrawal-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ボタンホバー時 */
+#withdrawal-btn:not(:disabled):hover {
+  background-color: #c9302c;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
