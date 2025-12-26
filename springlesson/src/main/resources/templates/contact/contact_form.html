@@ -4,32 +4,47 @@
 <head>
   <div th:replace="~{comlayout/base :: meta}"></div>
   <div th:replace="~{comlayout/base :: styles}"></div>
+  <link rel="stylesheet" th:href="@{/css/contact.css}">
   <title>お問い合わせ - HealSweets</title>
 </head>
 
 <body>
   <div th:replace="~{comlayout/base :: header}"></div>
-  <main class="container py-5">
-    <h1>お問い合わせ</h1>
-    <form th:action="@{/contact/send}" th:object="${contactForm}" method="post">
-      <div class="mb-3">
-        <label>お名前</label>
-        <input type="text" th:field="*{name}" class="form-control">
-        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></p>
+
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-container">
+        <div class="contact-header">
+          <h1>お問い合わせ</h1>
+          <p>製品やサービスに関するご質問は、以下のフォームよりお気軽にご連絡ください。</p>
+        </div>
+
+        <form class="contact-form" th:action="@{/contact/send}" th:object="${contactForm}" method="post">
+
+          <div class="form-group">
+            <label for="name">お名前 <span class="required">*</span></label>
+            <input type="text" th:field="*{name}" class="form-input" placeholder="山田 太郎">
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">メールアドレス <span class="required">*</span></label>
+            <input type="email" th:field="*{email}" class="form-input" placeholder="example@email.com">
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="content">お問い合わせ内容 <span class="required">*</span></label>
+            <textarea th:field="*{content}" class="form-textarea" placeholder="こちらにご質問内容を入力してください（10文字以上）"></textarea>
+            <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="error-message"></div>
+          </div>
+
+          <button type="submit" class="submit-btn">送信する</button>
+        </form>
       </div>
-      <div class="mb-3">
-        <label>メールアドレス</label>
-        <input type="email" th:field="*{email}" class="form-control">
-        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></p>
-      </div>
-      <div class="mb-3">
-        <label>お問い合わせ内容</label>
-        <textarea th:field="*{content}" class="form-control" rows="5"></textarea>
-        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-danger"></p>
-      </div>
-      <button type="submit" class="btn btn-primary">送信する</button>
-    </form>
-  </main>
+    </div>
+  </section>
+
   <div th:replace="~{comlayout/base :: footer}"></div>
 </body>
 
