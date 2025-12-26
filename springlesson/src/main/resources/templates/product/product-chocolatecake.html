@@ -31,6 +31,13 @@
                         <img th:src="@{/images/chocolatecake.png}" alt="米粉のベリーチョコケーキ">
                     </div>
                 </div>
+				     <!-- サブ画像 -->
+				    <div class="thumb-images">
+				        <img th:src="@{/images/chocolatecake.png}" alt="全体図" onclick="changeImage(this.src)">
+				        <img th:src="@{/images/chocolatecake_cross.png}" alt="断面図" onclick="changeImage(this.src)">
+				        <img th:src="@{/images/chocolatecake_zoom.png}" alt="包装" onclick="changeImage(this.src)">
+				    </div>
+				    </div>
 
                 <!-- 右側：商品情報 -->
                 <div class="product-info">
@@ -106,6 +113,12 @@
             const quantity = document.getElementById('quantity').value;
             alert(quantity + '個をカートに追加しました！');
         });
+		
+		function changeImage(src) {
+		    // メイン画像のIDを指定して、srcを書き換える
+		    document.getElementById('mainImage').src = src;
+		}
+		
     </script>
 </body>
 </html>
