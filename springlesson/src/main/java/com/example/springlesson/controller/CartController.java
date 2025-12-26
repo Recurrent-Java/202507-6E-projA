@@ -83,7 +83,7 @@ public class CartController {
 
     session.setAttribute("cart", cart);
 
-    return "redirect:/product/products/" + productId;
+    return "redirect:/cart";
   }
 
   /**

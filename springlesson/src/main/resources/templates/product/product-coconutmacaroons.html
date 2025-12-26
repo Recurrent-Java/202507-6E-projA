@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>米粉のココナッツマカロン - HealSweets</title>
     <link rel="stylesheet" th:href="@{/css/chap25.css}">
-	<link rel="stylesheet" th:href="@{/css/product-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/product-detail.css}">
 </head>
 <body>
     <div th:replace="~{comlayout/base :: header}"></div>
 
+    <!-- パンくずリスト -->
     <div class="breadcrumb">
         <div class="container">
             <a th:href="@{/}">ホーム</a>
             <span class="separator">›</span>
-            <a th:href="@{/product}">全商品</a>
+            <th:block th:if="${product != null and product.categories != null and !product.categories.empty}">
+                <a th:href="@{/(catIds=${product.categories[0].catId})}" th:text="${product.categories[0].catName}">カテゴリー</a>
+            </th:block>
+            <th:block th:if="${product == null or product.categories == null or product.categories.empty}">
+                <a th:href="@{/(catIds=1)}">アレルゲンフリー</a>
+            </th:block>
             <span class="separator">›</span>
             <span class="current">米粉のココナッツマカロン</span>
         </div>
@@ -89,7 +95,7 @@
             </div>
         </div>
     </section>
-	<div th:replace="~{comlayout/base :: footer}"></div>
+    <div th:replace="~{comlayout/base :: footer}"></div>
     <script>
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
