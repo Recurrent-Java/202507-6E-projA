@@ -76,19 +76,20 @@
                         </table>
                     </div>
 
-                    <div class="product-quantity">
-                        <label>数量</label>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="99">
-                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                    <form th:action="@{/cart/add}" method="get">
+                        <input type="hidden" name="id" value="7"> <div class="product-quantity">
+                            <label>数量</label>
+                            <div class="quantity-selector">
+                                <button class="qty-btn" onclick="decreaseQty()">-</button>
+                                <input type="number" id="quantity" value="1" min="1" max="99">
+                                <button class="qty-btn" onclick="increaseQty()">+</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="product-actions">
-                        <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
-                    </div>
-                </div>
+                        <div class="product-actions">
+                            <button class="add-to-cart-btn"><span class="cart-icon">🛒</span>カートに入れる</button>
+                        </div>
+                    </form>
             </div>
         </div>
     </section>
