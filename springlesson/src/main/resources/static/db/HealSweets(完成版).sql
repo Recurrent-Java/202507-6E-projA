@@ -34,7 +34,7 @@ CREATE TABLE `allergy_setting` (
   KEY `allergen_code` (`allergen_code`),
   CONSTRAINT `allergy_setting_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`),
   CONSTRAINT `allergy_setting_ibfk_2` FOREIGN KEY (`allergen_code`) REFERENCES `m_allergen` (`allergen_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='アレルギー設定';
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='アレルギー設定';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +43,7 @@ CREATE TABLE `allergy_setting` (
 
 LOCK TABLES `allergy_setting` WRITE;
 /*!40000 ALTER TABLE `allergy_setting` DISABLE KEYS */;
+INSERT INTO `allergy_setting` VALUES (1,1,'EGG',NULL),(2,1,'WHEAT',NULL),(3,1,'MILK',NULL),(4,1,'SOBA',NULL),(5,1,'PEANUT',NULL),(6,1,'PISTACHIO',NULL),(7,1,'SOY',NULL),(8,1,'ALMOND',NULL),(17,2,'SOY',NULL),(18,2,'EGG',NULL),(19,2,'MILK',NULL),(20,2,'PISTACHIO',NULL),(21,2,'SOBA',NULL),(22,2,'WHEAT',NULL),(23,4,'EGG',NULL),(24,4,'WHEAT',NULL),(25,4,'PISTACHIO',NULL),(26,6,'SOY',NULL),(27,6,'PISTACHIO',NULL);
 /*!40000 ALTER TABLE `allergy_setting` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,6 +175,7 @@ CREATE TABLE `m_allergen` (
 
 LOCK TABLES `m_allergen` WRITE;
 /*!40000 ALTER TABLE `m_allergen` DISABLE KEYS */;
+INSERT INTO `m_allergen` VALUES ('ALMOND','アーモンド'),('EGG','卵'),('MILK','乳製品'),('PEANUT','落花生'),('PISTACHIO','ピスタチオ'),('SOY','大豆'),('WHEAT','小麦');
 /*!40000 ALTER TABLE `m_allergen` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,7 +190,7 @@ CREATE TABLE `m_category` (
   `cat_id` int NOT NULL,
   `cat_name` varchar(50) NOT NULL,
   PRIMARY KEY (`cat_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='カテゴリーマスター';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -214,7 +216,7 @@ CREATE TABLE `m_delivery_time_slot` (
   `START_TIME` time DEFAULT NULL COMMENT '内部処理用（配送可否判定など）',
   `END_TIME` time DEFAULT NULL COMMENT '内部処理用（配送可否判定など）',
   PRIMARY KEY (`TIME_SLOT_CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='配送時間帯マスター';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='配送時間帯マスター';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -223,7 +225,34 @@ CREATE TABLE `m_delivery_time_slot` (
 
 LOCK TABLES `m_delivery_time_slot` WRITE;
 /*!40000 ALTER TABLE `m_delivery_time_slot` DISABLE KEYS */;
+INSERT INTO `m_delivery_time_slot` VALUES (1,'午前中','08:00:00','12:00:00'),(2,'14時～16時','14:00:00','16:00:00'),(3,'16時～18時','16:00:00','18:00:00'),(4,'18時～20時','18:00:00','20:00:00'),(5,'19時～21時','19:00:00','21:00:00');
 /*!40000 ALTER TABLE `m_delivery_time_slot` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `m_member_rank`
+--
+
+DROP TABLE IF EXISTS `m_member_rank`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `m_member_rank` (
+  `RANK_CODE` varchar(20) NOT NULL COMMENT '主キー: ランクを一意に識別 (例: CHOCOLATE, SHORTCAKE)',
+  `RANK_NAME` varchar(50) NOT NULL COMMENT '表示名 (例: チョコレートランク)',
+  `THRESHOLD_AMOUNT` decimal(12,2) NOT NULL COMMENT 'ランク昇格に必要な年間累積購入金額（閾値）',
+  `ICON_HTML` varchar(50) DEFAULT NULL COMMENT 'ランクアイコンのHTMLコード（例: ?）',
+  PRIMARY KEY (`RANK_CODE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='会員ランクマスタ';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `m_member_rank`
+--
+
+LOCK TABLES `m_member_rank` WRITE;
+/*!40000 ALTER TABLE `m_member_rank` DISABLE KEYS */;
+INSERT INTO `m_member_rank` VALUES ('CHOCOLATE','チョコレートランク',5000.00,'?'),('COOKIE','クッキーランク',0.00,'?'),('PLATINUM','プラチナランク',50000.00,'?'),('SHORTCAKE','ショートケーキランク',10000.00,'?'),('VIP','VIPランク',100000.00,'?'),('WHOLECAKE','ホールケーキランク',30000.00,'?');
+/*!40000 ALTER TABLE `m_member_rank` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -242,7 +271,7 @@ CREATE TABLE `m_shipping_fee_rule` (
   PRIMARY KEY (`RULE_ID`),
   KEY `TYPE_CODE` (`TYPE_CODE`),
   CONSTRAINT `m_shipping_fee_rule_ibfk_1` FOREIGN KEY (`TYPE_CODE`) REFERENCES `m_shipping_type` (`TYPE_CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='配送料金ルール';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='配送料金ルール';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -251,6 +280,7 @@ CREATE TABLE `m_shipping_fee_rule` (
 
 LOCK TABLES `m_shipping_fee_rule` WRITE;
 /*!40000 ALTER TABLE `m_shipping_fee_rule` DISABLE KEYS */;
+INSERT INTO `m_shipping_fee_rule` VALUES (1,'99',1,420.00,'2025-01-01'),(2,'99',2,880.00,'2025-01-01'),(3,'99',3,880.00,'2025-01-01');
 /*!40000 ALTER TABLE `m_shipping_fee_rule` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,7 +296,7 @@ CREATE TABLE `m_shipping_type` (
   `TYPE_NAME` varchar(50) NOT NULL COMMENT '例: 「常温便」「クール冷蔵便」「冷凍便」',
   `FEE_FLG` int NOT NULL COMMENT '1: 通常料金と別枠で追加料金が発生する形態',
   PRIMARY KEY (`TYPE_CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='運送形態マスター';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='運送形態マスター';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -275,6 +305,7 @@ CREATE TABLE `m_shipping_type` (
 
 LOCK TABLES `m_shipping_type` WRITE;
 /*!40000 ALTER TABLE `m_shipping_type` DISABLE KEYS */;
+INSERT INTO `m_shipping_type` VALUES (1,'常温便',1),(2,'クール冷蔵便',1),(3,'冷凍便',1);
 /*!40000 ALTER TABLE `m_shipping_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,6 +331,7 @@ CREATE TABLE `m_system_config` (
 
 LOCK TABLES `m_system_config` WRITE;
 /*!40000 ALTER TABLE `m_system_config` DISABLE KEYS */;
+INSERT INTO `m_system_config` VALUES ('FREE_SHIP_THRESHOLD','999999','送料無料基準額','2025-12-26 09:45:52'),('HOKKAIDO_OKINAWA_EXTRA','1100','北海道・沖縄地域追加送料','2025-12-26 09:45:52'),('TAX_RATE','0.10','消費税率','2025-12-26 09:45:52');
 /*!40000 ALTER TABLE `m_system_config` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -331,9 +363,12 @@ CREATE TABLE `member` (
   `phone_number` varchar(15) DEFAULT NULL,
   `registration_date` datetime NOT NULL COMMENT '会員登録日時',
   `status` int NOT NULL DEFAULT '1' COMMENT '1:有効, 0:退会など',
+  `annual_spending` int DEFAULT '0' COMMENT '年間購入額',
+  `available_points` int DEFAULT '0' COMMENT '利用可能ポイント',
+  `current_rank_code` varchar(10) DEFAULT 'BRONZE' COMMENT '会員ランク',
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='会員情報';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='会員情報';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,6 +377,7 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES (1,'sekiyanaoki04@gmail.com','1145141919',NULL,NULL,NULL,NULL,NULL,'關屋 尚樹',1,0,1,0,'8200088','福岡県','飯塚市弁分123','テストマンション501号室','080-1234-5678','2025-12-25 17:24:54',0,0,0,'COOKIE'),(2,'sekiyanaoki03@gmail.com','1145141919',NULL,NULL,NULL,NULL,NULL,'關屋 尚樹',1,0,1,0,'8200088','福岡県','飯塚市弁分123','テストマンション501号室','090-1234-5678','2025-12-25 17:32:08',1,0,0,'COOKIE'),(4,'sekiyanaoki02@gmail.com','1145141919',NULL,NULL,NULL,NULL,NULL,'關屋 雄一郎',1,0,1,0,'001-0000','北海道','札幌市北区888','','090-1234-5678','2025-12-26 10:19:04',1,0,0,'COOKIE'),(6,'sekiyanaoki10@gmail.com','1145141919',NULL,NULL,NULL,NULL,NULL,'關屋 尚樹',1,0,1,0,'0010000','北海道','札幌市北区987','','080-1234-5678','2025-12-26 13:49:33',1,0,0,'COOKIE');
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -355,6 +391,7 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `product_id` bigint NOT NULL AUTO_INCREMENT COMMENT '主キー',
   `product_name` varchar(255) NOT NULL,
+  `cat_id` bigint DEFAULT '1',
   `PROD_DESC` text COMMENT '詳細説明、キーワード検索の対象',
   `description` text,
   `ingredient_detail` text COMMENT '原材料や栄養成分の詳細情報',
@@ -370,11 +407,9 @@ CREATE TABLE `product` (
   `sale_status` varchar(20) NOT NULL COMMENT 'SALE, SOLD_OUTなど',
   `is_limited` tinyint(1) NOT NULL DEFAULT '0' COMMENT '限定商品か (T/F)',
   `is_low_stock` tinyint(1) NOT NULL DEFAULT '0' COMMENT '残りわずかフラグ',
-  `cat_id` bigint DEFAULT NULL,
-  `image_url` varchar(500) DEFAULT NULL COMMENT '商品画像URL',
-  `unboxing_video_url` varchar(500) DEFAULT NULL COMMENT '開封動画URL',
+  `image_url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品情報';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品情報';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -383,7 +418,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'雪解け メロンパン','「えっ、こんなに食べていいの？」と思わず疑ってしまうほど、真っ白な甘い粉糖が山盛りに降り積もったインパクト抜群のメロンパン。 見た目の背徳感とは裏腹に、ベースは国産米粉100%のグルテンフリー生地。外側はカリッと、中は豆乳クリームを練り込み、しっとりモチモチの食感に仕上げました。 お砂糖のように見える白い粉は、カロリーゼロの天然甘味料（エリスリトール等）を微粒子化した特製パウダー。口に入れた瞬間、柔らかな甘みが広がり、スッと溶けていきます。',NULL,'小麦粉・卵・乳製品不使用',NULL,520,NULL,0,'未設定',0,0,'製造から３日以内',0,'NONE',0,0,1,'/images/melonpan.png',NULL),(2,'完熟りんごのヘルシーパイ','「本当に小麦もバターも使っていないの？」と驚くほど、サクサクの食感にこだわったグルテンフリーのパイ生地が自慢の一品です。 中には、甘みと酸味のバランスが抜群なブランドりんごを、皮ごと贅沢に使用。甜菜糖とシナモンでじっくり煮込み、りんご本来の旨味を凝縮させました。 格子状の美しいパイ生地の上には、仕上げに希少糖のシロップを塗り、宝石のようなツヤと上品な甘さをプラス。温めると、中から熱々の蜜があふれ出します。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,2800,NULL,0,'未設定',0,0,'冷蔵：製造日を含め3日間 冷凍：約2週間（解凍後は当日中にお召し上がりください）',0,'NONE',0,0,1,'/images/applepie.png',NULL),(3,'まるごと桃の米粉タルト','旬の完熟桃をまるごと一個、贅沢にタルトの上に乗せました。 桃の中には、バニラビーンズ香るなめらかな豆乳カスタードをたっぷり詰め込んでいます。土台となるタルト生地は、国産米粉とアーモンドプードルで焼き上げた、サクサクと香ばしいグルテンフリー仕様。 桃のジューシーな甘さと、タルトの心地よい食感、そしてとろけるクリームの三位一体が楽しめる、季節限定の看板商品です。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,920,NULL,0,'未設定',0,0,'冷蔵：当日中',0,'NONE',0,0,2,'/images/peachtart.png',NULL),(4,'濃密カカオの米粉エクレア','ひと口食べれば、カカオの芳醇な香りが口いっぱいに広がる贅沢なエクレアです。 国産米粉を使用したシュー生地は、小麦粉不使用とは思えないほど香ばしく、歯切れの良い食感。中には、カカオ分85%のオーガニックチョコと豆乳を合わせた、なめらかな自家製チョコクリームを隙間なく詰め込みました。 表面にはビターチョコをコーティングし、仕上げに食感のアクセントとしてカカオニブをトッピング。甘さ控えめで、大人のためのヘルシースイーツに仕上げています。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,580,NULL,0,'未設定',0,0,'冷蔵：当日中',0,'NONE',0,0,3,'/images/cacaoeclair.png',NULL),(5,'無卵（ムーラン）・ルージュ','名前の通り、卵を一切使用せずに作り上げた、真っ赤な情熱の色が美しい苺のグラスデザートです。 下層には、完熟苺を惜しみなく使った濃厚な自家製コンフィチュールと、酸味の効いた苺ムースを重ねました。その上には、雪のような口溶けの豆乳ホイップクリームをたっぷりと。 トップを飾るフレッシュな苺の甘酸っぱさと、豆乳クリームの優しいコクが絶妙なハーモニーを奏でます。見た目は華やかですが、後味はスッキリと軽い、まさに「罪悪感ゼロ」のルージュです。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,680,NULL,0,'未設定',0,0,'冷蔵：当日中',0,'NONE',0,0,1,'/images/eggfreerouge.png',NULL),(6,'米粉のしっとり焼きドーナツ','「油で揚げない」から、とってもヘルシー。国産米粉と豆乳をベースに、じっくりと焼き上げた体に優しいドーナツです。 米粉ならではの**「しっとり・もちっ」**とした食感が特徴で、時間が経ってもパサつきません。 定番の「プレーン」、高カカオチョコを使用した「ショコラ」、香り高い「宇治抹茶」など、素材の味を大切に焼き上げました。朝食やお子様のおやつにも安心して選んでいただける、当店のロングセラー商品です。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,1450,NULL,0,'未設定',0,0,'常温保存：製造日より5日間',0,'NONE',0,0,1,'/images/bakeddonuts.png',NULL),(7,'さわやかレモンのしっとりおからケーキ','生おからをたっぷりと練り込んだ、驚くほどしっとり、それでいて口当たりの軽いヘルシーなケーキです。 生地には瀬戸内産のレモン果汁とゼスト（皮）を贅沢に使用し、一口ごとにレモンの爽やかな香りが弾けます。上には豆乳ベースの甘酸っぱいアイシングをたっぷりとかけ、仕上げにシロップ漬けのレモンとピスタチオをトッピング。 「おから感」を全く感じさせない、ティータイムにぴったりの上品な味わいに仕上げました。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,480,NULL,0,'未設定',0,0,'冷蔵：4日間',0,'NONE',0,0,1,'/images/lemoncake.png',NULL),(8,'米粉のココナッツマカロン','ココナッツを贅沢に使い、一口サイズに焼き上げた素朴でリッチな味わいのマカロンです（※メレンゲを使うフランス菓子ではなく、ココナッツを固めて焼いた伝統的なスタイルです）。 国産米粉と豆乳を使い、卵白を使わずに独自の製法でまとめ上げました。口に入れた瞬間にココナッツの南国風の香りが広がり、噛むほどに優しい甘みが溢れ出します。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,450,NULL,0,'未設定',0,0,'常温保存：製造日より14日間',0,'NONE',0,0,1,'/images/coconutmacaroons.png',NULL),(9,'米粉のクッキー詰め合わせ缶','「Healsweets」で人気の焼き菓子を、シックなネイビーのオリジナル缶に詰め合わせました。 定番のチョコチップクッキーから、甘酸っぱい自家製ジャムサンド、見た目も華やかなアイシングクッキーまで、すべてグルテンフリー＆ヴィーガン仕様。 一口ごとに異なる食感と味わいが楽しめ、最後まで飽きることなくお召し上がりいただけます。大切なティータイムを彩る、心にも体にも優しい詰め合わせです。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,3200,NULL,0,'未設定',0,0,'常温保存：製造日より30日間',0,'NONE',0,0,2,'/images/animalcookie.png',NULL),(10,'米粉のベリーチョコケーキ','カカオ分80%の濃厚なオーガニックチョコレートを贅沢に使用した、ずっしりと食べ応えのある本格派チョコケーキです。 小麦粉の代わりに国産米粉を使用し、卵や乳製品を使わずにしっとりと焼き上げました。層の間にはなめらかなチョコクリームを挟み、表面は艶やかなチョコグラサージュでコーティング。トップに飾ったラズベリーとブラックベリーの甘酸っぱさが、カカオの深いコクを引き立てます。特別な日のメインを飾るのにふさわしい、贅沢な一品です。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,4200,NULL,0,'未設定',0,0,'冷蔵：製造日を含め3日間',0,'NONE',0,0,3,'/images/chocolatecake.png',NULL);
+INSERT INTO `product` VALUES (1,'雪解け メロンパン',1,'「えっ、こんなに食べていいの？」と思わず疑ってしまうほど、真っ白な甘い粉糖が山盛りに降り積もったインパクト抜群のメロンパン。 見た目の背徳感とは裏腹に、ベースは国産米粉100%のグルテンフリー生地。外側はカリッと、中は豆乳クリームを練り込み、しっとりモチモチの食感に仕上げました。 お砂糖のように見える白い粉は、カロリーゼロの天然甘味料（エリスリトール等）を微粒子化した特製パウダー。口に入れた瞬間、柔らかな甘みが広がり、スッと溶けていきます。',NULL,'小麦粉・卵・乳製品不使用',NULL,520,NULL,0,'未設定',0,0,'製造から３日以内',0,'NONE',0,0,'/images/melonpan.png'),(2,'完熟りんごのヘルシーパイ',1,'「本当に小麦もバターも使っていないの？」と驚くほど、サクサクの食感にこだわったグルテンフリーのパイ生地が自慢の一品です。 中には、甘みと酸味のバランスが抜群なブランドりんごを、皮ごと贅沢に使用。甜菜糖とシナモンでじっくり煮込み、りんご本来の旨味を凝縮させました。 格子状の美しいパイ生地の上には、仕上げに希少糖のシロップを塗り、宝石のようなツヤと上品な甘さをプラス。温めると、中から熱々の蜜があふれ出します。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,2800,NULL,0,'未設定',0,0,'冷蔵：製造日を含め3日間 冷凍：約2週間（解凍後は当日中にお召し上がりください）',0,'NONE',0,0,'/images/applepie.png'),(3,'まるごと桃の米粉タルト',1,'旬の完熟桃をまるごと一個、贅沢にタルトの上に乗せました。 桃の中には、バニラビーンズ香るなめらかな豆乳カスタードをたっぷり詰め込んでいます。土台となるタルト生地は、国産米粉とアーモンドプードルで焼き上げた、サクサクと香ばしいグルテンフリー仕様。 桃のジューシーな甘さと、タルトの心地よい食感、そしてとろけるクリームの三位一体が楽しめる、季節限定の看板商品です。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,920,NULL,0,'未設定',0,0,'冷蔵：当日中',0,'NONE',0,0,'/images/peachtart.png'),(4,'濃密カカオの米粉エクレア',1,'ひと口食べれば、カカオの芳醇な香りが口いっぱいに広がる贅沢なエクレアです。 国産米粉を使用したシュー生地は、小麦粉不使用とは思えないほど香ばしく、歯切れの良い食感。中には、カカオ分85%のオーガニックチョコと豆乳を合わせた、なめらかな自家製チョコクリームを隙間なく詰め込みました。 表面にはビターチョコをコーティングし、仕上げに食感のアクセントとしてカカオニブをトッピング。甘さ控えめで、大人のためのヘルシースイーツに仕上げています。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,580,NULL,0,'未設定',0,0,'冷蔵：当日中',0,'NONE',0,0,'/images/cacaoeclair.png'),(5,'無卵（ムーラン）・ルージュ',1,'名前の通り、卵を一切使用せずに作り上げた、真っ赤な情熱の色が美しい苺のグラスデザートです。 下層には、完熟苺を惜しみなく使った濃厚な自家製コンフィチュールと、酸味の効いた苺ムースを重ねました。その上には、雪のような口溶けの豆乳ホイップクリームをたっぷりと。 トップを飾るフレッシュな苺の甘酸っぱさと、豆乳クリームの優しいコクが絶妙なハーモニーを奏でます。見た目は華やかですが、後味はスッキリと軽い、まさに「罪悪感ゼロ」のルージュです。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,680,NULL,0,'未設定',0,0,'冷蔵：当日中',0,'NONE',0,0,'/images/eggfreerouge.png'),(6,'米粉のしっとり焼きドーナツ',1,'「油で揚げない」から、とってもヘルシー。国産米粉と豆乳をベースに、じっくりと焼き上げた体に優しいドーナツです。 米粉ならではの**「しっとり・もちっ」**とした食感が特徴で、時間が経ってもパサつきません。 定番の「プレーン」、高カカオチョコを使用した「ショコラ」、香り高い「宇治抹茶」など、素材の味を大切に焼き上げました。朝食やお子様のおやつにも安心して選んでいただける、当店のロングセラー商品です。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,1450,NULL,0,'未設定',0,0,'常温保存：製造日より5日間',0,'NONE',0,0,'/images/bakeddonuts.png'),(7,'さわやかレモンのしっとりおからケーキ',1,'生おからをたっぷりと練り込んだ、驚くほどしっとり、それでいて口当たりの軽いヘルシーなケーキです。 生地には瀬戸内産のレモン果汁とゼスト（皮）を贅沢に使用し、一口ごとにレモンの爽やかな香りが弾けます。上には豆乳ベースの甘酸っぱいアイシングをたっぷりとかけ、仕上げにシロップ漬けのレモンとピスタチオをトッピング。 「おから感」を全く感じさせない、ティータイムにぴったりの上品な味わいに仕上げました。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,480,NULL,0,'未設定',0,0,'冷蔵：4日間',0,'NONE',0,0,'/images/lemoncake.png'),(8,'米粉のココナッツマカロン',1,'ココナッツを贅沢に使い、一口サイズに焼き上げた素朴でリッチな味わいのマカロンです（※メレンゲを使うフランス菓子ではなく、ココナッツを固めて焼いた伝統的なスタイルです）。 国産米粉と豆乳を使い、卵白を使わずに独自の製法でまとめ上げました。口に入れた瞬間にココナッツの南国風の香りが広がり、噛むほどに優しい甘みが溢れ出します。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,450,NULL,0,'未設定',0,0,'常温保存：製造日より14日間',0,'NONE',0,0,'/images/coconutmacaroons.png'),(9,'米粉のクッキー詰め合わせ缶',1,'「Healsweets」で人気の焼き菓子を、シックなネイビーのオリジナル缶に詰め合わせました。 定番のチョコチップクッキーから、甘酸っぱい自家製ジャムサンド、見た目も華やかなアイシングクッキーまで、すべてグルテンフリー＆ヴィーガン仕様。 一口ごとに異なる食感と味わいが楽しめ、最後まで飽きることなくお召し上がりいただけます。大切なティータイムを彩る、心にも体にも優しい詰め合わせです。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,3200,NULL,0,'未設定',0,0,'常温保存：製造日より30日間',0,'NONE',0,0,'/images/animalcookie.png'),(10,'米粉のベリーチョコケーキ',1,'カカオ分80%の濃厚なオーガニックチョコレートを贅沢に使用した、ずっしりと食べ応えのある本格派チョコケーキです。 小麦粉の代わりに国産米粉を使用し、卵や乳製品を使わずにしっとりと焼き上げました。層の間にはなめらかなチョコクリームを挟み、表面は艶やかなチョコグラサージュでコーティング。トップに飾ったラズベリーとブラックベリーの甘酸っぱさが、カカオの深いコクを引き立てます。特別な日のメインを飾るのにふさわしい、贅沢な一品です。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,4200,NULL,0,'未設定',0,0,'冷蔵：製造日を含め3日間',0,'NONE',0,0,'/images/chocolatecake.png'),(11,'米粉の3段アニバーサリーケーキ',1,'大切な日の記憶に一生残る、当店最高峰のデコレーションケーキです。 純白のドレスのようなクリームは、豆乳をベースに独自の製法でコク深く仕上げたヴィーガンホイップ。3段に重ねたスポンジ生地は、国産米粉100%で驚くほどしっとりと焼き上げました。 色とりどりのエディブルフラワーと新鮮なベリー、そして純金箔を贅沢に散らし、トップには輝くティアラを添えています。「アレルギーがあっても、みんなと同じ豪華なケーキで祝いたい」という願いを叶える、夢の一台です。',NULL,'不使用： 小麦、卵、乳、そば、落花生、えび、かに',NULL,18500,NULL,0,'未設定',0,0,'冷蔵：当日中（要冷蔵）',0,'NONE',0,0,'/images/anniversarycake.png');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -437,8 +472,36 @@ CREATE TABLE `product_category_relation` (
 
 LOCK TABLES `product_category_relation` WRITE;
 /*!40000 ALTER TABLE `product_category_relation` DISABLE KEYS */;
-INSERT INTO `product_category_relation` VALUES (1,2),(2,1),(3,2),(4,1),(4,3),(5,1),(6,1),(6,2),(7,1),(7,2),(8,1),(9,1),(9,2),(10,1);
+INSERT INTO `product_category_relation` VALUES (1,2),(2,1),(3,2),(4,1),(4,3),(5,1),(6,1),(6,2),(7,1),(7,2),(8,1),(9,1),(9,2),(10,1),(11,1),(11,2);
 /*!40000 ALTER TABLE `product_category_relation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_image`
+--
+
+DROP TABLE IF EXISTS `product_image`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_image` (
+  `image_id` bigint NOT NULL AUTO_INCREMENT COMMENT '主キー',
+  `product_id` bigint NOT NULL COMMENT 'FK: PRODUCTテーブルを参照',
+  `image_url` varchar(500) DEFAULT NULL COMMENT '画像ファイルの場所',
+  `display_order` int NOT NULL COMMENT '詳細ページでの表示順',
+  `unboxing_video_url` varchar(500) DEFAULT NULL COMMENT '開封動画のURL（任意）',
+  PRIMARY KEY (`image_id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `product_image_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品画像';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_image`
+--
+
+LOCK TABLES `product_image` WRITE;
+/*!40000 ALTER TABLE `product_image` DISABLE KEYS */;
+/*!40000 ALTER TABLE `product_image` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -677,4 +740,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-23 15:03:36
+-- Dump completed on 2025-12-26 14:35:00
