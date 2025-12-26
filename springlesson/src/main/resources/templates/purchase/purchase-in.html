@@ -4,6 +4,133 @@
   <div th:replace="~{comlayout/base :: meta}"></div>
   <div th:replace="~{comlayout/base :: styles}"></div>
   <title>購入確認</title>
+  
+  <style>
+    /* 購入確認画面専用のCSS */
+    #purchase-input {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    /* テーブル全体のスタイル */
+    .input-table, .price-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #ccc;
+      margin-bottom: 0; /* 下のテーブルとくっつけるため */
+    }
+
+    .price-summary-table {
+      border-top: none; /* 上のテーブルとの重複線を消す */
+    }
+
+    /* 左側の見出し（ベージュ背景） */
+    .input-table th, .price-summary-table th, .remarks-area label {
+      width: 30%;
+      background-color: #e6d5c3; /* 見本に近いベージュ */
+      color: #333;
+      padding: 15px;
+      text-align: center;
+      border: 1px solid #ccc;
+      font-weight: bold;
+    }
+
+    /* 右側の入力エリア */
+    .input-table td, .price-summary-table td {
+      padding: 15px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+
+    /* 入力要素のスタイル */
+    select, input[type="text"], textarea {
+      width: 100%;
+      max-width: 300px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px; /* 角を丸く */
+      background-color: #fff;
+    }
+
+    textarea {
+      max-width: 100%;
+    }
+
+    /* 合計金額の強調 */
+    .grand-total-row th, .grand-total-row td {
+      background-color: #fff;
+      font-size: 1.2em;
+    }
+    .grand-total {
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+
+    /* 補足（備考）エリア */
+    .remarks-area {
+      display: flex;
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+    }
+    .remarks-area label {
+      width: 30%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0;
+    }
+    .remarks-area div {
+      width: 70%;
+      padding: 15px;
+      background-color: #fff;
+    }
+    .remarks-area textarea {
+      width: 100%;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    /* ボタンエリア */
+    .action-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 40px;
+      gap: 20px;
+    }
+
+    .confirm-order-button, .back-to-cart-button {
+      padding: 12px 40px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      border: 1px solid #999;
+      background-color: #fff;
+      color: #333;
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .confirm-order-button:hover, .back-to-cart-button:hover {
+      background-color: #f0f0f0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .price-right {
+      text-align: left;
+      padding-left: 20px;
+    }
+  </style>
 </head>
 
 <body>
@@ -15,7 +142,6 @@
     <form action="#" th:action="@{/purchase/confirm}" method="post">
       
       <table class="input-table">
-        
         <tr>
           <th>配送希望日</th>
           <td>
@@ -29,7 +155,9 @@
           <th>時間指定</th>
           <td>
             <select name="deliveryTime" id="deliveryTime">
-              <option th:each="option : ${deliveryTimeOptions}" th:value="${option.value}" th:text="${option.label}">未定</option>
+              <option th:each="option : ${deliveryTimeOptions}" 
+                      th:value="${option.value}" 
+                      th:text="${option.label}">未定</option>
             </select>
           </td>
         </tr>
@@ -37,8 +165,7 @@
         <tr>
           <th>配送先指定</th>
           <td>
-            <select name="shippingDestination" id="shippingDestination" 
-                    onchange="updateShippingFee()">
+            <select name="shippingDestination" id="shippingDestination" onchange="updateShippingFee()">
               <option th:each="option : ${destinationOptions}" th:value="${option.value}" th:text="${option.label}">自宅</option>
             </select>
           </td>
@@ -77,24 +204,25 @@
         </tr>
         <tr>
           <th>送料 (税込)</th>
-          <td class="price-right" th:text="${#numbers.formatInteger(shippingFee, 1, 'COMMA')} + '円'">1,520円</td>
+          <td class="price-right" id="shippingFeeDisplay" th:text="${#numbers.formatInteger(shippingFee, 1, 'COMMA')} + '円'">420円</td>
         </tr>
         
         <tr class="grand-total-row">
           <th>合計金額 (税込)</th>
-          <td class="price-right grand-total" th:text="${#numbers.formatInteger(grandTotal, 1, 'COMMA')} + '円'">10,368円</td>
+          <td class="price-right grand-total" id="grandTotalDisplay" th:text="${#numbers.formatInteger(grandTotal, 1, 'COMMA')} + '円'">5,420円</td>
         </tr>
       </table>
       
       <div class="remarks-area">
         <label for="remarks">補足</label>
-        <textarea name="remarks" id="remarks" rows="5" placeholder="何かご要望があればご記入ください。"></textarea>
+        <div>
+          <textarea name="remarks" id="remarks" rows="5" placeholder="何かご要望があればご記入ください。"></textarea>
+        </div>
       </div>
       
       <div class="action-buttons">
-        <a th:href="@{/cart}" class="back-to-cart-button">カートへ</a>
-        
         <button type="submit" class="confirm-order-button">注文確定</button>
+        <a th:href="@{/cart}" class="back-to-cart-button">カートへ戻る</a>
       </div>
     </form>
     
@@ -102,7 +230,6 @@
 
   <script th:inline="javascript">
   /*<![CDATA[*/
-  // JavaScript関数（変更なし）
   const SHIPPING_CONSTANTS = {
       baseFee: 420,
       surchargeHokkaidoOkinawa: 1100
@@ -119,13 +246,15 @@
           newShippingFee += SHIPPING_CONSTANTS.surchargeHokkaidoOkinawa;
       }
       
-      alert(`仮の送料が ${newShippingFee.toLocaleString()}円 に再計算されました。`);
+      // 画面上の表示を更新（デモ用）
+      document.getElementById('shippingFeeDisplay').innerText = newShippingFee.toLocaleString() + "円";
+      
+      const productTotal = /*[[${productTotal}]]*/ 5000;
+      document.getElementById('grandTotalDisplay').innerText = (productTotal + newShippingFee).toLocaleString() + "円";
   }
-  
   /*]]>*/
   </script>
 
   <div th:replace="~{comlayout/base :: footer}"></div>
 </body>
-
 </html>
