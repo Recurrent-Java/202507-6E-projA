@@ -1,9 +1,14 @@
+// src/main/java/com/example/springlesson/service/AdminService.java
 package com.example.springlesson.service;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import jakarta.validation.ValidationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,36 +19,39 @@ import com.example.springlesson.repository.MemberInfoRepository;
 import com.example.springlesson.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class AdminService {
 
     private final ProductRepository productRepository;
     private final MemberInfoRepository memberInfoRepository;
 
-    // 画像保存先（最後は / で終わること）
-    private static final String UPLOAD_DIR =
-        "C:/teama-git/202507-6E-projA/springlesson/src/main/resources/static/images/";
+    /* ==================== 画像アップロード先（最後に / が必要） ==================== */
+    @Value("${app.upload-dir}")
+    private String uploadDir;          // ex: "C:/teama-git/.../static/images/"
 
-    // --- 商品一覧 ---
+    /* ==================== 商品一覧 ==================== */
+    @Transactional(readOnly = true)
     public List<Product> findAllProducts() {
         return productRepository.findAll();
     }
 
-    // --- 商品登録・更新 ---
-    public void saveProduct(AdminProductForm form) throws IllegalStateException, IOException {
+    /* ==================== 商品登録・更新 ==================== */
+    public void saveProduct(AdminProductForm form) throws IOException, ValidationException {
 
         Product product;
-        Integer productId = form.getProductId();
+        Integer id = form.getProductId();
 
         // 既存商品か新規商品か判定
-        if (productId != null && productRepository.existsById(productId)) {
-            product = productRepository.findById(productId).orElse(new Product());
-        } else {
+        if (id != null && productRepository.existsById(id)) {
+            product = productRepository.findById(id)
+                                      .orElseThrow(() -> new IllegalStateException("該当商品が見つかりません"));
+        } else {                                // 新規作成時のデフォルト設定
             product = new Product();
-            // 新規商品の初期値設定
             product.setCatId(1);
             product.setLimitedFlg(0);
             product.setUsage("自宅用");
@@ -54,45 +62,44 @@ public class AdminService {
             product.setIsLowStock(0);
         }
 
-        // 基本情報の更新
+        /* ---- 基本情報更新 ---- */
         product.setProductName(form.getProductName());
         product.setPrice(form.getPrice());
         product.setStockQuantity(form.getStockQuantity());
 
-     // --- 画像アップロード処理 ---
-     // 元のファイル名をそのまま利用
-        String fileName = form.getImageFile().getOriginalFilename();
+        /* ---- 画像アップロード処理 ---- */
+        MultipartFile image = form.getImageFile();
+        if (image != null && !image.isEmpty()) {
+            // ファイル名をそのまま使うが、サニタイズは必ず実施
+            String originalFilename = Paths.get(image.getOriginalFilename()).getFileName().toString();
 
-        // 保存先
-        File dest = new File(UPLOAD_DIR + fileName);
+            Path targetPath = Paths.get(uploadDir, originalFilename);
+            Files.createDirectories(targetPath.getParent());  // ディレクトリが無ければ作成
 
-        if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
+            image.transferTo(targetPath.toFile());
+
+            // DB には公開用 URL を保存
+            product.setImagePath("/images/" + originalFilename);
         }
 
-        // ファイル保存
-        form.getImageFile().transferTo(dest);
-
-        // DBには公開用URL形式で保存
-        product.setImagePath("/images/" + fileName);
-
-
+        /* ---- 保存 ---- */
         productRepository.save(product);
     }
 
-    // --- 商品削除 ---
+    /* ==================== 商品削除 ==================== */
     public void deleteProduct(Integer productId) {
         if (productId != null && productRepository.existsById(productId)) {
             productRepository.deleteById(productId);
         }
     }
 
-    // --- 会員一覧 ---
+    /* ==================== 会員一覧 ==================== */
+    @Transactional(readOnly = true)
     public List<MemberInfo> findAllMembers() {
         return memberInfoRepository.findAll();
     }
 
-    // --- 会員削除 ---
+    /* ==================== 会員削除 ==================== */
     public void deleteMember(Integer memberId) {
         if (memberId != null && memberInfoRepository.existsById(memberId)) {
             memberInfoRepository.deleteById(memberId);

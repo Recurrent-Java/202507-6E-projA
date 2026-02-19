@@ -1,0 +1,4 @@
+# src/main/resources/application.yml
+
+app:
+  upload-dir: C:/teama-git/202507-6E-projA/springlesson/src/main/resources/static/images/
