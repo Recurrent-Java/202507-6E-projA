@@ -11,6 +11,7 @@ import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.springlesson.entity.MemberInfo;
 import com.example.springlesson.entity.Product;
